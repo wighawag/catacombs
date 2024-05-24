@@ -19,7 +19,7 @@ contract GameReveal is Game {
 
     struct StateChanges {
         uint256 characterID;
-        uint64 newAvatarPosition;
+        uint64 newPosition;
         uint24 epoch;
     }
 
@@ -33,7 +33,7 @@ contract GameReveal is Game {
             context.controller,
             context.epoch,
             context.actions,
-            stateChanges.newAvatarPosition
+            stateChanges.newPosition
         );
     }
 
@@ -61,11 +61,11 @@ contract GameReveal is Game {
                 position = next;
             }
         }
-        stateChanges.newAvatarPosition = position;
+        stateChanges.newPosition = position;
     }
 
     function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {
-        store.characterStates[stateChanges.characterID].position = stateChanges.newAvatarPosition;
+        store.characterStates[stateChanges.characterID].position = stateChanges.newPosition;
         store.commitments[stateChanges.characterID].epoch = stateChanges.epoch;
     }
 

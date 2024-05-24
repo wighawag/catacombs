@@ -34,20 +34,20 @@ abstract contract Game {
     /// @param controller account handling the character moves
     /// @param epoch epoch number on which this commit belongs to
     /// @param actions the list of moves made
-    /// @param newAvatarPosition the resulting new character's position
+    /// @param newPosition the resulting new character's position
     event MoveRevealed(
         uint256 indexed characterID,
         address indexed controller,
         uint24 indexed epoch,
         Action[] actions,
-        uint64 newAvatarPosition
+        uint64 newPosition
     );
 
     /// @notice A character has commited to make a move and reveal it on the reveal phase
     /// @param characterID the id of the NFT being played
     /// @param controller account handling the character moves
-    /// @param newAvatarPosition the resulting new character's position
-    event EnteredTheGame(uint256 indexed characterID, address indexed controller, uint64 newAvatarPosition);
+    /// @param newPosition the resulting new character's position
+    event EnteredTheGame(uint256 indexed characterID, address indexed controller, uint64 newPosition);
 
     /// @notice A character has commited to make a move and reveal it on the reveal phase
     /// @param characterID the id of the NFT being played
