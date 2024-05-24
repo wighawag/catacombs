@@ -14,23 +14,11 @@ contract GameCommit is Game {
         bytes24 commitmentHash;
     }
 
-    struct StateChanges {
-        uint256 characterID; // key
-        uint24 epoch;
-        bytes24 commitmentHash;
-    }
-
     function commit(uint256 characterID, bytes24 commitmentHash, address payable payee) external payable {
         Game.Store storage store = getStore();
-        // 4 steps
 
-        // 1. gather context (will be emitted)
         Context memory context = _context(store, characterID, commitmentHash);
-        // 2. compute state changes from context (pure function)
-        StateChanges memory stateChanges = _stateChanges(context);
-        // 3. apply state changes (zero computation)
-        _apply(store, stateChanges);
-        // 4. emit event
+        _apply(store, context);
         emit Game.CommitmentMade(context.characterID, context.controller, context.epoch, context.commitmentHash);
 
         // extra steps for which we do not intend to track via events
@@ -45,7 +33,7 @@ contract GameCommit is Game {
         bytes24 commitmentHash
     ) internal view returns (Context memory context) {
         Game.Config memory config = getConfig();
-        mapping(address => Game.ControllerType) storage isController = store.avatars[characterID].controllers;
+        mapping(address => Game.ControllerType) storage isController = store.characterStates[characterID].controllers;
         if (isController[msg.sender] == Game.ControllerType.None) {
             revert Game.NotAuthorizedController(msg.sender);
         }
@@ -55,19 +43,7 @@ contract GameCommit is Game {
         context.commitmentHash = commitmentHash;
     }
 
-    function _stateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {
-        return
-            StateChanges({
-                characterID: context.characterID,
-                epoch: context.epoch,
-                commitmentHash: context.commitmentHash
-            });
-    }
-
-    function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {
-        store.commitments[stateChanges.characterID] = Game.Commitment({
-            hash: stateChanges.commitmentHash,
-            epoch: stateChanges.epoch
-        });
+    function _apply(Game.Store storage store, Context memory context) internal {
+        store.commitments[context.characterID] = Game.Commitment({hash: context.commitmentHash, epoch: context.epoch});
     }
 }

@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 pragma solidity ^0.8.0;
 
+import "./routes/GameEnter.sol";
+import "./routes/GameLeave.sol";
 import "./routes/GameCommit.sol";
-import "./routes/GameController.sol";
 import "./routes/GameReveal.sol";
+
 import "./Game.sol";
 
 contract GameRouter {
@@ -11,14 +13,17 @@ contract GameRouter {
     // TODO generate this automatically
     ///////////////////////////////////////////////////////////////////////////////////////////////
     struct Routes {
+        GameEnter enterRoute;
+        GameLeave leaveRoute;
         GameCommit commitRoute;
-        GameController controllerRoute;
         GameReveal revealRoute;
     }
 
-    GameCommit internal immutable _commit;
-    GameController internal immutable _controller;
-    GameReveal internal immutable _reveal;
+    GameEnter internal immutable _route_enter;
+    GameLeave internal immutable _route_leave;
+    GameCommit internal immutable _route_commit;
+    GameReveal internal immutable _route_reveal;
+
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,36 +35,43 @@ contract GameRouter {
     uint256 internal immutable COMMIT_PHASE_DURATION;
     /// @notice the duration of the reveal phase in seconds
     uint256 internal immutable REVEAL_PHASE_DURATION;
-    /// @notice the max number of level a cell can reach in the game
+    /// @notice the Character NFT Collection
+    IERC721 internal immutable CHARACTERS;
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
     constructor(Routes memory routes, Game.Config memory config) {
         ///////////////////////////////////////////////////////////////////////////////////////////
         // TODO generate this automatically
         ///////////////////////////////////////////////////////////////////////////////////////////
-        _commit = routes.commitRoute;
-        _controller = routes.controllerRoute;
-        _reveal = routes.revealRoute;
+        _route_enter = routes.enterRoute;
+        _route_leave = routes.leaveRoute;
+        _route_commit = routes.commitRoute;
+        _route_reveal = routes.revealRoute;
         ///////////////////////////////////////////////////////////////////////////////////////////
 
         START_TIME = config.startTime;
         COMMIT_PHASE_DURATION = config.commitPhaseDuration;
         REVEAL_PHASE_DURATION = config.revealPhaseDuration;
+        CHARACTERS = config.characters;
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // TODO generate this automatically
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    function commit(uint256, bytes24, address) external payable {
-        _delegateTo(address(_commit));
+    function enter(uint256, address payable) external {
+        _delegateTo(address(_route_enter));
     }
 
-    function join(uint256) external {
-        _delegateTo(address(_controller));
+    function leave(uint256, address) external {
+        _delegateTo(address(_route_leave));
+    }
+
+    function commit(uint256, bytes24, address payable) external payable {
+        _delegateTo(address(_route_commit));
     }
 
     function reveal(uint256, Game.Action[] calldata, bytes32) external {
-        _delegateTo(address(_reveal));
+        _delegateTo(address(_route_reveal));
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -71,7 +83,8 @@ contract GameRouter {
             Game.Config({
                 startTime: START_TIME,
                 commitPhaseDuration: COMMIT_PHASE_DURATION,
-                revealPhaseDuration: REVEAL_PHASE_DURATION
+                revealPhaseDuration: REVEAL_PHASE_DURATION,
+                characters: CHARACTERS
             });
     }
 
