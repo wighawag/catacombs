@@ -4,7 +4,6 @@ import type {CameraState} from './camera';
 import type {RenderViewState} from './renderview';
 import {GridLayer} from './programs/Grid';
 import type {GameViewState} from '$lib/state/ViewState';
-import {BlockiesLayer} from './programs/Blockies';
 
 export class WebGLRenderer implements Readable<RenderViewState> {
 	private state!: GameViewState;
@@ -13,7 +12,6 @@ export class WebGLRenderer implements Readable<RenderViewState> {
 	private cameraState!: CameraState;
 	private store: Writable<RenderViewState>;
 	private gridLayer: GridLayer = new GridLayer(1);
-	private blockiesLayer: BlockiesLayer = new BlockiesLayer(1);
 
 	constructor() {
 		this.store = writable({devicePixelRatio: 1, width: 0, height: 0});
@@ -38,7 +36,6 @@ export class WebGLRenderer implements Readable<RenderViewState> {
 			height: this.canvas.height,
 		});
 		this.gridLayer.initialize(gl);
-		this.blockiesLayer.initialize(gl);
 	}
 
 	render(time: number) {
@@ -61,8 +58,5 @@ export class WebGLRenderer implements Readable<RenderViewState> {
 			this.gridLayer.use();
 			this.gridLayer.render(this.cameraState);
 		}
-
-		this.blockiesLayer.use();
-		this.blockiesLayer.render(this.cameraState, this.state);
 	}
 }

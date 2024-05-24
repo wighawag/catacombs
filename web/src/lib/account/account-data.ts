@@ -32,7 +32,6 @@ export type OffchainMoves =
 			list: LocalMoves;
 	  };
 
-
 export type CommitMetadata = {
 	type: 'commit';
 	epoch: number;
@@ -324,7 +323,7 @@ export class GameAccountData extends BaseAccountHandler<AccountData, GameMetadat
 						gas: bigint;
 						data: `0x${string}`;
 						to: `0x${string}`;
-					}
+					};
 					maxFeePerGasAuthorized: bigint;
 					time: number;
 					expiry?: number;
@@ -369,7 +368,6 @@ export class GameAccountData extends BaseAccountHandler<AccountData, GameMetadat
 		this._offchainState.set(this.$data.offchainState);
 	}
 
-	
 	back() {
 		// TODO undo
 		// $offchainState.moves.splice($offchainState.moves.length - 1, 1);
@@ -410,26 +408,6 @@ export class GameAccountData extends BaseAccountHandler<AccountData, GameMetadat
 		} else {
 			throw new Error(`Action is not of type "commit"`);
 		}
-	}
-
-	swapCurrentColor() {
-		const colorRotation = debugTools ? 6 : 5;
-
-		// TODO ensure timestamp synced ?
-		const timestamp = time.now;
-
-		// TODO use store ?
-		if (!account.$state.address) {
-			throw new Error(`no address`);
-		}
-		let currentColor = this.$data.offchainState.currentColor.color;
-		if (!currentColor) {
-			currentColor = Number((BigInt(account.$state.address) % 5n) + 1n);
-		}
-		this.$data.offchainState.currentColor.color = (currentColor % colorRotation) + 1;
-		this.$data.offchainState.currentColor.timestamp = timestamp;
-		this._save();
-		this._offchainState.set(this.$data.offchainState);
 	}
 
 	markTutorialAsComplete(step: TUTORIAL_STEP) {

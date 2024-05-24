@@ -1,7 +1,6 @@
 <script lang="ts">
 	import {fade} from 'svelte/transition';
 	import {splash} from './splash';
-	import {browser} from '$app/environment';
 	import {onMount} from 'svelte';
 	import {url} from '$utils/path';
 
@@ -10,30 +9,13 @@
 	});
 </script>
 
-{#if $splash && $splash.stage === 1}
+{#if $splash && $splash.stage === 0}
 	<!-- svelte-ignore a11y-click-events-have-key-events -->
 	<!-- svelte-ignore a11y-no-static-element-interactions -->
 	<div class="overlay game-title" out:fade on:click={() => splash.nextStage()}>
 		<div class="content">
 			<img src={url('/title.png')} alt="Game title" on:load={() => splash.gameLogoReady()} />
-			<p class="description">World Building</p>
-		</div>
-	</div>
-{/if}
-
-{#if $splash && $splash.stage === 0}
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div class="overlay etherplay" out:fade on:click={() => splash.nextStage()}>
-		<div class="content">
-			{#if browser}
-				<img
-					src={url('/logo_with_text_on_black.png')}
-					alt="Etherplay Logo"
-					on:load={() => splash.etherplayLogoReady()}
-				/>
-				<!-- <p class="description">presents</p> -->
-			{/if}
+			<p class="description">T</p>
 		</div>
 	</div>
 {/if}
@@ -79,28 +61,4 @@
 		line-height: 2rem;
 		font-weight: 900;
 	}
-
-	.etherplay .content {
-		display: flex;
-		text-align: center;
-		justify-content: center;
-		align-items: center;
-		height: 100%;
-	}
-
-	.etherplay img {
-		margin-left: auto;
-		margin-right: auto;
-		margin-bottom: 2rem;
-		max-width: 20rem;
-		width: 80%;
-	}
-
-	/* .etherplay .description {
-		margin: 1.5rem;
-		color: #9ca3af;
-		font-size: 2.25rem;
-		line-height: 2.5rem;
-		font-weight: 900;
-	} */
 </style>
