@@ -1,0 +1,42 @@
+{
+  "name": "template-game-common",
+  "version": "0.0.0",
+  "description": "Common lib",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs"
+      },
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "@types/node": "^20.12.12",
+    "named-logs": "^0.2.4",
+    "viem": "^2.12.1"
+  },
+  "devDependencies": {
+    "ldenv": "^0.3.10",
+    "pkgroll": "^2.0.2",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5"
+  },
+  "scripts": {
+    "build": "pkgroll",
+    "dev": "pkgroll --watch",
+    "format:check": "prettier --check .",
+    "format": "prettier --write ."
+  }
+}

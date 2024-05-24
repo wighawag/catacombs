@@ -1,0 +1,49 @@
+{
+  "name": "template-game-indexer",
+  "version": "0.1.0",
+  "description": "Indexer for the game",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.cjs"
+      },
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.mjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "dependencies": {
+    "ethereum-indexer-js-processor": "^0.7.0",
+    "named-logs": "^0.2.4",
+    "template-game-common": "workspace:*"
+  },
+  "devDependencies": {
+    "ethereum-indexer-cli": "^0.6.30",
+    "ethereum-indexer-server": "^0.6.32",
+    "ldenv": "^0.3.10",
+    "pkgroll": "^2.0.2",
+    "prettier": "^3.2.5",
+    "typescript": "^5.4.5",
+    "wait-on": "^7.2.0"
+  },
+  "scripts": {
+    "eis": "eis",
+    "serve": "ldenv eis run -n @@ETH_NODE_URI_:MODE,ETH_NODE_URI -p ./dist/index.cjs --disable-cache --deployments ../contracts/deployments/@@MODE @@",
+    "index": "ldenv ei -n @@ETH_NODE_URI_:MODE,ETH_NODE_URI -p ./dist/index.cjs -d src/contracts.ts -f indexed/@@MODE@:.json @@",
+    "index-to-file": "ei -p ./dist/index.cjs",
+    "build": "pkgroll",
+    "dev": "echo 'waiting for src/contracts.ts...'; wait-on src/contracts.ts && pkgroll --watch",
+    "format:check": "prettier --check .",
+    "format": "prettier --write ."
+  }
+}
