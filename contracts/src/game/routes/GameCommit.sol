@@ -14,11 +14,18 @@ contract GameCommit is Game {
         bytes24 commitmentHash;
     }
 
+    struct StateChanges {
+        uint256 characterID;
+        uint24 epoch;
+        bytes24 commitmentHash;
+    }
+
     function commit(uint256 characterID, bytes24 commitmentHash, address payable payee) external payable {
         Game.Store storage store = getStore();
 
         Context memory context = _context(store, characterID, commitmentHash);
-        _apply(store, context);
+        StateChanges memory stateChanges = _stateChanges(context);
+        _apply(store, stateChanges);
         emit Game.CommitmentMade(context.characterID, context.controller, context.epoch, context.commitmentHash);
 
         // extra steps for which we do not intend to track via events
@@ -43,7 +50,16 @@ contract GameCommit is Game {
         context.commitmentHash = commitmentHash;
     }
 
-    function _apply(Game.Store storage store, Context memory context) internal {
-        store.commitments[context.characterID] = Game.Commitment({hash: context.commitmentHash, epoch: context.epoch});
+    function _stateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {
+        stateChanges.characterID = context.characterID;
+        stateChanges.epoch = context.epoch;
+        stateChanges.commitmentHash = context.commitmentHash;
+    }
+
+    function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {
+        store.commitments[stateChanges.characterID] = Game.Commitment({
+            hash: stateChanges.commitmentHash,
+            epoch: stateChanges.epoch
+        });
     }
 }

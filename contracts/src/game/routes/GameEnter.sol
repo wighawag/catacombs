@@ -9,12 +9,13 @@ contract GameEnter is Game {
 
     struct Context {
         uint256 characterID;
-        uint64 position;
-        address controller;
+        address sender;
     }
 
     struct StateChanges {
+        uint256 characterID;
         uint64 position;
+        address controller;
     }
 
     function enter(uint256 characterID, address payable payee) external payable {
@@ -23,8 +24,8 @@ contract GameEnter is Game {
 
         Context memory context = _context(characterID);
         StateChanges memory stateChanges = _stateChanges(context);
-        _apply(store, context, stateChanges);
-        emit EnteredTheGame(context.characterID, context.controller, stateChanges.position);
+        _apply(store, stateChanges);
+        emit EnteredTheGame(context.characterID, stateChanges.controller, stateChanges.position);
 
         // transfer Character to the game
         config.characters.transferFrom(msg.sender, address(this), characterID);
@@ -36,17 +37,16 @@ contract GameEnter is Game {
     }
 
     function _context(uint256 characterID) internal view returns (Context memory context) {
-        context.controller = msg.sender;
+        context.sender = msg.sender;
         context.characterID = characterID;
-        context.position = 0;
     }
 
     function _stateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {
-        return StateChanges({position: context.position});
+        return StateChanges({characterID: context.characterID, position: 0, controller: context.sender});
     }
 
-    function _apply(Game.Store storage store, Context memory context, StateChanges memory stateChanges) internal {
-        store.characterStates[context.characterID].controllers[context.controller];
-        store.characterStates[context.characterID].position = stateChanges.position;
+    function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {
+        store.characterStates[stateChanges.characterID].controllers[stateChanges.controller];
+        store.characterStates[stateChanges.characterID].position = stateChanges.position;
     }
 }

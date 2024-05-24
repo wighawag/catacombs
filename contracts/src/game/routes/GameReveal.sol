@@ -18,14 +18,16 @@ contract GameReveal is Game {
     }
 
     struct StateChanges {
+        uint256 characterID;
         uint64 newAvatarPosition;
+        uint24 epoch;
     }
 
     function reveal(uint256 characterID, Game.Action[] calldata actions, bytes32 secret) external {
         Game.Store storage store = getStore();
         Context memory context = _context(store, characterID, actions, secret);
         StateChanges memory stateChanges = _stateChanges(context);
-        _apply(store, context, stateChanges);
+        _apply(store, stateChanges);
         emit MoveRevealed(
             context.characterID,
             context.controller,
@@ -62,8 +64,9 @@ contract GameReveal is Game {
         stateChanges.newAvatarPosition = position;
     }
 
-    function _apply(Game.Store storage store, Context memory context, StateChanges memory stateChanges) internal {
-        store.characterStates[context.characterID].position = stateChanges.newAvatarPosition;
+    function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {
+        store.characterStates[stateChanges.characterID].position = stateChanges.newAvatarPosition;
+        store.commitments[stateChanges.characterID].epoch = stateChanges.epoch;
     }
 
     function _isValidMove(uint64 from, uint64 to) internal pure returns (bool valid) {
