@@ -9,7 +9,7 @@ contract GameReveal is Game {
     using GameUtils for Config;
 
     struct Context {
-        uint256 avatarID;
+        uint256 characterID;
         uint64 priorPosition;
         address controller;
         uint64 epoch;
@@ -23,12 +23,12 @@ contract GameReveal is Game {
         uint64 newAvatarPosition;
     }
 
-    function reveal(uint256 avatarID, Game.Action[] calldata actions, bytes32 secret) external {
+    function reveal(uint256 characterID, Game.Action[] calldata actions, bytes32 secret) external {
         Game.Store storage store = getStore();
         // 4 steps
 
         // 1. gather context (will be emitted)
-        Context memory context = _context(store, avatarID, actions, secret);
+        Context memory context = _context(store, characterID, actions, secret);
         // 2. compute state changes from context (pure function)
         StateChanges memory stateChanges = _stateChanges(context);
         // 3. apply state changes (zero computation)
@@ -39,14 +39,14 @@ contract GameReveal is Game {
 
     function _context(
         Game.Store storage store,
-        uint256 avatarID,
+        uint256 characterID,
         Game.Action[] calldata actions,
         bytes32 secret
     ) internal view returns (Context memory context) {
         Config memory config = getConfig();
         // TODO check secret
-        context.avatarID = avatarID;
-        context.priorPosition = store.avatars[avatarID].position;
+        context.characterID = characterID;
+        context.priorPosition = store.avatars[characterID].position;
         (context.epoch, ) = config.getEpoch();
         context.actions = actions;
         context.secret = secret;

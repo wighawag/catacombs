@@ -16,21 +16,21 @@ abstract contract Game {
     error GameNotStarted();
 
     /// @notice A character has commited to make a move and reveal it on the reveal phase
-    /// @param avatarID the id of the NFT being played
+    /// @param characterID the id of the NFT being played
     /// @param controller account handling the character moves
     /// @param epoch epoch number on which this commit belongs to
     /// @param commitmentHash the hash of moves
     event CommitmentMade(
-        uint256 indexed avatarID,
+        uint256 indexed characterID,
         address indexed controller,
         uint24 indexed epoch,
         bytes24 commitmentHash
     );
 
     /// @notice A character has commited to make a move and reveal it on the reveal phase
-    /// @param avatarID the id of the NFT being played
+    /// @param characterID the id of the NFT being played
     /// @param controller account handling the character moves
-    event Joined(uint256 indexed avatarID, address indexed controller);
+    event Joined(uint256 indexed characterID, address indexed controller);
 
     struct Commitment {
         bytes24 hash;
