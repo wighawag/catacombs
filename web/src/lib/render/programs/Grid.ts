@@ -34,7 +34,7 @@ void main() {
 
 const GRID_COLORS = {
 	lines: parseColorV4('777777'),
-	background: parseColorV4('5c699f'),
+	background: parseColorV4('000000'),
 };
 
 export class GridLayer {

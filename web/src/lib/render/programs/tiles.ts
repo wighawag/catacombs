@@ -1,4 +1,4 @@
-import type {Attributes} from './programs/Textured2D';
+import type {Attributes} from './Textured2D';
 
 export type Frame = {x: number; y: number; w: number; h: number};
 export type FrameData = {

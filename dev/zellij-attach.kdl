@@ -8,6 +8,9 @@ layout {
 			pane name="COMMON" command="bash"  {
 				args "-c" "pnpm common:dev; cd common; ${SHELL-bash}"
 			}
+			pane name="CONTRACTS IN JS" command="bash"  {
+				args "-c" "pnpm contracts-js:dev; cd contracts-js; ${SHELL-bash}"
+			}
 			pane name="WEB" command="bash"  {
 				args "-c" "pnpm web:dev; cd web; ${SHELL-bash}"
 			}

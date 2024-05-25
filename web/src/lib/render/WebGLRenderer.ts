@@ -3,7 +3,8 @@ import * as twgl from 'twgl.js';
 import type {CameraState} from './camera';
 import type {RenderViewState} from './renderview';
 import {GridLayer} from './programs/Grid';
-import type {GameViewState} from '$lib/state/ViewState';
+import {GroundLayer} from './layers/GroundLayer';
+import {gameView, type GameViewState} from '$lib/state/ViewState';
 
 export class WebGLRenderer implements Readable<RenderViewState> {
 	private state!: GameViewState;
@@ -12,6 +13,7 @@ export class WebGLRenderer implements Readable<RenderViewState> {
 	private cameraState!: CameraState;
 	private store: Writable<RenderViewState>;
 	private gridLayer: GridLayer = new GridLayer(1);
+	private groundLayer: GroundLayer = new GroundLayer(1);
 
 	constructor() {
 		this.store = writable({devicePixelRatio: 1, width: 0, height: 0});
@@ -36,6 +38,7 @@ export class WebGLRenderer implements Readable<RenderViewState> {
 			height: this.canvas.height,
 		});
 		this.gridLayer.initialize(gl);
+		this.groundLayer.initialize(gl);
 	}
 
 	render(time: number) {
@@ -58,5 +61,8 @@ export class WebGLRenderer implements Readable<RenderViewState> {
 			this.gridLayer.use();
 			this.gridLayer.render(this.cameraState);
 		}
+
+		this.groundLayer.use();
+		this.groundLayer.render(this.cameraState, this.state);
 	}
 }

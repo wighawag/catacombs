@@ -1,6 +1,7 @@
 packages:
   - 'common'
   - 'contracts'
+  - 'contracts-js'
   - 'indexer'
   - 'web'
   - 'helper-services/*'
