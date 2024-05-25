@@ -1,4 +1,4 @@
-import type {GameViewState} from '$lib/state/ViewState';
+import {gameView, type GameViewState} from '$lib/state/ViewState';
 import type {CameraState} from '../camera';
 import {Textured2DProgram, type Attributes} from '../programs/Textured2D';
 import * as twgl from 'twgl.js';
@@ -134,9 +134,12 @@ export class GroundLayer extends Textured2DProgram {
 		// drawTileRow(this.attributes, -3 / 28, -3 / 28, texPerSprites['wall_horiz.png'], 28 / 28, 6 / 28, 128, 1);
 		// drawTile(this.attributes, -6 / 28, -3 / 28, texPerSprites['wall_horiz.png'], 28 / 28, 6 / 28, 1);
 
-		const hx = (window as any).hero?.x || 0;
-		const hy = (window as any).hero?.y || 0;
-		drawTile(this.attributes, hx + 6 / 28, hy + 6 / 28, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
+		if (state.currentCharacter) {
+			const char = state.characters[state.currentCharacter];
+			const hx = char.position.x;
+			const hy = char.position.y;
+			drawTile(this.attributes, hx + 6 / 28, hy + 6 / 28, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
+		}
 
 		// we update the buffer with the new arrays
 		twgl.setAttribInfoBufferFromArray(GL, this.bufferInfo.attribs!.a_position, this.attributes.positions);

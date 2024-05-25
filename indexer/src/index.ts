@@ -9,19 +9,23 @@ enum ControllerType {
 	Owner,
 }
 
+export type Character = {
+	id: string;
+	position: {x: number; y: number};
+	controllers: {[address: `0x${string}`]: ControllerType};
+};
+
+export type Commitment = {
+	epoch: number;
+	commitmentHash: `0x${string}`;
+};
+
 export type Data = {
 	characters: {
-		[id: string]: {
-			id: string;
-			position: {x: number; y: number};
-			controllers: {[address: `0x${string}`]: ControllerType};
-		};
+		[id: string]: Character;
 	};
 	commitments: {
-		[id: string]: {
-			epoch: number;
-			commitmentHash: `0x${string}`;
-		};
+		[id: string]: Commitment;
 	};
 };
 

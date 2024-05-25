@@ -38,9 +38,7 @@
 		unsubscribeFromCamera = camera.subscribe((v) => renderer.updateView(v));
 
 		const actionHandler = new ActionHandler();
-		camera.onClick = (x, y) => {
-			actionHandler.onCellClicked(Math.floor(x), Math.floor(y));
-		};
+		actionHandler.start(camera, canvas);
 
 		unsubscribeFromState = state.subscribe(($state) => {
 			renderer.updateState($state);
@@ -49,6 +47,7 @@
 		animationFrameID = requestAnimationFrame(render);
 
 		return () => {
+			actionHandler.stop();
 			camera.stop();
 			cancelAnimationFrame(animationFrameID);
 			unsubscribeFromCamera();
