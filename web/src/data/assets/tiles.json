@@ -18,7 +18,7 @@
 },
 "hero_02.png":
 {
-	"frame": {"x":37,"y":9,"w":16,"h":16},
+	"frame": {"x":1,"y":26,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -26,7 +26,7 @@
 },
 "spider_00.png":
 {
-	"frame": {"x":1,"y":26,"w":16,"h":16},
+	"frame": {"x":19,"y":26,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -34,7 +34,7 @@
 },
 "spider_01.png":
 {
-	"frame": {"x":19,"y":26,"w":16,"h":16},
+	"frame": {"x":1,"y":44,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -42,7 +42,7 @@
 },
 "spider_02.png":
 {
-	"frame": {"x":37,"y":27,"w":16,"h":16},
+	"frame": {"x":19,"y":44,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -58,8 +58,8 @@
 },
 "wall_vert.png":
 {
-	"frame": {"x":31,"y":1,"w":6,"h":28},
-	"rotated": true,
+	"frame": {"x":37,"y":1,"w":6,"h":28},
+	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":6,"h":28},
 	"sourceSize": {"w":6,"h":28}
@@ -69,8 +69,8 @@
 	"version": "1.0",
 	"image": "tiles.png",
 	"format": "RGBA8888",
-	"size": {"w":60,"h":44},
+	"size": {"w":44,"h":61},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:dbf778aad52baf03474a9dc6bbb20518:6f874a2c16dd3b1ca81649ab5feea3c5:accbe1e7e294ded8391337fc1c446319$"
+	"smartupdate": "$TexturePacker:SmartUpdate:656bd05246bd63e6ae39710562f8c452:6f874a2c16dd3b1ca81649ab5feea3c5:accbe1e7e294ded8391337fc1c446319$"
 }
 }

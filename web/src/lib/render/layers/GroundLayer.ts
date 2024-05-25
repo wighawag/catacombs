@@ -51,6 +51,16 @@ for (const key of Object.keys(texPerSprites)) {
 	value.uvs = [uvs(value, 1), uvs(value, 2), uvs(value, 4), uvs(value, 8), uvs(value, 16)];
 }
 
+const AREA_SIZE = 11;
+const AREA_OFFSET = 5;
+function areaCoord(a: number): number {
+	if (a >= 0) {
+		return Math.floor((a + AREA_OFFSET) / AREA_SIZE);
+	} else {
+		return -Math.floor((-a + AREA_OFFSET) / AREA_SIZE);
+	}
+}
+
 export class GroundLayer extends Textured2DProgram {
 	constructor(size: number) {
 		super(size);
@@ -61,6 +71,35 @@ export class GroundLayer extends Textured2DProgram {
 		this.textures = twgl.createTextures(GL, {
 			sheet: {src: sheetURL, mag: GL.NEAREST},
 		});
+	}
+
+	drawArea(x: number, y: number) {
+		for (let iy = 0; iy < AREA_SIZE; iy++) {
+			for (let ix = 0; ix < AREA_SIZE; ix++) {
+				if (iy == AREA_SIZE - 1) {
+					drawTile(
+						this.attributes,
+						x * AREA_SIZE + ix + -6 / 28,
+						y * AREA_SIZE + iy + 25 / 28,
+						texPerSprites['wall_horiz.png'],
+						28 / 28,
+						6 / 28,
+						1,
+					);
+				}
+				if (ix == AREA_SIZE - 1) {
+					drawTile(
+						this.attributes,
+						x * AREA_SIZE + ix + 25 / 28,
+						y * AREA_SIZE + iy - 6 / 28,
+						texPerSprites['wall_vert.png'],
+						6 / 28,
+						28 / 28,
+						1,
+					);
+				}
+			}
+		}
 	}
 
 	render(cameraState: CameraState, state: GameViewState) {
@@ -78,8 +117,26 @@ export class GroundLayer extends Textured2DProgram {
 			u_tex: this.textures['sheet'],
 		};
 
+		this.attributes.positions.nextIndex = 0;
+		this.attributes.texs.nextIndex = 0;
+		this.attributes.alphas.nextIndex = 0;
+
+		for (let y = cameraState.y - cameraState.height; y < cameraState.y + cameraState.height; y += 11) {
+			for (let x = cameraState.x - cameraState.width; x < cameraState.x + cameraState.width; x += 11) {
+				this.drawArea(areaCoord(x), areaCoord(y));
+			}
+		}
+		// for (let y = -100; y < 100; y += 11) {
+		// 	for (let x = -100; x < 100; x += 11) {
+		// 		this.drawArea(areaCoord(x), areaCoord(y));
+		// 	}
+		// }
 		// drawTileRow(this.attributes, -3 / 28, -3 / 28, texPerSprites['wall_horiz.png'], 28 / 28, 6 / 28, 128, 1);
-		drawTile(this.attributes, -6 / 28, -3 / 28, texPerSprites['wall_horiz.png'], 28 / 28, 6 / 28, 1);
+		// drawTile(this.attributes, -6 / 28, -3 / 28, texPerSprites['wall_horiz.png'], 28 / 28, 6 / 28, 1);
+
+		const hx = (window as any).hero?.x || 0;
+		const hy = (window as any).hero?.y || 0;
+		drawTile(this.attributes, hx + 6 / 28, hy + 6 / 28, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
 
 		// we update the buffer with the new arrays
 		twgl.setAttribInfoBufferFromArray(GL, this.bufferInfo.attribs!.a_position, this.attributes.positions);
