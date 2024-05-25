@@ -91,6 +91,22 @@ abstract contract Game {
         IERC721 characters;
     }
 
+    struct Area {
+        uint128 eastWalls;
+        uint128 southWalls;
+    }
+
+    enum MonsterKind {
+        Basic
+    }
+
+    struct LocalMonster {
+        MonsterKind kind; // TODO enum
+        int32 x;
+        int32 y;
+        int8 life;
+    }
+
     function getStore() internal pure returns (Store storage store) {
         assembly {
             store.slot := 0

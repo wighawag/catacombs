@@ -54,12 +54,18 @@ contract GameReveal is Game {
 
     function _stateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {
         uint64 position = context.priorPosition;
+        (int32 x, int32 y) = PositionUtils.toXY(position);
         Game.Action[] memory actions = context.actions;
         for (uint256 i = 0; i < MAX_PATH_LENGTH; i++) {
             uint64 next = actions[i].position;
-            if (_isValidMove(position, next)) {
+            (int32 nextX, int32 nextY) = PositionUtils.toXY(next);
+            if (GameUtils.isValidMove(x, y, nextX, nextY)) {
+                // if ()
                 position = next;
+            } else {
+                // TODO should we throw ? or just ignore like now
             }
+            // TODO move enemies
         }
         stateChanges.newPosition = position;
     }
@@ -67,10 +73,5 @@ contract GameReveal is Game {
     function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {
         store.characterStates[stateChanges.characterID].position = stateChanges.newPosition;
         store.commitments[stateChanges.characterID].epoch = stateChanges.epoch;
-    }
-
-    function _isValidMove(uint64 from, uint64 to) internal pure returns (bool valid) {
-        // TODO
-        valid = true;
     }
 }
