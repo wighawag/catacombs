@@ -9,6 +9,10 @@
 			"path": "./contracts",
 		},
 		{
+			"name": "contracts-js",
+			"path": "./contracts-js",
+		},
+		{
 			"name": "indexer",
 			"path": "./indexer",
 		},

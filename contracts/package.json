@@ -57,7 +57,7 @@
     "coverage:watch:compile": "as-soon -w src pnpm coverage:compile",
     "coverage:watch": "pnpm coverage:compile && vitest --coverage --minWorkers 1 --maxWorkers 1",
     "coverage": "pnpm coverage:compile && vitest run --coverage --minWorkers 1 --maxWorkers 1  || pnpm compile",
-    "export": "rocketh-export",
+    "export": "rocketh-export -b",
     "export-script-data": "ldenv rocketh-export -n @@MODE --ts ./scripts/data/contracts.ts @@",
     "start": "zellij --layout zellij.kdl a $npm_package_name || zellij --layout zellij.kdl -s $npm_package_name",
     "stop": "zellij kill-session $npm_package_name",
