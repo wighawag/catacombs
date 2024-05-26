@@ -3,6 +3,23 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "exports": {
+    "./artifacts": {
+      "require": {
+        "types": "./dist/artifacts.d.ts",
+        "default": "./dist/artifacts.cjs"
+      },
+      "import": {
+        "types": "./dist/artifacts.d.ts",
+        "default": "./dist/artifacts.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "deployments"
+  ],
   "devDependencies": {
     "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
     "@rocketh/deploy": "^0.10.6",
@@ -40,26 +57,6 @@
     "viem": "^2.12.1",
     "vitest": "^1.6.0"
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    "artifacts": {
-      "require": {
-        "types": "./dist/artifacts.d.ts",
-        "default": "./dist/artifacts.cjs"
-      },
-      "import": {
-        "types": "./dist/artifacts.d.ts",
-        "default": "./dist/artifacts.js"
-      }
-    }
-  },
-  "files": [
-    "dist",
-    "src",
-    "deployments"
-  ],
   "scripts": {
     "prepare": "pnpm compile",
     "docgen": "ldenv -m localhost pnpm rocketh-doc -n @@MODE --except-suffix _Implementation,_Proxy,_Router,_Route -t docs_templates/{{contracts}}.hbs @@",

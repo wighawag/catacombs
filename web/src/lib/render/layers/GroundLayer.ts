@@ -6,6 +6,7 @@ import * as m3 from '$utils/m3';
 import sheetURL from '$data/assets/tiles.png';
 import sheet from '$data/assets/tiles.json';
 import {drawTile, drawTileCol, drawTileRow, drawTileX2y2, type FrameDataWithUV} from '../programs/tiles';
+import {areas} from '$lib/state/computedState';
 
 type SheetData = typeof sheet;
 
@@ -74,29 +75,34 @@ export class GroundLayer extends Textured2DProgram {
 	}
 
 	drawArea(x: number, y: number) {
-		for (let iy = 0; iy < AREA_SIZE; iy++) {
-			for (let ix = 0; ix < AREA_SIZE; ix++) {
-				if (iy == AREA_SIZE - 1) {
-					drawTile(
-						this.attributes,
-						x * AREA_SIZE + ix + -6 / 28,
-						y * AREA_SIZE + iy + 25 / 28,
-						texPerSprites['wall_horiz.png'],
-						28 / 28,
-						6 / 28,
-						1,
-					);
-				}
-				if (ix == AREA_SIZE - 1) {
-					drawTile(
-						this.attributes,
-						x * AREA_SIZE + ix + 25 / 28,
-						y * AREA_SIZE + iy - 6 / 28,
-						texPerSprites['wall_vert.png'],
-						6 / 28,
-						28 / 28,
-						1,
-					);
+		const area = areas.get(x)?.get(y);
+		if (area) {
+			let c = 0;
+			for (let iy = 0; iy < AREA_SIZE; iy++) {
+				for (let ix = 0; ix < AREA_SIZE; ix++) {
+					if (area.southWalls[c]) {
+						drawTile(
+							this.attributes,
+							x * AREA_SIZE + ix + -6 / 28,
+							y * AREA_SIZE + iy + 25 / 28,
+							texPerSprites['wall_horiz.png'],
+							28 / 28,
+							6 / 28,
+							1,
+						);
+					}
+					if (area.eastWalls[c]) {
+						drawTile(
+							this.attributes,
+							x * AREA_SIZE + ix + 25 / 28,
+							y * AREA_SIZE + iy - 6 / 28,
+							texPerSprites['wall_vert.png'],
+							6 / 28,
+							28 / 28,
+							1,
+						);
+					}
+					c++;
 				}
 			}
 		}

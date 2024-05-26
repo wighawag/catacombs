@@ -24,7 +24,7 @@ export async function createEVMRunner(contracts: {[id: string]: {bytecode: `0x${
 			data: hexToBytes(data),
 		});
 
-		return bytesToHex(results.execResult.returnValue);
+		return bytesToHex(results.execResult.returnValue) as `0x${string}`;
 	}
 
 	async function runCode(code: `0x${string}`) {

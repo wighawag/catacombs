@@ -19,7 +19,7 @@ library GameUtils {
     function computeArea(bytes32 areaHash) public pure returns (Game.Area memory) {
         // "made only for 11x11"
         assert(PositionUtils.AREA_SIZE == 11);
-        if (uint256(areaHash) % 4 == 0) {
+        if (uint256(areaHash) % 2 == 0) {
             return
                 Game.Area({
                     /*
@@ -67,7 +67,7 @@ library GameUtils {
 00000000000
 11111110111
                 */
-                    southWalls: 0x37000000007B780F03FA000007F7 << 7,
+                    southWalls: 0x37000000007B780F03FA000007F7 << 7, // TODO inject from outside data file so it can be shared with frontend
                     /*
 00000100011
 00000100011
@@ -81,14 +81,14 @@ library GameUtils {
 00000100001
 00000100001
                 */
-                    eastWalls: 0x8C1180304608C14A0141008410821 << 7
+                    eastWalls: 0x8C1180304608C14A0141008410821 << 7 // TODO inject from outside data file so it can be shared with frontend
                 });
         }
     }
 
     function areaAt(int32 x, int32 y) public pure returns (Game.Area memory area) {
         // TODO
-        area = computeArea(bytes32(uint256(int256(x)) * uint256(int256(y))));
+        area = computeArea(keccak256(abi.encodePacked(x, y)));
     }
 
     function wallAt(uint128 walls, int32 x, int32 y) internal pure returns (bool) {

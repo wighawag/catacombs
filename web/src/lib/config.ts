@@ -1,4 +1,3 @@
-import {readable} from 'svelte/store';
 import {version} from '$app/environment';
 import {dev as devEnvironment} from '$app/environment';
 
@@ -78,8 +77,7 @@ const localRPC =
 const defaultRPC = defaultRPCURL ? {chainId: contractsChainId, url: defaultRPCURL} : undefined;
 
 const SYNC_URI = params['sync'] || PUBLIC_SYNC_URI; //  'http://invalid.io'; // to emulate connection loss :)
-const SYNC_DB_NAME =
-	'game-' + initialContractsInfos.chainId + '-' + initialContractsInfos.contracts.Game.address;
+const SYNC_DB_NAME = 'game-' + initialContractsInfos.chainId + '-' + initialContractsInfos.contracts.Game.address;
 
 const FUZD_URI = noEndSlash(params['fuzd'] ? (params['fuzd'] == 'false' ? '' : params['fuzd']) : PUBLIC_FUZD_URI);
 
