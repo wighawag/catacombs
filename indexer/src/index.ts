@@ -47,7 +47,8 @@ const GameIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 	},
 
 	onEnteredTheGame(state, event) {
-		const {characterID, controller, newPosition} = event.args;
+		const {characterID, controller: controllerAddress, newPosition} = event.args;
+		const controller = controllerAddress.toLowerCase() as `0x${string}`;
 		const characterIDString = characterID.toString();
 		const character = state.characters[characterIDString] || {controllers: {}, position: {x: 0, y: 0}};
 		character.controllers[controller] = ControllerType.Owner; // TODO
@@ -61,7 +62,8 @@ const GameIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 	},
 
 	onLeftTheGame(state, event) {
-		const {characterID, controller, positionWhenLeaving} = event.args;
+		const {characterID, controller: controllerAddress, positionWhenLeaving} = event.args;
+		const controller = controllerAddress.toLowerCase() as `0x${string}`;
 		const chracterIDString = characterID.toString();
 		delete state.characters[chracterIDString];
 		// TODO show left status
@@ -73,7 +75,7 @@ const GameIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 	},
 
 	onMoveRevealed(state, event) {
-		const {characterID, controller, epoch, newPosition, actions} = event.args;
+		const {characterID, controller: controllerAddress, epoch, newPosition, actions} = event.args;
 		const chracterIDString = characterID.toString();
 		const character = state.characters[chracterIDString];
 		character.position = bigIntIDToXY(newPosition);

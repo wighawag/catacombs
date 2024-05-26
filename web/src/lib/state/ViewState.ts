@@ -35,7 +35,7 @@ function merge(
 		if (account.address && onchain.controllers[account.address]) {
 			viewState.currentCharacter = key;
 		}
-		state.characters[key] = {
+		viewState.characters[key] = {
 			controllers: onchain.controllers,
 			id: onchain.id,
 			position: {

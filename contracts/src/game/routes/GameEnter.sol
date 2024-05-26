@@ -39,7 +39,7 @@ contract GameEnter is Game, IERC721Receiver {
     }
 
     function onERC721Received(
-        address,
+        address operator,
         address from,
         uint256 tokenID,
         bytes calldata
@@ -48,7 +48,7 @@ contract GameEnter is Game, IERC721Receiver {
         console.log("onERC721Received");
 
         if (msg.sender == address(config.characters)) {
-            _enter(from, tokenID);
+            _enter(from == address(0) ? operator : from, tokenID);
         } else {
             revert OnlyCharactersAreAccepted();
         }
@@ -60,6 +60,7 @@ contract GameEnter is Game, IERC721Receiver {
         Context memory context = _context(sender, characterID);
         StateChanges memory stateChanges = _stateChanges(context);
         _apply(store, stateChanges);
+        console.log("EnteredTheGame", context.characterID, stateChanges.controller, stateChanges.position);
         emit EnteredTheGame(context.characterID, stateChanges.controller, stateChanges.position);
     }
 

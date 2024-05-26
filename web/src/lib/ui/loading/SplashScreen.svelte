@@ -15,7 +15,7 @@
 	<div class="overlay game-title" out:fade on:click={() => splash.nextStage()}>
 		<div class="content">
 			<img src={url('/title.png')} alt="Game title" on:load={() => splash.gameLogoReady()} />
-			<p class="description">T</p>
+			<p class="description">Enter at your own risk</p>
 		</div>
 	</div>
 {/if}
