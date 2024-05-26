@@ -20,4 +20,8 @@ interface UsingERC721Errors {
 
     /// @notice The Nonce overflowed, make a transfer to self to allow new nonces.
     error NonceOverflow();
+
+    /// @notice The token already exists
+    /// @param tokenID id of the token to create
+    error TokenAlreadyExists(uint256 tokenID);
 }

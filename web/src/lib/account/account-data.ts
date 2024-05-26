@@ -12,7 +12,6 @@ import {FUZD_URI, SYNC_DB_NAME, debugTools} from '$lib/config';
 import {writable, type Readable, type Writable} from 'svelte/store';
 import {time} from '$lib/blockchain/time';
 import type {ScheduleInfo} from 'fuzd-scheduler';
-import {account} from '$lib/blockchain/connection';
 import type {PrivateKeyAccount} from 'viem';
 import {privateKeyToAccount} from 'viem/accounts';
 import {copy} from '$utils/js';
@@ -49,6 +48,11 @@ export type CommitMetadata = {
 		| false;
 };
 
+export type MintAndJoinMetadata = {
+	type: 'mintAndJoin';
+	characterID: string;
+};
+
 export type GameMetadata =
 	| undefined
 	| ({
@@ -56,7 +60,7 @@ export type GameMetadata =
 				hash: `0x${string}`;
 				number: number;
 			};
-	  } & (CommitMetadata | RevealMetadata | CommitCancelMetadata));
+	  } & (CommitMetadata | MintAndJoinMetadata | RevealMetadata | CommitCancelMetadata));
 
 export type GameTransaction = EIP1193TransactionWithMetadata<GameMetadata>;
 

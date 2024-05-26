@@ -27,6 +27,9 @@ export type Data = {
 	commitments: {
 		[id: string]: Commitment;
 	};
+	controllers: {
+		[address: `0x${string}`]: string[];
+	};
 };
 
 type ContractsABI = MergedAbis<typeof contractsInfo.contracts>;
@@ -39,15 +42,22 @@ const GameIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 		return {
 			characters: {},
 			commitments: {},
+			controllers: {},
 		};
 	},
 
 	onEnteredTheGame(state, event) {
 		const {characterID, controller, newPosition} = event.args;
-		const chracterIDString = characterID.toString();
-		const character = state.characters[chracterIDString] || {controllers: {}, position: {x: 0, y: 0}};
+		const characterIDString = characterID.toString();
+		const character = state.characters[characterIDString] || {controllers: {}, position: {x: 0, y: 0}};
 		character.controllers[controller] = ControllerType.Owner; // TODO
 		character.position = bigIntIDToXY(newPosition);
+
+		state.characters[characterIDString] = character;
+		const controlledCharacters = state.controllers[controller] || [];
+		controlledCharacters.push(characterIDString);
+
+		console.log('onEnteredTheGame');
 	},
 
 	onLeftTheGame(state, event) {

@@ -17,6 +17,8 @@ abstract contract Game {
     /// @notice happen when attempting to do something on a game that did not start yet
     error GameNotStarted();
 
+    error OnlyCharactersAreAccepted();
+
     /// @notice A character has commited to make a move and reveal it on the reveal phase
     /// @param characterID the id of the NFT being played
     /// @param controller account handling the character moves

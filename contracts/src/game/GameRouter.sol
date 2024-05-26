@@ -58,7 +58,11 @@ contract GameRouter {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // TODO generate this automatically
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    function enter(uint256, address payable) external {
+    function onERC721Received(address, address, uint256, bytes calldata) external {
+        _delegateTo(address(_route_enter));
+    }
+
+    function enter(uint256, address payable) external payable {
         _delegateTo(address(_route_enter));
     }
 

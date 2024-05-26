@@ -27,18 +27,14 @@ function merge(
 	epochState: EpochState,
 	account: AccountState<`0x${string}`>,
 ): GameViewState {
-	const viewState = {
-		characters: {
-			TODO: {
-				position: {x: 0, y: 0},
-				id: 'TODO',
-				controllers: {},
-			},
-		},
-		currentCharacter: 'TODO',
+	const viewState: GameViewState = {
+		characters: {},
 	};
 	for (const key of Object.keys(state.characters)) {
 		const onchain = state.characters[key];
+		if (account.address && onchain.controllers[account.address]) {
+			viewState.currentCharacter = key;
+		}
 		state.characters[key] = {
 			controllers: onchain.controllers,
 			id: onchain.id,
@@ -48,12 +44,15 @@ function merge(
 			},
 		};
 	}
-	const currentCharacter = viewState.characters['TODO']; // TODO
-	let currentPosition = currentCharacter.position;
-	for (const move of memory.moves) {
-		currentPosition = move.position;
+	if (viewState.currentCharacter) {
+		const currentCharacter = viewState.characters[viewState.currentCharacter];
+		let currentPosition = currentCharacter.position;
+		for (const move of memory.moves) {
+			currentPosition = move.position;
+		}
+		currentCharacter.position = currentPosition;
 	}
-	currentCharacter.position = currentPosition;
+
 	return viewState;
 }
 

@@ -1,10 +1,11 @@
 import {execute} from 'rocketh';
 import '@rocketh/deploy';
+import '@rocketh/deploy-proxy';
 import {context} from './_context';
 
 export default execute(
 	context,
-	async ({deploy, namedAccounts, artifacts, get}) => {
+	async ({deploy, deployViaProxy, namedAccounts, artifacts, get}) => {
 		const {deployer} = namedAccounts;
 
 		const Characters = await get('Characters');
@@ -36,7 +37,7 @@ export default execute(
 			artifact: artifacts.GameReveal,
 		});
 
-		await deploy(
+		await deployViaProxy(
 			'Game',
 			{
 				account: deployer,
@@ -52,6 +53,7 @@ export default execute(
 				],
 			},
 			{
+				owner: deployer,
 				linkedData: {
 					...config,
 				},
