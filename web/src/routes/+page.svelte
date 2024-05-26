@@ -2,7 +2,7 @@
 	import {gameView} from '$lib/state/ViewState';
 	import WebGlCanvas from '$lib/render/WebGLCanvas.svelte';
 	import InfoBar from '$lib/ui/components/InfoBar.svelte';
-	import MintAndJoinScreen from '$lib/actions/mintAndJoin/MintAndJoinScreen.svelte';
+	import MintAndJoinPanel from '$lib/actions/mintAndJoin/MintAndJoinPanel.svelte';
 </script>
 
 <div style="position: absolute; z-index: 1; width: 100%; height: 100%; pointer-events: none;">
@@ -11,7 +11,7 @@
 	</div>
 
 	{#if !$gameView.currentCharacter}
-		<MintAndJoinScreen />
+		<MintAndJoinPanel />
 	{/if}
 </div>
 
