@@ -40,11 +40,11 @@ const config = {
 		],
 		overrides: {
 			// we override optimization for router to make it as small as possible, runs: 1
-			"src/game/GameRouter.sol": {
-			  version: defaultVersion,
-			  settings: {...defaultSettings, optimizer: {...defaultSettings.optimizer, runs: 1}}
-			}
-		}
+			'src/game/GameRouter.sol': {
+				version: defaultVersion,
+				settings: {...defaultSettings, optimizer: {...defaultSettings.optimizer, runs: 1}},
+			},
+		},
 	},
 	networks:
 		// this setup forking for netwoirk if env var HARDHAT_FORK is set
@@ -59,6 +59,11 @@ const config = {
 		),
 	paths: {
 		sources: 'src',
+	},
+	generateArtifacts: {
+		ts: ['./generated/artifacts.ts'],
+		js: ['./dist/artifacts.js'],
+		json: [],
 	},
 };
 

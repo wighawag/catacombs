@@ -8,7 +8,7 @@ export async function createEVMRunner(contracts: {[id: string]: {bytecode: `0x${
 	for (const contractName of contractNames) {
 		const {bytecode, argsData} = contracts[contractName];
 		const results = await evm.runCall({
-			data: hexToBytes(bytecode + argsData?.slice(2) || ''),
+			data: hexToBytes(bytecode + (argsData ? argsData.slice(2) : '')),
 		});
 		if (!results.createdAddress) {
 			throw new Error(`could not deploy contract ${contractName}`);

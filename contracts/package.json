@@ -33,12 +33,33 @@
     "solidity-kit": "^0.5.0",
     "solidity-proxy": "^0.4.0",
     "template-game-common": "workspace:*",
+    "template-game-contracts-js": "workspace:*",
     "template-game-indexer": "workspace:*",
     "tsx": "^4.11.0",
     "typescript": "^5.4.5",
     "viem": "^2.12.1",
     "vitest": "^1.6.0"
   },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "artifacts": {
+      "require": {
+        "types": "./dist/artifacts.d.ts",
+        "default": "./dist/artifacts.cjs"
+      },
+      "import": {
+        "types": "./dist/artifacts.d.ts",
+        "default": "./dist/artifacts.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "deployments"
+  ],
   "scripts": {
     "prepare": "pnpm compile",
     "docgen": "ldenv -m localhost pnpm rocketh-doc -n @@MODE --except-suffix _Implementation,_Proxy,_Router,_Route -t docs_templates/{{contracts}}.hbs @@",

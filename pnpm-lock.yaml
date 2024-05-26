@@ -151,6 +151,9 @@ importers:
       template-game-common:
         specifier: workspace:*
         version: link:../common
+      template-game-contracts-js:
+        specifier: workspace:*
+        version: link:../contracts-js
       template-game-indexer:
         specifier: workspace:*
         version: link:../indexer
