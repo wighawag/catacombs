@@ -5,6 +5,7 @@ import {encodeFunctionData, zeroAddress} from 'viem';
 import NotEnoughEthComponent from './NotEnoughEthComponent.svelte';
 import {getRoughGasPriceEstimate} from '$utils/ethereum/gas';
 import type {MintAndJoinMetadata} from '$lib/account/account-data';
+import TransactionFailsComponent from './TransactionFailsComponent.svelte';
 
 export type MintAndJoinState = {
 	transaction?: {
@@ -23,6 +24,8 @@ export type MintAndJoinState = {
 	};
 
 	txHash?: `0x${string}`;
+
+	error?: string;
 };
 
 export type MintAndJoinFlow = Flow<MintAndJoinState>;
@@ -71,10 +74,19 @@ export async function start() {
 					account: account.address,
 				} as const;
 
-				const gasEstimate = await client.public.estimateContractGas({
-					...params,
-					// value: 1n, // fake to wirk even if not enough ETH
-				});
+				let gasEstimate: bigint;
+				try {
+					gasEstimate = await client.public.estimateContractGas({
+						...params,
+						// value: 1n, // fake to wirk even if not enough ETH
+					});
+				} catch (err) {
+					state.error = err as string;
+					return {
+						newState: state,
+						nextStep: 1,
+					};
+				}
 				const data = encodeFunctionData({
 					...params,
 				});
@@ -116,11 +128,23 @@ export async function start() {
 
 				return {
 					newState: state,
-					nextStep: enoughETH ? 2 : 1,
+					nextStep: enoughETH ? 3 : 2,
 				};
 			},
 		};
 		steps.push(gatheringInfoStep);
+
+		const transactionFailsStep = {
+			title: 'The Transaction fails',
+			action: 'OK',
+			description: `Failed to estimate gas`,
+			component: TransactionFailsComponent,
+			end: true,
+			execute: async (state: MintAndJoinState) => {
+				return {newState: state, nextStep: 4};
+			},
+		};
+		steps.push(transactionFailsStep);
 
 		const notEnoughETHStep = {
 			title: 'You dont have enough ETH',
@@ -129,7 +153,7 @@ export async function start() {
 			component: NotEnoughEthComponent,
 			end: true,
 			execute: async (state: MintAndJoinState) => {
-				return {newState: state, nextStep: 6};
+				return {newState: state, nextStep: 4};
 			},
 		};
 		steps.push(notEnoughETHStep);

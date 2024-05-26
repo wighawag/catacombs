@@ -3,13 +3,7 @@
 	import ImgBlockie from '$utils/ethereum/ImgBlockie.svelte';
 	import {contractsInfos} from '$lib/config';
 	import {menu} from '$lib/ui/menu/menu';
-	import {tour} from '$lib/ui/tour/drive';
 	import {getWalletSwitchChainInfo} from '$lib/blockchain/networks';
-	import {conversations} from '$lib/ui/missiv/missiv';
-
-	$: conversationsView = $conversations.conversations;
-
-	$: messageNotif = $conversationsView ? $conversationsView.numUnread + $conversationsView.numUnaccepted : 0;
 
 	function switchMenu(e: Event) {
 		menu.update((v) => ({
@@ -59,11 +53,8 @@
 				/>
 			</svg>
 		{/if}
-		<button disabled={$tour.running} id="account-button" class="blockie-button" on:click={(e) => switchMenu(e)}>
+		<button id="account-button" class="blockie-button" on:click={(e) => switchMenu(e)}>
 			<div class="blockie-wrapper">
-				{#if messageNotif > 0}
-					<span class="notification-badge">{messageNotif}</span>
-				{/if}
 				<ImgBlockie rootClass="blockie" address={$account.address || ''} />
 			</div>
 		</button>
