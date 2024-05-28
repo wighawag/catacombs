@@ -83,7 +83,7 @@ export class GroundLayer extends Textured2DProgram {
 					if (area.southWalls[c]) {
 						drawTile(
 							this.attributes,
-							x * AREA_SIZE + ix + -6 / 28,
+							x * AREA_SIZE + ix + -3 / 28,
 							y * AREA_SIZE + iy + 25 / 28,
 							texPerSprites['wall_horiz.png'],
 							28 / 28,
@@ -95,7 +95,7 @@ export class GroundLayer extends Textured2DProgram {
 						drawTile(
 							this.attributes,
 							x * AREA_SIZE + ix + 25 / 28,
-							y * AREA_SIZE + iy - 6 / 28,
+							y * AREA_SIZE + iy - 3 / 28,
 							texPerSprites['wall_vert.png'],
 							6 / 28,
 							28 / 28,
@@ -127,8 +127,16 @@ export class GroundLayer extends Textured2DProgram {
 		this.attributes.texs.nextIndex = 0;
 		this.attributes.alphas.nextIndex = 0;
 
-		for (let y = cameraState.y - cameraState.height; y < cameraState.y + cameraState.height; y += 11) {
-			for (let x = cameraState.x - cameraState.width; x < cameraState.x + cameraState.width; x += 11) {
+		for (
+			let y = cameraState.y - cameraState.renderHeight / 2 - 1;
+			y < cameraState.y + cameraState.renderHeight / 2 + 1;
+			y += AREA_SIZE
+		) {
+			for (
+				let x = cameraState.x - cameraState.renderWidth / 2 - 1;
+				x < cameraState.x + cameraState.renderWidth / 2 + 1;
+				x += AREA_SIZE
+			) {
 				this.drawArea(areaCoord(x), areaCoord(y));
 			}
 		}

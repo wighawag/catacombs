@@ -80,8 +80,16 @@ export const areas = new Map<number, Map<number, Area>>();
 
 camera.subscribe(async ($camera) => {
 	if ($camera) {
-		for (let y = $camera.y - $camera.height; y < $camera.y + $camera.height; y += AREA_SIZE) {
-			for (let x = $camera.x - $camera.width; x < $camera.x + $camera.width; x += AREA_SIZE) {
+		for (
+			let y = $camera.y - $camera.renderHeight / 2 - 1;
+			y < $camera.y + $camera.renderHeight / 2 + 1;
+			y += AREA_SIZE
+		) {
+			for (
+				let x = $camera.x - $camera.renderWidth / 2 - 1;
+				x < $camera.x + $camera.renderWidth / 2 + 1;
+				x += AREA_SIZE
+			) {
 				const ax = areaCoord(x); // TODO could also be computed onchain
 				const ay = areaCoord(y);
 				const mapmap = areas.get(ax);
