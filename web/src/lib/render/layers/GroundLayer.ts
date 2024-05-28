@@ -83,22 +83,22 @@ export class GroundLayer extends Textured2DProgram {
 					if (area.southWalls[c]) {
 						drawTile(
 							this.attributes,
-							x * AREA_SIZE + ix + -3 / 28,
-							y * AREA_SIZE + iy + 25 / 28,
+							x * AREA_SIZE + ix - 3 / 22,
+							y * AREA_SIZE + iy + 19 / 22,
 							texPerSprites['wall_horiz.png'],
-							28 / 28,
-							6 / 28,
+							28 / 22,
+							6 / 22,
 							1,
 						);
 					}
 					if (area.eastWalls[c]) {
 						drawTile(
 							this.attributes,
-							x * AREA_SIZE + ix + 25 / 28,
-							y * AREA_SIZE + iy - 3 / 28,
+							x * AREA_SIZE + ix + 19 / 22,
+							y * AREA_SIZE + iy - 3 / 22,
 							texPerSprites['wall_vert.png'],
-							6 / 28,
-							28 / 28,
+							6 / 22,
+							28 / 22,
 							1,
 						);
 					}
@@ -152,7 +152,7 @@ export class GroundLayer extends Textured2DProgram {
 			const char = state.characters[state.currentCharacter];
 			const hx = char.position.x;
 			const hy = char.position.y;
-			drawTile(this.attributes, hx + 6 / 28, hy + 6 / 28, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
+			drawTile(this.attributes, hx + 5 / 22, hy + 5 / 22, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
 		}
 
 		// we update the buffer with the new arrays
