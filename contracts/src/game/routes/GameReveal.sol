@@ -17,22 +17,23 @@ contract GameReveal is Game {
         bytes32 secret;
     }
 
-    struct StateChanges {
-        uint256 characterID;
-        uint64 newPosition;
-        uint24 epoch;
-    }
-
     struct Monster {
         int32 x;
         int32 y;
         uint8 life;
     }
 
+    struct StateChanges {
+        uint256 characterID;
+        uint64 newPosition;
+        uint24 epoch;
+        Monster[5] monsters;
+    }
+
     function reveal(uint256 characterID, Game.Action[] calldata actions, bytes32 secret) external {
         Game.Store storage store = getStore();
         Context memory context = _context(store, characterID, actions, secret);
-        StateChanges memory stateChanges = _stateChanges(context);
+        StateChanges memory stateChanges = computeStateChanges(context);
         _apply(store, stateChanges);
         emit MoveRevealed(
             context.characterID,
@@ -41,6 +42,16 @@ contract GameReveal is Game {
             context.actions,
             stateChanges.newPosition
         );
+    }
+
+    function step(
+        Context memory context,
+        StateChanges memory stateChanges,
+        Game.Action memory action
+    ) external pure returns (StateChanges memory) {
+        _step(context, stateChanges, action);
+        // TODO test if solidity create a copy
+        return stateChanges;
     }
 
     function _context(
@@ -58,7 +69,52 @@ contract GameReveal is Game {
         context.secret = secret;
     }
 
-    function _stateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {
+    function _step(Context memory context, StateChanges memory stateChanges, Game.Action memory action) internal pure {
+        uint64 position = context.priorPosition;
+        (int32 x, int32 y) = PositionUtils.toXY(position);
+        uint64 next = action.position;
+        (int32 nextX, int32 nextY) = PositionUtils.toXY(next);
+        Monster[5] memory monsters = stateChanges.monsters;
+        if (GameUtils.isValidMove(x, y, nextX, nextY)) {
+            bool attacked;
+            for (uint256 e = 0; e < 5; e++) {
+                if (monsters[e].life > 0 && monsters[e].x == nextX && monsters[e].y == nextY) {
+                    attacked = true;
+                    monsters[e].life -= 1;
+                }
+            }
+            if (!attacked) {
+                position = next;
+            }
+        } else {
+            // TODO should we throw ? or just ignore like now
+        }
+        (x, y) = PositionUtils.toXY(position);
+        for (uint256 e = 0; e < 5; e++) {
+            Monster memory monster = monsters[e];
+            // TODO prevent monster to share space
+            if (monster.life > 0) {
+                int32 m_nextX = monster.x;
+                int32 m_nextY = monster.y;
+                int32 xDiff = x - monster.x;
+                int32 yDiff = y - monster.y;
+                if (xDiff > yDiff) {
+                    m_nextX -= (xDiff / -xDiff);
+                } else {
+                    m_nextY -= (yDiff / -yDiff);
+                }
+                if (m_nextX == x && nextY == y) {
+                    // Player life ---
+                } else {
+                    monster.x = m_nextX;
+                    monster.y = m_nextY;
+                }
+            }
+        }
+        stateChanges.newPosition = position;
+    }
+
+    function computeStateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {
         uint64 position = context.priorPosition;
         (int32 x, int32 y) = PositionUtils.toXY(position);
         Monster[5] memory monsters;
@@ -68,49 +124,10 @@ contract GameReveal is Game {
         monsters[2] = Monster({x: x + 7, y: y + 2, life: 3});
         monsters[3] = Monster({x: x + 9, y: y + 5, life: 3});
         monsters[4] = Monster({x: x + 4, y: y + 10, life: 3});
-        // TODO local chest
-        Game.Action[] memory actions = context.actions;
+        stateChanges.monsters = monsters;
         for (uint256 i = 0; i < MAX_PATH_LENGTH; i++) {
-            uint64 next = actions[i].position;
-            (int32 nextX, int32 nextY) = PositionUtils.toXY(next);
-            if (GameUtils.isValidMove(x, y, nextX, nextY)) {
-                bool attacked;
-                for (uint256 e = 0; e < 5; e++) {
-                    if (monsters[e].life > 0 && monsters[e].x == nextX && monsters[e].y == nextY) {
-                        attacked = true;
-                        monsters[e].life -= 1;
-                    }
-                }
-                if (!attacked) {
-                    position = next;
-                }
-            } else {
-                // TODO should we throw ? or just ignore like now
-            }
-            (x, y) = PositionUtils.toXY(position);
-            for (uint256 e = 0; e < 5; e++) {
-                Monster memory monster = monsters[e];
-                // TODO prevent monster to share space
-                if (monster.life > 0) {
-                    int32 m_nextX = monster.x;
-                    int32 m_nextY = monster.y;
-                    int32 xDiff = x - monster.x;
-                    int32 yDiff = y - monster.y;
-                    if (xDiff > yDiff) {
-                        m_nextX -= (xDiff / -xDiff);
-                    } else {
-                        m_nextY -= (yDiff / -yDiff);
-                    }
-                    if (m_nextX == x && nextY == y) {
-                        // Player life ---
-                    } else {
-                        monster.x = m_nextX;
-                        monster.y = m_nextY;
-                    }
-                }
-            }
+            _step(context, stateChanges, context.actions[i]);
         }
-        stateChanges.newPosition = position;
     }
 
     function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {
