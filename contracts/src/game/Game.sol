@@ -19,6 +19,13 @@ abstract contract Game {
 
     error OnlyCharactersAreAccepted();
 
+    enum Reason {
+        None,
+        Wall,
+        NonAdjacent
+    }
+    error InvalidMove(Reason reason);
+
     /// @notice A character has commited to make a move and reveal it on the reveal phase
     /// @param characterID the id of the NFT being played
     /// @param controller account handling the character moves

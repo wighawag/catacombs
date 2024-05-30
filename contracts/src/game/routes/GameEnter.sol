@@ -38,6 +38,10 @@ contract GameEnter is Game, IERC721Receiver {
         }
     }
 
+    function computeStateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {
+        return StateChanges({characterID: context.characterID, position: 0, controller: context.sender});
+    }
+
     function onERC721Received(
         address operator,
         address from,
@@ -58,7 +62,7 @@ contract GameEnter is Game, IERC721Receiver {
     function _enter(address sender, uint256 characterID) internal {
         Game.Store storage store = getStore();
         Context memory context = _context(sender, characterID);
-        StateChanges memory stateChanges = _stateChanges(context);
+        StateChanges memory stateChanges = computeStateChanges(context);
         _apply(store, stateChanges);
         console.log("EnteredTheGame", context.characterID, stateChanges.controller, stateChanges.position);
         emit EnteredTheGame(context.characterID, stateChanges.controller, stateChanges.position);
@@ -67,10 +71,6 @@ contract GameEnter is Game, IERC721Receiver {
     function _context(address sender, uint256 characterID) internal pure returns (Context memory context) {
         context.sender = sender;
         context.characterID = characterID;
-    }
-
-    function _stateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {
-        return StateChanges({characterID: context.characterID, position: 0, controller: context.sender});
     }
 
     function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {

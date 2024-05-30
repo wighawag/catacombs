@@ -1,4 +1,6 @@
 [profile.default]
+solc = "0.8.25"
+evm_version = "cancun"
 src = "src"
 out = "forge-artifacts"
 libs = ["node_modules", "lib"]

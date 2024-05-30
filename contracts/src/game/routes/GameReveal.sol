@@ -33,7 +33,7 @@ contract GameReveal is Game {
     function reveal(uint256 characterID, Game.Action[] calldata actions, bytes32 secret) external {
         Game.Store storage store = getStore();
         Context memory context = _context(store, characterID, actions, secret);
-        StateChanges memory stateChanges = computeStateChanges(context);
+        StateChanges memory stateChanges = computeStateChanges(context, false);
         _apply(store, stateChanges);
         emit MoveRevealed(
             context.characterID,
@@ -44,13 +44,40 @@ contract GameReveal is Game {
         );
     }
 
-    function step(
+    function computeStateChanges(
+        Context memory context,
+        bool revetOnInvalidMoves
+    ) public pure returns (StateChanges memory stateChanges) {
+        uint64 position = context.priorPosition;
+        (int32 x, int32 y) = PositionUtils.toXY(position);
+        Monster[5] memory monsters;
+        // TODO randomize
+        // TODO explore the idea of persistent local monsters
+        // they get replaced by new one if out of bound
+        // we can easily store Monster info in 256 bits?
+        // position can be represented as delta from player and can be store in few bits this way
+        // life is tiny and monster type can do the rest
+        // 256bits should be enough
+        monsters[0] = Monster({x: x + 2, y: y + 5, life: 3});
+        monsters[1] = Monster({x: x + 5, y: y + 5, life: 3});
+        monsters[2] = Monster({x: x + 7, y: y + 2, life: 3});
+        monsters[3] = Monster({x: x + 9, y: y + 5, life: 3});
+        monsters[4] = Monster({x: x + 4, y: y + 10, life: 3});
+        stateChanges.monsters = monsters;
+        for (uint256 i = 0; i < MAX_PATH_LENGTH; i++) {
+            _step(context, stateChanges, context.actions[i], revetOnInvalidMoves);
+        }
+    }
+
+    /// @notice allow to step through each action and predict the outcome in turnn
+    function stepChanges(
         Context memory context,
         StateChanges memory stateChanges,
-        Game.Action memory action
+        Game.Action memory action,
+        bool revetOnInvalidMoves
     ) external pure returns (StateChanges memory) {
-        _step(context, stateChanges, action);
-        // TODO test if solidity create a copy
+        _step(context, stateChanges, action, revetOnInvalidMoves);
+        // as external function, it will always return a copy
         return stateChanges;
     }
 
@@ -69,13 +96,19 @@ contract GameReveal is Game {
         context.secret = secret;
     }
 
-    function _step(Context memory context, StateChanges memory stateChanges, Game.Action memory action) internal pure {
+    function _step(
+        Context memory context,
+        StateChanges memory stateChanges,
+        Game.Action memory action,
+        bool revetOnInvalidMoves
+    ) internal pure {
         uint64 position = context.priorPosition;
         (int32 x, int32 y) = PositionUtils.toXY(position);
         uint64 next = action.position;
         (int32 nextX, int32 nextY) = PositionUtils.toXY(next);
         Monster[5] memory monsters = stateChanges.monsters;
-        if (GameUtils.isValidMove(x, y, nextX, nextY)) {
+        Reason invalidMove = GameUtils.isValidMove(x, y, nextX, nextY);
+        if (invalidMove == Reason.None) {
             bool attacked;
             for (uint256 e = 0; e < 5; e++) {
                 if (monsters[e].life > 0 && monsters[e].x == nextX && monsters[e].y == nextY) {
@@ -87,7 +120,9 @@ contract GameReveal is Game {
                 position = next;
             }
         } else {
-            // TODO should we throw ? or just ignore like now
+            if (revetOnInvalidMoves) {
+                revert InvalidMove(invalidMove);
+            }
         }
         (x, y) = PositionUtils.toXY(position);
         for (uint256 e = 0; e < 5; e++) {
@@ -112,22 +147,6 @@ contract GameReveal is Game {
             }
         }
         stateChanges.newPosition = position;
-    }
-
-    function computeStateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {
-        uint64 position = context.priorPosition;
-        (int32 x, int32 y) = PositionUtils.toXY(position);
-        Monster[5] memory monsters;
-        // TODO randomize
-        monsters[0] = Monster({x: x + 2, y: y + 5, life: 3});
-        monsters[1] = Monster({x: x + 5, y: y + 5, life: 3});
-        monsters[2] = Monster({x: x + 7, y: y + 2, life: 3});
-        monsters[3] = Monster({x: x + 9, y: y + 5, life: 3});
-        monsters[4] = Monster({x: x + 4, y: y + 10, life: 3});
-        stateChanges.monsters = monsters;
-        for (uint256 i = 0; i < MAX_PATH_LENGTH; i++) {
-            _step(context, stateChanges, context.actions[i]);
-        }
     }
 
     function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {

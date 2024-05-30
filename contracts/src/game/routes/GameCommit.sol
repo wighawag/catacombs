@@ -24,7 +24,7 @@ contract GameCommit is Game {
         Game.Store storage store = getStore();
 
         Context memory context = _context(store, characterID, commitmentHash);
-        StateChanges memory stateChanges = _stateChanges(context);
+        StateChanges memory stateChanges = computeStateChanges(context);
         _apply(store, stateChanges);
         emit Game.CommitmentMade(context.characterID, context.controller, context.epoch, context.commitmentHash);
 
@@ -32,6 +32,12 @@ contract GameCommit is Game {
         if (payee != address(0) && msg.value != 0) {
             payee.transfer(msg.value);
         }
+    }
+
+    function computeStateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {
+        stateChanges.characterID = context.characterID;
+        stateChanges.epoch = context.epoch;
+        stateChanges.commitmentHash = context.commitmentHash;
     }
 
     function _context(
@@ -48,12 +54,6 @@ contract GameCommit is Game {
         context.controller = msg.sender;
         (context.epoch, ) = config.getEpoch();
         context.commitmentHash = commitmentHash;
-    }
-
-    function _stateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {
-        stateChanges.characterID = context.characterID;
-        stateChanges.epoch = context.epoch;
-        stateChanges.commitmentHash = context.commitmentHash;
     }
 
     function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {

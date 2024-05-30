@@ -98,28 +98,45 @@ library GameUtils {
         return ((walls >> (2 ** i)) & 0x1) == 1;
     }
 
-    function isValidMove(int32 x, int32 y, int32 nextX, int32 nextY) internal pure returns (bool valid) {
+    function isValidMove(int32 x, int32 y, int32 nextX, int32 nextY) internal pure returns (Game.Reason reason) {
         if (nextX == x) {
             if ((nextY == y + 1)) {
                 // TODO cache area, detect area change and update accordingly
                 Game.Area memory area = areaAt(x, y);
-                return !wallAt(area.southWalls, x, y);
+                if (wallAt(area.southWalls, x, y)) {
+                    return Game.Reason.Wall;
+                } else {
+                    return Game.Reason.None;
+                }
             } else if (nextY == y - 1) {
                 Game.Area memory area = areaAt(nextX, nextY);
-                return !wallAt(area.southWalls, nextX, nextY);
+                if (wallAt(area.southWalls, nextX, nextY)) {
+                    return Game.Reason.Wall;
+                } else {
+                    return Game.Reason.None;
+                }
             } else {
-                return false;
+                return Game.Reason.NonAdjacent;
             }
         } else if (nextY == y) {
             if ((nextX == x + 1)) {
                 Game.Area memory area = areaAt(x, y);
-                return !wallAt(area.southWalls, x, y);
+                if (wallAt(area.southWalls, x, y)) {
+                    return Game.Reason.Wall;
+                } else {
+                    return Game.Reason.None;
+                }
             } else if (nextX == x - 1) {
                 Game.Area memory area = areaAt(nextX, nextY);
-                return !wallAt(area.southWalls, nextX, nextY);
+                if (wallAt(area.southWalls, nextX, nextY)) {
+                    return Game.Reason.Wall;
+                } else {
+                    return Game.Reason.None;
+                }
             } else {
-                return false;
+                return Game.Reason.NonAdjacent;
             }
         }
+        return Game.Reason.NonAdjacent;
     }
 }
