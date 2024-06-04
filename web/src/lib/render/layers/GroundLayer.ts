@@ -78,8 +78,8 @@ export class GroundLayer extends Textured2DProgram {
 		const area = areas.get(x)?.get(y);
 		if (area) {
 			let c = 0;
-			for (let iy = 0; iy < AREA_SIZE; iy++) {
-				for (let ix = 0; ix < AREA_SIZE; ix++) {
+			for (let iy = -AREA_OFFSET; iy < AREA_SIZE - AREA_OFFSET; iy++) {
+				for (let ix = -AREA_OFFSET; ix < AREA_SIZE - AREA_OFFSET; ix++) {
 					if (area.southWalls[c]) {
 						drawTile(
 							this.attributes,
