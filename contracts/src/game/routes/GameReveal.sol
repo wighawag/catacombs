@@ -64,19 +64,19 @@ contract GameReveal is Game {
         monsters[3] = Monster({x: x + 9, y: y + 5, life: 3});
         monsters[4] = Monster({x: x + 4, y: y + 10, life: 3});
         stateChanges.monsters = monsters;
+        stateChanges.newPosition = position;
         for (uint256 i = 0; i < MAX_PATH_LENGTH; i++) {
-            _step(context, stateChanges, context.actions[i], revetOnInvalidMoves);
+            _step(stateChanges, context.actions[i], revetOnInvalidMoves);
         }
     }
 
     /// @notice allow to step through each action and predict the outcome in turnn
     function stepChanges(
-        Context memory context,
         StateChanges memory stateChanges,
         Game.Action memory action,
         bool revetOnInvalidMoves
     ) external pure returns (StateChanges memory) {
-        _step(context, stateChanges, action, revetOnInvalidMoves);
+        _step(stateChanges, action, revetOnInvalidMoves);
         // as external function, it will always return a copy
         return stateChanges;
     }
@@ -97,12 +97,11 @@ contract GameReveal is Game {
     }
 
     function _step(
-        Context memory context,
         StateChanges memory stateChanges,
         Game.Action memory action,
         bool revetOnInvalidMoves
     ) internal pure {
-        uint64 position = context.priorPosition;
+        uint64 position = stateChanges.newPosition;
         (int32 x, int32 y) = PositionUtils.toXY(position);
         uint64 next = action.position;
         (int32 nextX, int32 nextY) = PositionUtils.toXY(next);
@@ -134,10 +133,11 @@ contract GameReveal is Game {
                 int32 xDiff = x - monster.x;
                 int32 yDiff = y - monster.y;
                 if (xDiff > yDiff) {
-                    m_nextX -= (xDiff / -xDiff);
+                    m_nextX += xDiff > int32(0) ? int32(1) : int32(-1);
                 } else {
-                    m_nextY -= (yDiff / -yDiff);
+                    m_nextY += yDiff > int32(0) ? int32(1) : int32(-1);
                 }
+                // TODO walls
                 if (m_nextX == x && nextY == y) {
                     // Player life ---
                 } else {

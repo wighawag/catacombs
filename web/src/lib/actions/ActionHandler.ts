@@ -6,6 +6,9 @@ import {epochState} from '$lib/state/Epoch';
 import {modalStack} from '$utils/ui/modals/ModalContainer.svelte';
 import type {Camera} from '$lib/render/camera';
 import {memory} from '$lib/state/memory';
+import {stepChanges, type Monster} from '$lib/state/computedState';
+import {zeroAddress, zeroHash} from 'viem';
+import {xyToBigIntID} from 'template-game-common';
 
 export class ActionHandler {
 	camera!: Camera;
@@ -30,7 +33,7 @@ export class ActionHandler {
 		document.removeEventListener('keyup', this.keyup);
 	}
 
-	onKeyDown(ev: KeyboardEvent) {
+	async onKeyDown(ev: KeyboardEvent) {
 		const $gameView = get(gameView);
 		if (!$gameView.currentCharacter) {
 			console.log('no current character');
@@ -52,7 +55,56 @@ export class ActionHandler {
 		} else if (ev.code === 'ArrowRight') {
 			position.x += 1;
 		}
-		memory.addMove({position, action: '0x00'});
+
+		const monster: Monster = {
+			life: 2,
+			x: 3,
+			y: 3,
+		};
+
+		console.log(`-----------------------------------`);
+		let stateChanges = await stepChanges(
+			// {
+			// 	characterID: 1n,
+			// 	actions: [],
+			// 	controller: account.$state.address || zeroAddress,
+			// 	epoch: 0,
+			// 	priorPosition: 0n,
+			// 	secret: zeroHash,
+			// },
+			{
+				characterID: 1n,
+				epoch: 0,
+				monsters: [monster, monster, monster, monster, monster],
+				newPosition: 0n,
+			},
+			{
+				position: xyToBigIntID(1, 0),
+				action: 0n,
+			},
+		);
+		console.log(stateChanges);
+		for (let i = 2; i < 14; i++) {
+			stateChanges = await stepChanges(
+				// {
+				// 	characterID: 1n,
+				// 	actions: [],
+				// 	controller: account.$state.address || zeroAddress,
+				// 	epoch: 0,
+				// 	priorPosition: stateChanges.newPosition,
+				// 	secret: zeroHash,
+				// },
+				stateChanges,
+				{
+					position: xyToBigIntID(i, 0),
+					action: 0n,
+				},
+			);
+			console.log(stateChanges);
+		}
+
+		console.log(`-----------------------------------`);
+		// memory.addMove({position, action: '0x00'});
 	}
 
 	onKeyUp(ev: KeyboardEvent) {}

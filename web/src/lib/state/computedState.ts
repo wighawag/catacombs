@@ -1,6 +1,6 @@
 import {createEVMRunner} from 'template-game-contracts-js';
 import artifacts from 'template-game-contracts/artifacts';
-import {decodeFunctionResult, encodeFunctionData, keccak256} from 'viem';
+import {decodeErrorResult, decodeFunctionResult, encodeFunctionData, keccak256} from 'viem';
 import {derived, writable} from 'svelte/store';
 import {epochState, type EpochState} from '$lib/state/Epoch';
 import {camera} from '$lib/render/camera';
@@ -15,8 +15,67 @@ async function setup() {
 		GameUtils: {
 			bytecode: artifacts.GameUtils.bytecode,
 		},
+		GameReveal: {
+			bytecode: artifacts.GameReveal.bytecode,
+		},
 	});
 	return evm;
+}
+
+export type Monster = {
+	x: number;
+	y: number;
+	life: number;
+};
+
+export type StateChanges = {
+	characterID: bigint;
+	newPosition: bigint;
+	epoch: number;
+	monsters: readonly [Monster, Monster, Monster, Monster, Monster];
+};
+
+export type Action = {
+	position: bigint;
+	action: bigint;
+};
+
+export type Context = {
+	characterID: bigint;
+	priorPosition: bigint;
+	controller: `0x${string}`;
+	epoch: number;
+	actions: Action[];
+	secret: `0x${string}`;
+};
+
+export async function stepChanges(stateChanges: StateChanges, action: Action): Promise<StateChanges> {
+	if (!evm) {
+		evm = await setup();
+	}
+
+	const result = await evm.runContract(
+		'GameReveal',
+		encodeFunctionData({
+			abi: artifacts.GameReveal.abi,
+			functionName: 'stepChanges',
+			args: [stateChanges, action, true],
+		}),
+	);
+
+	try {
+		return decodeFunctionResult({
+			abi: artifacts.GameReveal.abi,
+			functionName: 'stepChanges',
+			data: result,
+		});
+	} catch (err) {
+		const error = decodeErrorResult({
+			abi: artifacts.GameReveal.abi,
+			data: result,
+		});
+		throw error;
+	}
 }
 
 async function getArea(x: number, y: number): Promise<Area> {

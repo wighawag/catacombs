@@ -25,14 +25,15 @@ library GameUtils {
 
     function areaAt(int32 x, int32 y) public pure returns (Game.Area memory area) {
         // TODO
-        area = computeArea(keccak256(abi.encodePacked(x, y)));
+        (int32 areaX, int32 areaY) = PositionUtils.area(x, y);
+        area = computeArea(keccak256(abi.encodePacked(areaX, areaY)));
     }
 
     function wallAt(uint128 walls, int32 x, int32 y) internal pure returns (bool) {
         uint8 xx = PositionUtils.areaLocalCoord(x);
         uint8 yy = PositionUtils.areaLocalCoord(y);
         uint8 i = yy * uint8(int8(PositionUtils.AREA_SIZE)) + xx;
-        return ((walls >> (2 ** i)) & 0x1) == 1;
+        return ((walls >> (127 - i)) & 0x1) == 1;
     }
 
     function isValidMove(int32 x, int32 y, int32 nextX, int32 nextY) internal pure returns (Game.Reason reason) {
@@ -58,14 +59,14 @@ library GameUtils {
         } else if (nextY == y) {
             if ((nextX == x + 1)) {
                 Game.Area memory area = areaAt(x, y);
-                if (wallAt(area.southWalls, x, y)) {
+                if (wallAt(area.eastWalls, x, y)) {
                     return Game.Reason.Wall;
                 } else {
                     return Game.Reason.None;
                 }
             } else if (nextX == x - 1) {
                 Game.Area memory area = areaAt(nextX, nextY);
-                if (wallAt(area.southWalls, nextX, nextY)) {
+                if (wallAt(area.eastWalls, nextX, nextY)) {
                     return Game.Reason.Wall;
                 } else {
                     return Game.Reason.None;
