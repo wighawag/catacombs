@@ -48,6 +48,13 @@ contract GameReveal is Game {
         Context memory context,
         bool revetOnInvalidMoves
     ) public pure returns (StateChanges memory stateChanges) {
+        stateChanges = initialStateChanges(context);
+        for (uint256 i = 0; i < MAX_PATH_LENGTH; i++) {
+            _step(stateChanges, context.actions[i], revetOnInvalidMoves);
+        }
+    }
+
+    function initialStateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {
         uint64 position = context.priorPosition;
         (int32 x, int32 y) = PositionUtils.toXY(position);
         Monster[5] memory monsters;
@@ -65,9 +72,6 @@ contract GameReveal is Game {
         monsters[4] = Monster({x: x + 4, y: y + 10, life: 3});
         stateChanges.monsters = monsters;
         stateChanges.newPosition = position;
-        for (uint256 i = 0; i < MAX_PATH_LENGTH; i++) {
-            _step(stateChanges, context.actions[i], revetOnInvalidMoves);
-        }
     }
 
     /// @notice allow to step through each action and predict the outcome in turnn
