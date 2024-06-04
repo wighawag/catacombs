@@ -7,6 +7,7 @@ import sheetURL from '$data/assets/tiles.png';
 import sheet from '$data/assets/tiles.json';
 import {drawTile, drawTileCol, drawTileRow, drawTileX2y2, type FrameDataWithUV} from '../programs/tiles';
 import {areas} from '$lib/state/computedState';
+import {AREA_OFFSET, AREA_SIZE, areaCoord} from 'template-game-common';
 
 type SheetData = typeof sheet;
 
@@ -50,16 +51,6 @@ for (const key of Object.keys(texPerSprites)) {
 	const y2 = y + h;
 	value.uv = [x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2];
 	value.uvs = [uvs(value, 1), uvs(value, 2), uvs(value, 4), uvs(value, 8), uvs(value, 16)];
-}
-
-const AREA_SIZE = 11;
-const AREA_OFFSET = 5;
-function areaCoord(a: number): number {
-	if (a >= 0) {
-		return Math.floor((a + AREA_OFFSET) / AREA_SIZE);
-	} else {
-		return -Math.floor((-a + AREA_OFFSET) / AREA_SIZE);
-	}
 }
 
 export class GroundLayer extends Textured2DProgram {
@@ -142,13 +133,13 @@ export class GroundLayer extends Textured2DProgram {
 		// }
 
 		for (
-			let y = cameraState.y - cameraState.renderHeight / 2 - 1;
-			y < cameraState.y + cameraState.renderHeight / 2 + 1;
+			let y = Math.floor(cameraState.y - cameraState.height / 2 - 1);
+			y < Math.ceil(cameraState.y + cameraState.height / 2 + AREA_SIZE);
 			y += AREA_SIZE
 		) {
 			for (
-				let x = cameraState.x - cameraState.renderWidth / 2 - 1;
-				x < cameraState.x + cameraState.renderWidth / 2 + 1;
+				let x = Math.floor(cameraState.x - cameraState.width / 2 - 1);
+				x < Math.ceil(cameraState.x + cameraState.width / 2 + AREA_SIZE);
 				x += AREA_SIZE
 			) {
 				this.drawArea(areaCoord(x), areaCoord(y));
@@ -163,6 +154,7 @@ export class GroundLayer extends Textured2DProgram {
 		// drawTile(this.attributes, -6 / 28, -3 / 28, texPerSprites['wall_horiz.png'], 28 / 28, 6 / 28, 1);
 
 		if (state.currentCharacter) {
+			console.log(`HELLO`);
 			const char = state.characters[state.currentCharacter];
 			const hx = char.position.x;
 			const hy = char.position.y;
@@ -178,6 +170,12 @@ export class GroundLayer extends Textured2DProgram {
 		this.bufferInfo.numElements = this.attributes.positions.nextIndex / 2;
 
 		(window as any).attributes = this.attributes;
+		(window as any).renderData = {
+			xStart: Math.floor(cameraState.x - cameraState.width / 2 - 1),
+			xEnd: cameraState.x + cameraState.width / 2 + 1,
+			yStart: Math.floor(cameraState.y - cameraState.height / 2 - 1),
+			yEnd: cameraState.y + cameraState.height / 2 + 1,
+		};
 		// we draw
 		twgl.setBuffersAndAttributes(GL, this.programInfo, this.bufferInfo);
 		twgl.setUniforms(this.programInfo, uniforms);

@@ -6,9 +6,9 @@ import {epochState} from '$lib/state/Epoch';
 import {modalStack} from '$utils/ui/modals/ModalContainer.svelte';
 import type {Camera} from '$lib/render/camera';
 import {memory} from '$lib/state/memory';
-import {stepChanges, type Monster} from '$lib/state/computedState';
 import {zeroAddress, zeroHash} from 'viem';
-import {bigIntIDToXY, xyToBigIntID} from 'template-game-common';
+import {bigIntIDToXY, xyToBigIntID, type Monster} from 'template-game-common';
+import {evmGame} from '$lib/state/computedState';
 
 export class ActionHandler {
 	camera!: Camera;
@@ -64,7 +64,7 @@ export class ActionHandler {
 			y: 3,
 		};
 
-		const stateChanges = await stepChanges(
+		const stateChanges = await evmGame.stepChanges(
 			{
 				characterID: 1n,
 				epoch: 0,

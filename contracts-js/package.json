@@ -28,7 +28,10 @@
     "@ethereumjs/evm": "^3.0.0",
     "@ethereumjs/statemanager": "^2.3.0",
     "@ethereumjs/util": "^9.0.3",
-    "named-logs": "^0.2.4"
+    "named-logs": "^0.2.4",
+    "template-game-common": "workspace:*",
+    "template-game-contracts": "workspace:*",
+    "viem": "^2.12.1"
   },
   "devDependencies": {
     "ldenv": "^0.3.10",

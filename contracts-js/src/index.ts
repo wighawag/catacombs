@@ -1,44 +1,100 @@
-import {EVM} from '@ethereumjs/evm';
-import {Address, bytesToHex, hexToBytes} from '@ethereumjs/util';
+import {AREA_SIZE, Action, Area, StateChanges, areaCoord, type Game} from 'template-game-common';
+import artifacts from 'template-game-contracts/artifacts'; // TODO use single file per artifact
+import {createEVMRunner} from './utils';
+import {decodeErrorResult, decodeFunctionResult, encodeFunctionData, encodePacked, keccak256} from 'viem';
+import {Areas} from './Areas';
 
-export async function createEVMRunner(contracts: {[id: string]: {bytecode: `0x${string}`; argsData?: `0x${string}`}}) {
-	const evm = await EVM.create();
-	const contractNames = Object.keys(contracts);
-	const contractAddresses: {[name: string]: `0x${string}`} = {};
-	for (const contractName of contractNames) {
-		const {bytecode, argsData} = contracts[contractName];
-		const results = await evm.runCall({
-			data: hexToBytes(bytecode + (argsData ? argsData.slice(2) : '')),
+export class EVMGame implements Game {
+	evmPromise: ReturnType<typeof createEVMRunner>;
+
+	constructor() {
+		this.evmPromise = createEVMRunner({
+			GameUtils: {
+				bytecode: artifacts.GameUtils.bytecode,
+			},
+			GameReveal: {
+				bytecode: artifacts.GameReveal.bytecode,
+			},
 		});
-		if (!results.createdAddress) {
-			throw new Error(`could not deploy contract ${contractName}`);
-		}
-		const contractAddress = results.createdAddress?.toString() as `0x${string}`;
-		contractAddresses[contractName] = contractAddress;
 	}
 
-	async function runContract(name: string, data: `0x${string}`) {
-		const contractAddress = contractAddresses[name];
-		const results = await evm.runCall({
-			to: Address.fromString(contractAddress),
-			data: hexToBytes(data),
-		});
+	async areaAt(x: number, y: number): Promise<Area> {
+		const evm = await this.evmPromise;
 
-		return bytesToHex(results.execResult.returnValue) as `0x${string}`;
-	}
+		const result = await evm.runContract(
+			'GameUtils',
+			encodeFunctionData({
+				abi: artifacts.GameUtils.abi,
+				functionName: 'areaAt',
+				args: [x, y],
+			}),
+		);
 
-	async function runCode(code: `0x${string}`) {
-		return evm
-			.runCode({
-				code: hexToBytes(code),
-				gasLimit: BigInt(0xffff),
-			})
-			.then((results) => {
-				return bytesToHex(results.returnValue) as `0x${string}`;
+		let data: {southWalls: bigint; eastWalls: bigint};
+		try {
+			data = decodeFunctionResult({
+				abi: artifacts.GameUtils.abi,
+				functionName: 'areaAt',
+				data: result,
 			});
+		} catch (err) {
+			const error = decodeErrorResult({
+				abi: artifacts.GameUtils.abi,
+				data: result,
+			});
+			throw error;
+		}
+
+		const southWalls: boolean[] = [];
+		const eastWalls: boolean[] = [];
+		let c = 127n;
+		for (let iy = 0; iy < AREA_SIZE; iy++) {
+			for (let ix = 0; ix < AREA_SIZE; ix++) {
+				southWalls.push(((data.southWalls >> c) & 1n) == 1n);
+				eastWalls.push(((data.eastWalls >> c) & 1n) == 1n);
+				c--;
+			}
+		}
+
+		return {
+			x,
+			y,
+			eastWalls,
+			southWalls,
+		};
 	}
-	return {
-		runCode,
-		runContract,
-	};
+
+	getArea(x: number, y: number): Area {
+		const areaX = areaCoord(x);
+		const areaY = areaCoord(y);
+		const areaHash = keccak256(encodePacked(['int32', 'int32'], [areaX, areaY]));
+		const areaIndex = Number(BigInt(areaHash) % 5n);
+		return {...Areas[areaIndex], x: areaX, y: areaY};
+	}
+
+	async stepChanges(stateChanges: StateChanges, action: Action): Promise<StateChanges> {
+		const evm = await this.evmPromise;
+		const result = await evm.runContract(
+			'GameReveal',
+			encodeFunctionData({
+				abi: artifacts.GameReveal.abi,
+				functionName: 'stepChanges',
+				args: [stateChanges, action, true],
+			}),
+		);
+
+		try {
+			return decodeFunctionResult({
+				abi: artifacts.GameReveal.abi,
+				functionName: 'stepChanges',
+				data: result,
+			});
+		} catch (err) {
+			const error = decodeErrorResult({
+				abi: artifacts.GameReveal.abi,
+				data: result,
+			});
+			throw error;
+		}
+	}
 }
