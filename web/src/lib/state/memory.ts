@@ -1,4 +1,5 @@
 import {writable} from 'svelte/store';
+import type {StateChanges} from './computedState';
 
 export type Move = {
 	position: {x: number; y: number};
@@ -7,22 +8,26 @@ export type Move = {
 
 export type MemoryState = {
 	moves: Move[];
+	stateChanges?: StateChanges;
 };
 
 const $store: MemoryState = {moves: []};
 const store = writable<MemoryState>($store);
 
-function addMove(move: Move) {
+function addMove(move: Move, stateChanges: StateChanges) {
 	$store.moves.push(move);
+	$store.stateChanges = stateChanges;
 	store.set($store);
 }
 
 function rewind() {
 	$store.moves.splice(0, $store.moves.length);
+	$store.stateChanges = undefined;
 	store.set($store);
 }
 
 export const memory = {
+	$store,
 	subscribe: store.subscribe,
 	addMove,
 	rewind,

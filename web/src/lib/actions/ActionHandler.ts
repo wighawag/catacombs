@@ -8,7 +8,7 @@ import type {Camera} from '$lib/render/camera';
 import {memory} from '$lib/state/memory';
 import {stepChanges, type Monster} from '$lib/state/computedState';
 import {zeroAddress, zeroHash} from 'viem';
-import {xyToBigIntID} from 'template-game-common';
+import {bigIntIDToXY, xyToBigIntID} from 'template-game-common';
 
 export class ActionHandler {
 	camera!: Camera;
@@ -39,7 +39,9 @@ export class ActionHandler {
 			console.log('no current character');
 			return;
 		}
-		const origPosition = $gameView.characters[$gameView.currentCharacter].position;
+		const origPosition = memory.$store.stateChanges?.newPosition
+			? bigIntIDToXY(memory.$store.stateChanges.newPosition)
+			: $gameView.characters[$gameView.currentCharacter].position;
 		const position = {x: origPosition.x, y: origPosition.y};
 		if (ev.code === 'Space') {
 			console.log('rewinding...');
@@ -62,49 +64,19 @@ export class ActionHandler {
 			y: 3,
 		};
 
-		console.log(`-----------------------------------`);
-		let stateChanges = await stepChanges(
-			// {
-			// 	characterID: 1n,
-			// 	actions: [],
-			// 	controller: account.$state.address || zeroAddress,
-			// 	epoch: 0,
-			// 	priorPosition: 0n,
-			// 	secret: zeroHash,
-			// },
+		const stateChanges = await stepChanges(
 			{
 				characterID: 1n,
 				epoch: 0,
 				monsters: [monster, monster, monster, monster, monster],
-				newPosition: 0n,
+				newPosition: xyToBigIntID(origPosition.x, origPosition.y),
 			},
 			{
-				position: xyToBigIntID(1, 0),
+				position: xyToBigIntID(position.x, position.y),
 				action: 0n,
 			},
 		);
-		console.log(stateChanges);
-		for (let i = 2; i < 14; i++) {
-			stateChanges = await stepChanges(
-				// {
-				// 	characterID: 1n,
-				// 	actions: [],
-				// 	controller: account.$state.address || zeroAddress,
-				// 	epoch: 0,
-				// 	priorPosition: stateChanges.newPosition,
-				// 	secret: zeroHash,
-				// },
-				stateChanges,
-				{
-					position: xyToBigIntID(i, 0),
-					action: 0n,
-				},
-			);
-			console.log(stateChanges);
-		}
-
-		console.log(`-----------------------------------`);
-		// memory.addMove({position, action: '0x00'});
+		memory.addMove({position, action: '0x00'}, stateChanges);
 	}
 
 	onKeyUp(ev: KeyboardEvent) {}
