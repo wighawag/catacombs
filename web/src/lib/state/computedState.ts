@@ -174,12 +174,12 @@ camera.subscribe(async ($camera) => {
 				if (!mapmap) {
 					const mapmap = new Map<number, Area>();
 					areas.set(ax, mapmap);
-					const area = await getArea(ax, ay);
+					const area = await getArea(x, y);
 					mapmap.set(ay, area);
 				} else {
 					let area = mapmap.get(ay);
 					if (!area) {
-						area = await getArea(ax, ay);
+						area = await getArea(x, y);
 						mapmap.set(ay, area);
 					}
 				}
