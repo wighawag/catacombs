@@ -159,9 +159,9 @@
             <key>trimThreshold</key>
             <uint>1</uint>
             <key>trimMargin</key>
-            <uint>1</uint>
+            <uint>0</uint>
             <key>trimMode</key>
-            <enum type="SpriteSettings::TrimMode">Trim</enum>
+            <enum type="SpriteSettings::TrimMode">None</enum>
             <key>tracerTolerance</key>
             <int>200</int>
             <key>heuristicMask</key>
@@ -173,6 +173,7 @@
         </struct>
         <key>individualSpriteSettings</key>
         <map type="IndividualSpriteSettingsMap">
+            <key type="filename">tiles/ground.png</key>
             <key type="filename">tiles/hero_00.png</key>
             <key type="filename">tiles/hero_01.png</key>
             <key type="filename">tiles/hero_02.png</key>

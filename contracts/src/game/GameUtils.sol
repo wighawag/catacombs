@@ -3,6 +3,7 @@ pragma solidity ^0.8.0;
 
 import "./Game.sol";
 import "../utils/PositionUtils.sol";
+import "./data/Areas.sol";
 
 library GameUtils {
     function getEpoch(Game.Config memory config) internal view returns (uint24 epoch, bool commiting) {
@@ -19,71 +20,7 @@ library GameUtils {
     function computeArea(bytes32 areaHash) public pure returns (Game.Area memory) {
         // "made only for 11x11"
         assert(PositionUtils.AREA_SIZE == 11);
-        if (uint256(areaHash) % 2 == 0) {
-            return
-                Game.Area({
-                    /*
-00000000000
-00000000000
-00000000000
-00000111011
-11110000000
-01101000000
-00000000000
-00000001111
-00000000000
-10000000000
-11111110111
-                */
-                    southWalls: 0x77E01A000001E002007F7 << 7,
-                    /*
-00011000001
-00011000001
-00000000001
-00011000001
-00010010001
-00000010001
-10001010000
-10001010001
-10001000001
-00001000001
-00001000001
-                */
-                    eastWalls: 0x3046080118224408C508A310420841 << 7
-                });
-        } else {
-            return
-                Game.Area({
-                    /*
-00000000000
-11011100000
-00000000000
-00000000000
-00000011110
-11011110000
-00011110000
-00111111101
-00000000000
-00000000000
-11111110111
-                */
-                    southWalls: 0x37000000007B780F03FA000007F7 << 7, // TODO inject from outside data file so it can be shared with frontend
-                    /*
-00000100011
-00000100011
-00000000011
-00000100011
-00000100011
-00000101001
-01000000001
-01000001000
-00000100001
-00000100001
-00000100001
-                */
-                    eastWalls: 0x8C1180304608C14A0141008410821 << 7 // TODO inject from outside data file so it can be shared with frontend
-                });
-        }
+        return Areas.getArea(uint256(areaHash) % 5);
     }
 
     function areaAt(int32 x, int32 y) public pure returns (Game.Area memory area) {

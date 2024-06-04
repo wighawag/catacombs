@@ -1,4 +1,6 @@
-export function parseAsciiArea(txt: string): {southWalls: bigint; eastWalls: bigint; size: bigint} {
+export type AreaAsBigInts = {southWalls: bigint; eastWalls: bigint; size: bigint};
+export type AreaAsBooleanArrays = {southWalls: boolean[]; eastWalls: boolean[]; size: number};
+export function parseAsciiArea(txt: string): {areaAsBigInts: AreaAsBigInts; areaAsBooleanArrays: AreaAsBooleanArrays} {
 	const lines = txt.split(`\n`).filter((v) => v.length > 0);
 	const numLines = lines.length;
 	let lineIndex = 0;
@@ -16,6 +18,8 @@ export function parseAsciiArea(txt: string): {southWalls: bigint; eastWalls: big
 	let y = 0n;
 	let southWalls = 0n;
 	let eastWalls = 0n;
+	let southWallsAsBooleanArray: boolean[] = [];
+	let eastWallsAsBooleanArray: boolean[] = [];
 	while (lineIndex < numLines) {
 		const line = lines[lineIndex];
 		if (lineIndex % 2 == 0) {
@@ -32,6 +36,9 @@ export function parseAsciiArea(txt: string): {southWalls: bigint; eastWalls: big
 				if (char == '|') {
 					// console.log(`east wall at ${x},${y}`);
 					eastWalls |= 2n ** (127n - (y * size + x));
+					eastWallsAsBooleanArray.push(true);
+				} else {
+					eastWallsAsBooleanArray.push(false);
 				}
 				charIndex += 4;
 				x++;
@@ -53,6 +60,9 @@ export function parseAsciiArea(txt: string): {southWalls: bigint; eastWalls: big
 					}
 					// console.log(`south wall at ${x},${y}`);
 					southWalls |= 2n ** (127n - (y * size + x));
+					southWallsAsBooleanArray.push(true);
+				} else {
+					southWallsAsBooleanArray.push(false);
 				}
 				charIndex += 4;
 				x++;
@@ -63,5 +73,8 @@ export function parseAsciiArea(txt: string): {southWalls: bigint; eastWalls: big
 		lineIndex++;
 	}
 
-	return {southWalls, eastWalls, size};
+	return {
+		areaAsBigInts: {southWalls, eastWalls, size},
+		areaAsBooleanArrays: {southWalls: southWallsAsBooleanArray, eastWalls: eastWallsAsBooleanArray, size: Number(size)},
+	};
 }

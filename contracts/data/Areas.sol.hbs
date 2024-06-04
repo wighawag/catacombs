@@ -1,0 +1,24 @@
+
+// SPDX-License-Identifier: AGPL-3.0-or-later
+pragma solidity ^0.8.0;
+
+import "../Game.sol";
+
+library Areas {
+    function getArea(uint256 i) internal pure returns (Game.Area memory area) {
+        if (false) {
+
+        }
+        {{#each areas}}
+         else if(i == {{@index}}) {
+/*
+{{this.ascii}}
+*/
+              area = Game.Area({
+                southWalls: {{this.southWalls}},
+                eastWalls: {{this.eastWalls}}
+            });
+         }
+        {{/each}}
+    }
+}

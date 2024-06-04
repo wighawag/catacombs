@@ -1,6 +1,6 @@
 import {createEVMRunner} from 'template-game-contracts-js';
 import artifacts from 'template-game-contracts/artifacts';
-import {decodeFunctionResult, encodeFunctionData} from 'viem';
+import {decodeFunctionResult, encodeFunctionData, keccak256} from 'viem';
 import {derived, writable} from 'svelte/store';
 import {epochState, type EpochState} from '$lib/state/Epoch';
 import {camera} from '$lib/render/camera';
@@ -8,12 +8,21 @@ import {xyToBigIntID} from 'template-game-common';
 
 const store = writable('');
 
-async function getArea(x: number, y: number): Promise<Area> {
-	const evm = await createEVMRunner({
+let evm: Awaited<ReturnType<typeof createEVMRunner>>;
+
+async function setup() {
+	evm = await createEVMRunner({
 		GameUtils: {
 			bytecode: artifacts.GameUtils.bytecode,
 		},
 	});
+	return evm;
+}
+
+async function getArea(x: number, y: number): Promise<Area> {
+	if (!evm) {
+		evm = await setup();
+	}
 
 	const result = await evm.runContract(
 		'GameUtils',
@@ -59,6 +68,16 @@ async function getArea(x: number, y: number): Promise<Area> {
 	};
 }
 
+// async function getArea(x: number, y: number): Promise<Area> {
+// 	const val = keccak256('0x00');
+// 	return {
+// 		x,
+// 		y,
+// 		eastWalls: [true, true, true],
+// 		southWalls: [true, true, true],
+// 	};
+// }
+
 const AREA_SIZE = 11;
 const AREA_OFFSET = 5;
 function areaCoord(a: number): number {
@@ -81,12 +100,12 @@ export const areas = new Map<number, Map<number, Area>>();
 camera.subscribe(async ($camera) => {
 	if ($camera) {
 		for (
-			let y = $camera.y - $camera.renderHeight / 2 - 1;
+			let y = Math.floor($camera.y - $camera.renderHeight / 2 - 1);
 			y < $camera.y + $camera.renderHeight / 2 + 1;
 			y += AREA_SIZE
 		) {
 			for (
-				let x = $camera.x - $camera.renderWidth / 2 - 1;
+				let x = Math.floor($camera.x - $camera.renderWidth / 2 - 1);
 				x < $camera.x + $camera.renderWidth / 2 + 1;
 				x += AREA_SIZE
 			) {

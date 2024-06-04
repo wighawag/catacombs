@@ -127,6 +127,20 @@ export class GroundLayer extends Textured2DProgram {
 		this.attributes.texs.nextIndex = 0;
 		this.attributes.alphas.nextIndex = 0;
 
+		// for (
+		// 	let y = Math.floor(cameraState.y - cameraState.renderHeight / 2 - 1);
+		// 	y < cameraState.y + cameraState.renderHeight / 2 + 1;
+		// 	y++
+		// ) {
+		// 	for (
+		// 		let x = Math.floor(cameraState.x - cameraState.renderWidth / 2 - 1);
+		// 		x < cameraState.x + cameraState.renderWidth / 2 + 1;
+		// 		x++
+		// 	) {
+		// 		drawTile(this.attributes, x, y, texPerSprites['ground.png'], 22 / 22, 22 / 22, 1);
+		// 	}
+		// }
+
 		for (
 			let y = cameraState.y - cameraState.renderHeight / 2 - 1;
 			y < cameraState.y + cameraState.renderHeight / 2 + 1;

@@ -1,0 +1,11 @@
+export const Areas = [
+{{#each areas}}
+/*
+{{this.ascii}}
+*/
+{
+  southWalls: [{{this.southWalls}}],
+  eastWalls: [{{this.eastWalls}}]
+},
+{{/each}}
+] as const;
