@@ -244,10 +244,13 @@ importers:
         version: 2.13.6(typescript@5.4.5)(zod@3.23.8)
     devDependencies:
       '@cloudflare/workers-types':
-        specifier: latest
+        specifier: ^4.20240512.0
         version: 4.20240603.0
+      as-soon:
+        specifier: ^0.0.9
+        version: 0.0.9
       wrangler:
-        specifier: latest
+        specifier: ^3.56.0
         version: 3.59.0(@cloudflare/workers-types@4.20240603.0)
 
   helper-services/fuzd:

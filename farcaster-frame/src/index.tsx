@@ -10,17 +10,14 @@ import { serveStatic } from "frog/serve-static";
 // } from "@farcaster/hub-nodejs";
 import { areaCoord, wallAt } from "template-game-common";
 import { EVMGame } from "template-game-contracts-js";
+import setupTables from './schema/ts/characters.sql';
+import { sqlToStatements } from "./utils/storage";
 
 
 const tokenSymbol = 'peanuts';
 
 type CharacterData = {
-  position: {
-    x: number;
-    y: number;
-  };
-  characterID: bigint;
-  direction: 0 | 1 | 2 | 3;
+  fid: string, x: number, y: number, direction: number
 };
 const memory: {
   [fid: string]: CharacterData;
@@ -74,7 +71,7 @@ async function getEastWallAt(x: number, y: number) {
 
 async function firstperson(
   pos: { x: number; y: number },
-  direction: 0 | 1 | 2 | 3
+  direction: number
 ): Promise<View> {
   const { x, y } = pos;
   if (direction == 0) {
@@ -406,10 +403,10 @@ function defaultView(
 
 async function moveView(c: FrameContext, characterData: CharacterData) {
   const characterArea = {
-    x: areaCoord(characterData.position.x),
-    y: areaCoord(characterData.position.y),
+    x: areaCoord(characterData.x),
+    y: areaCoord(characterData.y),
   };
-  const view = await firstperson(characterData.position, characterData.direction);
+  const view = await firstperson(characterData, characterData.direction);
   return c.res({
     image: (
       <div
@@ -456,6 +453,10 @@ async function moveView(c: FrameContext, characterData: CharacterData) {
 }
 
 app.frame("/", async (c: FrameContext) => {
+  const env = c.env as any;
+  const DB = env.DB as D1Database;
+  console.log(env);
+
   const { buttonValue, inputText, status, req } = c;
   console.log({ buttonValue });
   console.log({ status });
@@ -492,7 +493,9 @@ app.frame("/", async (c: FrameContext) => {
     if (untrustedData) {
       const {fid} = untrustedData;
 
-      let fidDATA = memory[fid];
+      const statement = DB.prepare(`SELECT * FROM Characters WHERE fid = ?`)
+      const all = await statement.bind(fid).all<CharacterData>();
+      let fidDATA = all.results[0];
 
       if (buttonValue == 'reset') {
         delete memory[fid];
@@ -503,10 +506,11 @@ app.frame("/", async (c: FrameContext) => {
 
       if (!fidDATA) {
         if (buttonValue === "stake") {
-          fidDATA = memory[fid] = {
-            characterID: 1n,
+          fidDATA = {
+            // characterID: 1n,
+            fid,
             direction: 0,
-            position: { x: 0, y: 0 },
+            x: 0, y: 0,
           };
         } else {
           return defaultView(c, `Stake 5 ${tokenSymbol}`, "", [
@@ -524,16 +528,19 @@ app.frame("/", async (c: FrameContext) => {
           }
         } else if (buttonValue == 'forward') {
           if (fidDATA.direction == 0) {
-            fidDATA.position.y -= 1;
+            fidDATA.y -= 1;
           } else if (fidDATA.direction == 1) {
-            fidDATA.position.x += 1;
+            fidDATA.x += 1;
           } else if (fidDATA.direction == 2) {
-            fidDATA.position.y += 1;
+            fidDATA.y += 1;
           } else if (fidDATA.direction == 3) {
-            fidDATA.position.x -= 1;
+            fidDATA.x -= 1;
           }
         }
       }
+
+      const updateStatement = DB.prepare(`INSERT INTO Characters (fid, x, y, direction) VALUES(?,?,?,?) ON CONFLICT(fid) DO UPDATE SET x = excluded.x, y = excluded.y, direction = excluded.direction;`);
+      await updateStatement.bind(fid, fidDATA.x, fidDATA.y, fidDATA.direction).all();
 
       return moveView(c, fidDATA);
     } else {
@@ -547,7 +554,13 @@ app.frame("/", async (c: FrameContext) => {
       <Button value="Enter">Enter</Button>,
     ]);
   }
-});
+}).get('/reset', async (c) => {
+  const env = c.env as any;
+  const DB = env.DB as D1Database;
+  const statements = sqlToStatements(setupTables);
+	await DB.batch(statements.map((v) => DB.prepare(v)));
+  return new Response("OK")
+})
 
 const isCloudflareWorker = typeof caches !== "undefined";
 if (isCloudflareWorker) {

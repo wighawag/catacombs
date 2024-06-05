@@ -3,8 +3,17 @@ compatibility_date = "2023-12-01"
 compatibility_flags = [ "nodejs_compat" ]
 main="src/index.tsx"
 
+# [env.production]
+
+d1_databases = [
+  { binding = "DB", database_name = "catacombs-frame", database_id = "1df8bfb7-c2f4-43d1-943d-681b99382372" }
+]
+
+
+
 [site]
 bucket = "./public"
+
 
 # [vars]
 # MY_VARIABLE = "production_value"

@@ -24,3 +24,5 @@ yarn-error.log*
 public/frog
 
 .wrangler
+
+*.sql.ts
