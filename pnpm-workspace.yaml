@@ -5,3 +5,4 @@ packages:
   - 'indexer'
   - 'web'
   - 'helper-services/*'
+  - 'farcaster-frame'

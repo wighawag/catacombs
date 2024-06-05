@@ -39,6 +39,9 @@ layout {
 			pane name="MISSIV"  command="bash"  {
 				args "-c" "pnpm missiv:dev; cd helper-services/missiv; ${SHELL-bash}"
 			}
+			pane name="FARCASTER"  command="bash"  {
+				args "-c" "pnpm farcaster:dev; cd farcaster-frame; ${SHELL-bash}"
+			}
 		}
 	}
 

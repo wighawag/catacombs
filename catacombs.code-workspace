@@ -25,6 +25,10 @@
 			"path": "./helper-services",
 		},
 		{
+			"name": "farcaster-frame",
+			"path": "./farcaster-frame",
+		},
+		{
 			"name": "ROOT",
 			"path": "./",
 		},

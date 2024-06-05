@@ -1,0 +1,24 @@
+{
+  "name": "catacombs-frame",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@farcaster/hub-nodejs": "^0.11.12",
+    "frog": "latest",
+    "hono": "^4",
+    "viem": "^2.13.5",
+    "template-game-common": "workspace:*",
+    "template-game-contracts": "workspace:*",
+    "template-game-contracts-js": "workspace:*"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "latest",
+    "wrangler": "latest"
+  },
+  "scripts": {
+    "dev": "frog dev --port 34009",
+    "wrangler:dev": "wrangler dev --port 34009 src/index.tsx",
+    "wrangler:deploy": "wrangler deploy --minify src/index.tsx",
+    "wrangler:static": "cp -r ./node_modules/frog/_lib/ui/.frog ./public/frog"
+  }
+}

@@ -50,6 +50,7 @@
 		"web:dev": "pnpm --filter ./web dev",
 		"indexer:dev": "pnpm --filter ./indexer dev",
 		"common:dev": "pnpm --filter ./common dev",
+		"farcaster:dev": "pnpm --filter ./farcaster-frame dev",
 		"contracts-js:dev": "pnpm --filter ./contracts-js dev",
 		"contracts:export": "ldenv -d localhost pnpm run --filter ./contracts export -n @@MODE --json ../helper-services/fuzd/contracts.json --ts ../indexer/src/contracts.ts,../web/src/data/contracts.ts @@",
 		"contracts:test": "pnpm --filter ./contracts test",
