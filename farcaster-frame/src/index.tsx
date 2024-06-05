@@ -11,6 +11,9 @@ import { serveStatic } from "frog/serve-static";
 import { areaCoord, wallAt } from "template-game-common";
 import { EVMGame } from "template-game-contracts-js";
 
+
+const tokenSymbol = 'peanuts';
+
 type CharacterData = {
   position: {
     x: number;
@@ -493,8 +496,8 @@ app.frame("/", async (c: FrameContext) => {
 
       if (buttonValue == 'reset') {
         delete memory[fid];
-        return defaultView(c, "Stake 5 peanuts", "", [
-          <Button value="stake">Stake 5 peanuts</Button>,
+        return defaultView(c, `Stake 5 ${tokenSymbol}`, "", [
+          <Button value="stake">Stake 5 {tokenSymbol}</Button>,
         ]);
       }
 
@@ -506,8 +509,8 @@ app.frame("/", async (c: FrameContext) => {
             position: { x: 0, y: 0 },
           };
         } else {
-          return defaultView(c, "Stake 0.005 ETH", "", [
-            <Button value="stake">Stake 0.005ETH</Button>,
+          return defaultView(c, `Stake 0.005 ${tokenSymbol}`, "", [
+            <Button value="stake">Stake 0.005 {tokenSymbol}</Button>,
           ]);
         }
       } else {
