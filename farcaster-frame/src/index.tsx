@@ -509,8 +509,8 @@ app.frame("/", async (c: FrameContext) => {
             position: { x: 0, y: 0 },
           };
         } else {
-          return defaultView(c, `Stake 0.005 ${tokenSymbol}`, "", [
-            <Button value="stake">Stake 0.005 {tokenSymbol}</Button>,
+          return defaultView(c, `Stake 5 ${tokenSymbol}`, "", [
+            <Button value="stake">Stake 5 {tokenSymbol}</Button>,
           ]);
         }
       } else {
