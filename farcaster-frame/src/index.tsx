@@ -109,37 +109,36 @@ async function firstperson(
       },
     ];
   } else if (direction == 1) {
-    // TODO rotation
     return [
       {
         backWalls: [
-          await getSouthWallAt(x - 1, y - 1),
-          await getSouthWallAt(x, y - 1),
-          await getSouthWallAt(x + 1, y - 1),
+          await getEastWallAt(x, y - 1),
+          await getEastWallAt(x, y),
+          await getEastWallAt(x, y + 1),
         ],
-        sideWalls: [await getEastWallAt(x - 1, y), await getEastWallAt(x, y)],
+        sideWalls: [await getSouthWallAt(x, y-1), await getSouthWallAt(x, y)],
       },
       {
         backWalls: [
-          await getSouthWallAt(x - 1, y - 2),
-          await getSouthWallAt(x, y - 2),
-          await getSouthWallAt(x + 1, y - 2),
+          await getEastWallAt(x + 1, y - 1),
+          await getEastWallAt(x + 1, y),
+          await getEastWallAt(x + 1, y + 1),
         ],
-        sideWalls: [await getEastWallAt(x - 1, y - 1), await getEastWallAt(x, y - 1)],
+        sideWalls: [await getSouthWallAt(x + 1, y - 1), await getSouthWallAt(x + 1, y)],
       },
       {
         backWalls: [
-          await getSouthWallAt(x - 2, y - 3),
-          await getSouthWallAt(x - 1, y - 3),
-          await getSouthWallAt(x, y - 3),
-          await getSouthWallAt(x + 1, y - 3),
-          await getSouthWallAt(x + 2, y - 3),
+          await getEastWallAt(x +2, y - 2),
+          await getEastWallAt(x +2, y - 1),
+          await getEastWallAt(x +2, y ),
+          await getEastWallAt(x +2 + 1, y +1),
+          await getEastWallAt(x +2 + 2, y +2),
         ],
         sideWalls: [
-          await getEastWallAt(x - 2, y - 2),
-          await getEastWallAt(x - 1, y - 2),
-          await getEastWallAt(x, y - 2),
-          await getEastWallAt(x + 1, y - 2),
+          await getSouthWallAt(x + 2, y -2),
+          await getSouthWallAt(x +2, y - 1),
+          await getSouthWallAt(x + 2, y ),
+          await getSouthWallAt(x + 2, y +1),
         ],
       },
     ];
@@ -170,46 +169,44 @@ async function firstperson(
           await getSouthWallAt(x - 2, y +2),
         ],
         sideWalls: [
-          await getEastWallAt(x + 1, y - 2),
-          await getEastWallAt(x, y - 2),
-          await getEastWallAt(x -1, y - 2),
-          await getEastWallAt(x - 2, y - 2),
+          await getEastWallAt(x + 1, y + 2),
+          await getEastWallAt(x, y + 2),
+          await getEastWallAt(x -1, y + 2),
+          await getEastWallAt(x - 2, y + 2),
         ],
       },
     ];
   } else {
-    // direction == 3
-    // TODO rotation oposite
     return [
       {
         backWalls: [
-          await getSouthWallAt(x - 1, y - 1),
-          await getSouthWallAt(x, y - 1),
-          await getSouthWallAt(x + 1, y - 1),
+          await getEastWallAt(x -1, y + 1),
+          await getEastWallAt(x -1, y),
+          await getEastWallAt(x -1, y - 1),
         ],
-        sideWalls: [await getEastWallAt(x - 1, y), await getEastWallAt(x, y)],
+        sideWalls: [await getSouthWallAt(x, y), await getSouthWallAt(x, y - 1)],
       },
       {
         backWalls: [
-          await getSouthWallAt(x - 1, y - 2),
-          await getSouthWallAt(x, y - 2),
-          await getSouthWallAt(x + 1, y - 2),
+          await getEastWallAt(x - 2, y +1),
+          await getEastWallAt(x - 2, y),
+          await getEastWallAt(x -2, y - 1),
         ],
-        sideWalls: [await getEastWallAt(x - 1, y - 1), await getEastWallAt(x, y - 1)],
+        sideWalls: [await getSouthWallAt(x - 1, y), await getSouthWallAt(x - 1, y - 1)],
       },
       {
         backWalls: [
-          await getSouthWallAt(x - 2, y - 3),
-          await getSouthWallAt(x - 1, y - 3),
-          await getSouthWallAt(x, y - 3),
-          await getSouthWallAt(x + 1, y - 3),
-          await getSouthWallAt(x + 2, y - 3),
+          await getEastWallAt(x -3, y + 2),
+          await getEastWallAt(x -3, y + 1),
+          await getEastWallAt(x -3, y ),
+          await getEastWallAt(x -3 + 1, y -1),
+          await getEastWallAt(x -3 + 2, y -2),
         ],
         sideWalls: [
-          await getEastWallAt(x - 2, y - 2),
-          await getEastWallAt(x - 1, y - 2),
-          await getEastWallAt(x, y - 2),
-          await getEastWallAt(x + 1, y - 2),
+          await getSouthWallAt(x -2, y +1),
+          await getSouthWallAt(x -2, y),
+          await getSouthWallAt(x -2, y - 1 ),
+          await getSouthWallAt(x -2, y -2 ),
         ],
       },
     ];
@@ -445,7 +442,8 @@ async function moveView(c: FrameContext, characterData: CharacterData) {
       <Button value="rotate-left">↶</Button>,
       <Button value="forward">↑</Button>,
       <Button value="rotate-right">↷</Button>,
-      <Button.Reset>Reset</Button.Reset>,
+      // <Button.Reset>Reset</Button.Reset>,
+      <Button value="reset">reset</Button>,
 
       // // <TextInput placeholder="Enter custom fruit..." />,
       // <Button value="attack">⚔</Button>,
@@ -489,6 +487,13 @@ app.frame("/", async (c: FrameContext) => {
       ];
 
       let fidDATA = memory[fid];
+
+      if (buttonValue == 'reset') {
+        delete memory[fid];
+        return defaultView(c, "Stake 0.005 ETH", "", [
+          <Button value="stake">Stake 0.005ETH</Button>,
+        ]);
+      }
 
       if (!fidDATA) {
         if (buttonValue === "stake") {
