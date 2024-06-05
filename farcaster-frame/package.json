@@ -12,13 +12,13 @@
     "template-game-contracts-js": "workspace:*"
   },
   "devDependencies": {
-    "tsx": "^4.7.1",
-    "typescript": "^5.3.3",
-    "vercel": "^32.4.1"
+    "@cloudflare/workers-types": "latest",
+    "wrangler": "latest"
   },
   "scripts": {
     "dev": "frog dev --port 34009",
-    "build": "frog vercel-build",
-    "deploy": "vercel"
+    "wrangler:dev": "wrangler dev --port 34009 src/index.tsx",
+    "wrangler:deploy": "wrangler deploy --minify src/index.tsx",
+    "wrangler:static": "cp -r ./node_modules/frog/_lib/ui/.frog ./public/frog"
   }
 }

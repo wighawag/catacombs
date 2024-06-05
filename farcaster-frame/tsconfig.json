@@ -1,12 +1,15 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "NodeNext",
+    "module": "ESNext",
     "skipLibCheck": true,
 
-    "moduleResolution": "NodeNext",
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
+    "noEmit": true,
     "jsx": "react-jsx",
     "jsxImportSource": "frog/jsx",
 
@@ -18,5 +21,5 @@
 
     "types": ["frog/client"]
   },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.mtsx"]
+  "include": ["**/*.ts", "**/*.tsx"]
 }
