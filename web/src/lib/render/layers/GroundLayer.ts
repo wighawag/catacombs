@@ -154,7 +154,6 @@ export class GroundLayer extends Textured2DProgram {
 		// drawTile(this.attributes, -6 / 28, -3 / 28, texPerSprites['wall_horiz.png'], 28 / 28, 6 / 28, 1);
 
 		if (state.currentCharacter) {
-			console.log(`HELLO`);
 			const char = state.characters[state.currentCharacter];
 			const hx = char.position.x;
 			const hy = char.position.y;

@@ -58,17 +58,29 @@ export class ActionHandler {
 			position.x += 1;
 		}
 
-		const monster: Monster = {
-			life: 2,
-			x: 3,
-			y: 3,
-		};
+		const {x, y} = origPosition;
+		const monsters: [Monster, Monster, Monster, Monster, Monster] = memory.$store.stateChanges
+			? memory.$store.stateChanges.monsters
+			: [
+					{x: x + 1, y: y + 0, life: 3},
+					{x: x + 5, y: y + 5, life: 3},
+					{x: x + 7, y: y + 2, life: 3},
+					{x: x + 9, y: y + 5, life: 3},
+					{x: x + 4, y: y + 10, life: 3},
+				];
+		// const monsters: [Monster, Monster, Monster, Monster, Monster] = [
+		// 	{x: x + 2, y: y + 5, life: 3},
+		// 	{x: x + 5, y: y + 5, life: 3},
+		// 	{x: x + 7, y: y + 2, life: 3},
+		// 	{x: x + 9, y: y + 5, life: 3},
+		// 	{x: x + 4, y: y + 10, life: 3},
+		// ];
 
 		const stateChanges = await evmGame.stepChanges(
 			{
 				characterID: 1n,
 				epoch: 0,
-				monsters: [monster, monster, monster, monster, monster],
+				monsters,
 				newPosition: xyToBigIntID(origPosition.x, origPosition.y),
 			},
 			{
@@ -76,7 +88,8 @@ export class ActionHandler {
 				action: 0n,
 			},
 		);
-		memory.addMove({position, action: '0x00'}, stateChanges);
+		console.log(stateChanges);
+		memory.addMove({position: bigIntIDToXY(stateChanges.newPosition), action: '0x00'}, stateChanges);
 	}
 
 	onKeyUp(ev: KeyboardEvent) {}
