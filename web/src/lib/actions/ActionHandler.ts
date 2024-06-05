@@ -4,11 +4,12 @@ import {account, accountData} from '$lib/blockchain/connection';
 import {get} from 'svelte/store';
 import {epochState} from '$lib/state/Epoch';
 import {modalStack} from '$utils/ui/modals/ModalContainer.svelte';
-import type {Camera} from '$lib/render/camera';
+import {camera, type Camera} from '$lib/render/camera';
 import {memory} from '$lib/state/memory';
 import {zeroAddress, zeroHash} from 'viem';
-import {bigIntIDToXY, xyToBigIntID, type Monster} from 'template-game-common';
-import {evmGame} from '$lib/state/computedState';
+import {bigIntIDToXY, xyToBigIntID, type Monster, type MonsterList} from 'template-game-common';
+import {evmGame} from '$lib/state/computed';
+import {initialiseStateChanges} from '$lib/state/initialState';
 
 export class ActionHandler {
 	camera!: Camera;
@@ -59,22 +60,13 @@ export class ActionHandler {
 		}
 
 		const {x, y} = origPosition;
-		const monsters: [Monster, Monster, Monster, Monster, Monster] = memory.$store.stateChanges
-			? memory.$store.stateChanges.monsters
-			: [
-					{x: x + 1, y: y + 0, life: 3},
-					{x: x + 5, y: y + 5, life: 3},
-					{x: x + 7, y: y + 2, life: 3},
-					{x: x + 9, y: y + 5, life: 3},
-					{x: x + 4, y: y + 10, life: 3},
-				];
-		// const monsters: [Monster, Monster, Monster, Monster, Monster] = [
-		// 	{x: x + 2, y: y + 5, life: 3},
-		// 	{x: x + 5, y: y + 5, life: 3},
-		// 	{x: x + 7, y: y + 2, life: 3},
-		// 	{x: x + 9, y: y + 5, life: 3},
-		// 	{x: x + 4, y: y + 10, life: 3},
-		// ];
+		let monsters: MonsterList;
+		if (memory.$store.stateChanges?.monsters) {
+			monsters = memory.$store.stateChanges?.monsters;
+		} else {
+			const initialStateChanges = await initialiseStateChanges();
+			monsters = initialStateChanges.monsters;
+		}
 
 		const stateChanges = await evmGame.stepChanges(
 			{
@@ -89,7 +81,10 @@ export class ActionHandler {
 			},
 		);
 		console.log(stateChanges);
-		memory.addMove({position: bigIntIDToXY(stateChanges.newPosition), action: '0x00'}, stateChanges);
+		const pos = bigIntIDToXY(stateChanges.newPosition);
+		memory.addMove({position: pos, action: '0x00'}, stateChanges);
+
+		camera.navigate(pos.x, pos.y, camera.$store.zoom);
 	}
 
 	onKeyUp(ev: KeyboardEvent) {}

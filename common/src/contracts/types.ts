@@ -4,11 +4,13 @@ export type Monster = {
 	life: number;
 };
 
+export type MonsterList = readonly [Monster, Monster, Monster, Monster, Monster];
+
 export type StateChanges = {
 	characterID: bigint;
 	newPosition: bigint;
 	epoch: number;
-	monsters: readonly [Monster, Monster, Monster, Monster, Monster];
+	monsters: MonsterList;
 };
 
 export type Action = {
@@ -35,5 +37,7 @@ export type Area = {
 export interface Game {
 	areaAt(x: number, y: number): Promise<Area>;
 	stepChanges(stateChanges: StateChanges, action: Action): Promise<StateChanges>;
+	initialStateChanges(context: Context): Promise<StateChanges>;
+
 	getArea(x: number, y: number): Area;
 }

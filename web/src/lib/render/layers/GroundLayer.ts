@@ -6,7 +6,7 @@ import * as m3 from '$utils/m3';
 import sheetURL from '$data/assets/tiles.png';
 import sheet from '$data/assets/tiles.json';
 import {drawTile, drawTileCol, drawTileRow, drawTileX2y2, type FrameDataWithUV} from '../programs/tiles';
-import {areas} from '$lib/state/computedState';
+import {areas} from '$lib/state/computed';
 import {AREA_OFFSET, AREA_SIZE, areaCoord} from 'template-game-common';
 
 type SheetData = typeof sheet;

@@ -1,4 +1,4 @@
-import {AREA_SIZE, Action, Area, StateChanges, areaCoord, type Game} from 'template-game-common';
+import {AREA_SIZE, Action, Area, Context, StateChanges, areaCoord, type Game} from 'template-game-common';
 import artifacts from 'template-game-contracts/artifacts'; // TODO use single file per artifact
 import {createEVMRunner} from './utils';
 import {decodeErrorResult, decodeFunctionResult, encodeFunctionData, encodePacked, keccak256} from 'viem';
@@ -87,6 +87,32 @@ export class EVMGame implements Game {
 			return decodeFunctionResult({
 				abi: artifacts.GameReveal.abi,
 				functionName: 'stepChanges',
+				data: result,
+			});
+		} catch (err) {
+			const error = decodeErrorResult({
+				abi: artifacts.GameReveal.abi,
+				data: result,
+			});
+			throw error;
+		}
+	}
+
+	async initialStateChanges(context: Context): Promise<StateChanges> {
+		const evm = await this.evmPromise;
+		const result = await evm.runContract(
+			'GameReveal',
+			encodeFunctionData({
+				abi: artifacts.GameReveal.abi,
+				functionName: 'initialStateChanges',
+				args: [context],
+			}),
+		);
+
+		try {
+			return decodeFunctionResult({
+				abi: artifacts.GameReveal.abi,
+				functionName: 'initialStateChanges',
 				data: result,
 			});
 		} catch (err) {

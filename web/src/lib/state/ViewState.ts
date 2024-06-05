@@ -8,13 +8,14 @@ import type {OnChainActions} from '$lib/account/base';
 import type {GameMetadata, LocalMove, OffchainState} from '$lib/account/account-data';
 import {memory, type MemoryState} from './memory';
 import type {Monster} from 'template-game-common';
+import {initialState, type InitialState} from './initialState';
 
 // TODO
 export type GameViewState = {
 	hasCommitment?: boolean; // TODO
 	currentCharacter?: string;
 	characters: {[id: string]: Character};
-	monsters: Monster[];
+	monsters: readonly Monster[];
 };
 function isValidMove(move: LocalMove) {
 	// TODO
@@ -23,6 +24,7 @@ function isValidMove(move: LocalMove) {
 
 function merge(
 	state: Data,
+	initialState: InitialState,
 	memory: MemoryState,
 	offchainState: OffchainState,
 	onchainActions: OnChainActions<GameMetadata>,
@@ -57,6 +59,8 @@ function merge(
 
 		if (memory.stateChanges) {
 			viewState.monsters = memory.stateChanges.monsters;
+		} else if (initialState.stateChanges) {
+			viewState.monsters = initialState.stateChanges.monsters;
 		}
 	}
 
@@ -64,9 +68,9 @@ function merge(
 }
 
 export const gameView = derived(
-	[state, memory, accountData.offchainState, accountData.onchainActions, epochState, account],
-	([$state, $memory, $offchainState, $onchainActions, $epochState, $account]) => {
-		return merge($state, $memory, $offchainState, $onchainActions, $epochState, $account);
+	[state, initialState, memory, accountData.offchainState, accountData.onchainActions, epochState, account],
+	([$state, $initialState, $memory, $offchainState, $onchainActions, $epochState, $account]) => {
+		return merge($state, $initialState, $memory, $offchainState, $onchainActions, $epochState, $account);
 	},
 );
 

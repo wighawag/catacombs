@@ -1,5 +1,5 @@
 import {writable} from 'svelte/store';
-import type {StateChanges} from './computedState';
+import type {StateChanges} from 'template-game-common';
 
 export type Move = {
 	position: {x: number; y: number};
