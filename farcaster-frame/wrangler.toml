@@ -1,7 +1,8 @@
-name = "frog-template"
-compatibility_date = "2023-12-01"
-compatibility_flags = [ "nodejs_compat" ]
+name = "catacombs-farcaster"
 main="src/index.tsx"
+
+compatibility_date = "2023-08-14"
+compatibility_flags = [ "nodejs_compat" ]
 
 [site]
 bucket = "./public"

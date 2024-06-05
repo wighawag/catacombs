@@ -2,12 +2,14 @@
 import { Button, FrameContext, Frog, TextInput } from "frog";
 import { devtools } from "frog/dev";
 import { serveStatic } from "frog/serve-static";
-import {
-  FarcasterNetwork,
-  Message,
-  MessageData,
-  MessageType,
-} from "@farcaster/hub-nodejs";
+import { handle } from 'frog/vercel';
+
+// import {
+//   FarcasterNetwork,
+//   Message,
+//   MessageData,
+//   MessageType,
+// } from "@farcaster/hub-nodejs";
 import { areaCoord, wallAt } from "template-game-common";
 import { EVMGame } from "template-game-contracts-js";
 
@@ -24,6 +26,8 @@ const memory: {
 } = {};
 
 export const app = new Frog({
+  assetsPath: '/',
+  basePath: '/api',
   // Supply a Hub to enable frame verification.
   // hub: neynar({ apiKey: 'NEYNAR_FROG_FM' })
   imageOptions: { width: 600, height: 600 },
@@ -458,34 +462,38 @@ app.frame("/", async (c: FrameContext) => {
   console.log({ status });
   if (status === "response") {
     const json = await req.json();
-    const { trustedData } = json;
-    const frameMessage = Message.decode(
-      Buffer.from(trustedData.messageBytes, "hex")
-    );
+    const { trustedData, untrustedData} = json;
+    // console.log(json);
+    // const frameMessage = Message.decode(
+    //   Buffer.from(trustedData.messageBytes, "hex")
+    // );
 
-    const messageSignature = Buffer.from(frameMessage.signature).toString(
-      "hex"
-    );
+    // const messageSignature = Buffer.from(frameMessage.signature).toString(
+    //   "hex"
+    // );
 
-    if (frameMessage.data) {
-      const { fid } = frameMessage.data;
-      const messageData: MessageData = {
-        type: frameMessage.data.type as MessageType,
-        fid: fid,
-        timestamp: frameMessage.data.timestamp as number,
-        network: frameMessage.data.network as FarcasterNetwork,
-        frameActionBody: frameMessage.data?.frameActionBody,
-      };
+    // if (frameMessage.data) {
+      // const { fid } = frameMessage.data;
+      // const messageData: MessageData = {
+      //   type: frameMessage.data.type as MessageType,
+      //   fid: fid,
+      //   timestamp: frameMessage.data.timestamp as number,
+      //   network: frameMessage.data.network as FarcasterNetwork,
+      //   frameActionBody: frameMessage.data?.frameActionBody,
+      // };
 
-      const messageEncoded = MessageData.encode(messageData).finish();
+      // const messageEncoded = MessageData.encode(messageData).finish();
 
-      const args = [
-        "0x" + Buffer.from(frameMessage.signer).toString("hex"), // public_key
-        "0x" + Buffer.from(messageSignature).slice(0, 32).toString("hex"), // signature_r
-        "0x" + Buffer.from(messageSignature).slice(32, 64).toString("hex"), // signature_s
-        "0x" + Buffer.from(messageEncoded).toString("hex"), // message
-      ];
+      // const args = [
+      //   "0x" + Buffer.from(frameMessage.signer).toString("hex"), // public_key
+      //   "0x" + Buffer.from(messageSignature).slice(0, 32).toString("hex"), // signature_r
+      //   "0x" + Buffer.from(messageSignature).slice(32, 64).toString("hex"), // signature_s
+      //   "0x" + Buffer.from(messageEncoded).toString("hex"), // message
+      // ];
 
+     if (untrustedData.fid) {
+
+      const {fid} = untrustedData;
       let fidDATA = memory[fid];
 
       if (buttonValue == 'reset') {
@@ -543,14 +551,22 @@ app.frame("/", async (c: FrameContext) => {
   }
 });
 
-const isCloudflareWorker = typeof caches !== "undefined";
-if (isCloudflareWorker) {
-  const manifest = await import("__STATIC_CONTENT_MANIFEST");
-  const serveStaticOptions = { manifest, root: "./" };
-  app.use("/*", serveStatic(serveStaticOptions));
-  devtools(app, { assetsPath: "/frog", serveStatic, serveStaticOptions });
-} else {
-  devtools(app, { serveStatic });
-}
+// @ts-ignore
+const isEdgeFunction = typeof EdgeFunction !== 'undefined'
+const isProduction = isEdgeFunction || import.meta.env?.MODE !== 'development'
+devtools(app, isProduction ? { assetsPath: '/.frog' } : { serveStatic })
 
-export default app;
+export const GET = handle(app)
+export const POST = handle(app)
+
+// const isCloudflareWorker = typeof caches !== "undefined";
+// if (isCloudflareWorker) {
+//   const manifest = await import("__STATIC_CONTENT_MANIFEST");
+//   const serveStaticOptions = { manifest, root: "./" };
+//   app.use("/*", serveStatic(serveStaticOptions));
+//   devtools(app, { assetsPath: "/frog", serveStatic, serveStaticOptions });
+// } else {
+//   devtools(app, { serveStatic });
+// }
+
+// export default app;
