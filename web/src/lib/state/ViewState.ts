@@ -7,12 +7,14 @@ import type {AccountState} from 'web3-connection';
 import type {OnChainActions} from '$lib/account/base';
 import type {GameMetadata, LocalMove, OffchainState} from '$lib/account/account-data';
 import {memory, type MemoryState} from './memory';
+import type {Monster} from 'template-game-common';
 
 // TODO
 export type GameViewState = {
 	hasCommitment?: boolean; // TODO
 	currentCharacter?: string;
 	characters: {[id: string]: Character};
+	monsters: Monster[];
 };
 function isValidMove(move: LocalMove) {
 	// TODO
@@ -29,6 +31,7 @@ function merge(
 ): GameViewState {
 	const viewState: GameViewState = {
 		characters: {},
+		monsters: [],
 	};
 	for (const key of Object.keys(state.characters)) {
 		const onchain = state.characters[key];
@@ -51,6 +54,10 @@ function merge(
 			currentPosition = move.position;
 		}
 		currentCharacter.position = currentPosition;
+
+		if (memory.stateChanges) {
+			viewState.monsters = memory.stateChanges.monsters;
+		}
 	}
 
 	return viewState;

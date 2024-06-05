@@ -160,6 +160,16 @@ export class GroundLayer extends Textured2DProgram {
 			drawTile(this.attributes, hx + 5 / 22, hy + 5 / 22, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
 		}
 
+		for (const monster of state.monsters) {
+			const hx = monster.x;
+			const hy = monster.y;
+			if (monster.life <= 0) {
+				drawTile(this.attributes, hx + 5 / 22, hy + 5 / 22, texPerSprites['tomb.png'], 16 / 28, 16 / 28, 1);
+			} else {
+				drawTile(this.attributes, hx + 5 / 22, hy + 5 / 22, texPerSprites['spider_00.png'], 16 / 28, 16 / 28, 1);
+			}
+		}
+
 		// we update the buffer with the new arrays
 		twgl.setAttribInfoBufferFromArray(GL, this.bufferInfo.attribs!.a_position, this.attributes.positions);
 		twgl.setAttribInfoBufferFromArray(GL, this.bufferInfo.attribs!.a_tex, this.attributes.texs);

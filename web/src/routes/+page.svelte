@@ -1,5 +1,7 @@
 <script lang="ts">
 	import {gameView} from '$lib/state/ViewState';
+	import {status} from '$lib/state/State';
+	import {account} from '$lib/blockchain/connection';
 	import WebGlCanvas from '$lib/render/WebGLCanvas.svelte';
 	import Header from '$lib/ui/header/Header.svelte';
 	import InfoBar from '$lib/ui/components/InfoBar.svelte';
@@ -13,7 +15,8 @@
 		</div>
 	</Header>
 
-	{#if !$gameView.currentCharacter}
+	<!-- TODO pending tx... -->
+	{#if $account.state === 'Connected' && $status.state == 'IndexingLatest' && !$gameView.currentCharacter}
 		<MintAndJoinPanel />
 	{/if}
 </div>
