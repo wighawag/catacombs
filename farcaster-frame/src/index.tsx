@@ -493,8 +493,8 @@ app.frame("/", async (c: FrameContext) => {
 
       if (buttonValue == 'reset') {
         delete memory[fid];
-        return defaultView(c, "Stake 0.005 ETH", "", [
-          <Button value="stake">Stake 0.005ETH</Button>,
+        return defaultView(c, "Stake 5 peanuts", "", [
+          <Button value="stake">Stake 5 peanuts</Button>,
         ]);
       }
 
