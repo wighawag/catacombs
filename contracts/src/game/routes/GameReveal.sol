@@ -66,11 +66,11 @@ contract GameReveal is Game {
         // position can be represented as delta from player and can be store in few bits this way
         // life is tiny and monster type can do the rest
         // 256bits should be enough
-        monsters[0] = Monster({x: x + 2, y: y + 5, life: 3});
-        monsters[1] = Monster({x: x + 5, y: y + 5, life: 3});
-        monsters[2] = Monster({x: x + 7, y: y + 2, life: 3});
-        monsters[3] = Monster({x: x + 9, y: y + 5, life: 3});
-        monsters[4] = Monster({x: x + 4, y: y + 10, life: 3});
+        monsters[0] = Monster({x: x - 2, y: y + 5, life: 3});
+        monsters[1] = Monster({x: x - 5, y: y - 3, life: 3});
+        monsters[2] = Monster({x: x + 5, y: y + 2, life: 3});
+        monsters[3] = Monster({x: x + 6, y: y - 5, life: 3});
+        monsters[4] = Monster({x: x + 4, y: y + 8, life: 3});
         stateChanges.monsters = monsters;
         stateChanges.newPosition = position;
     }
