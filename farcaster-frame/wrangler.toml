@@ -1,4 +1,4 @@
-name = "frog-template"
+name = "catacombs-farcaster"
 compatibility_date = "2023-12-01"
 compatibility_flags = [ "nodejs_compat" ]
 main="src/index.tsx"
