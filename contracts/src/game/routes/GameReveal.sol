@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import "../Game.sol";
 import "../GameUtils.sol";
 import "../../utils/PositionUtils.sol";
+import "../../solidity-kit/solc_0_8/utils/Math.sol";
 
 contract GameReveal is Game {
     using GameUtils for Config;
@@ -130,19 +131,45 @@ contract GameReveal is Game {
         (x, y) = PositionUtils.toXY(position);
         for (uint256 e = 0; e < 5; e++) {
             Monster memory monster = monsters[e];
-            // TODO prevent monster to share space
             if (monster.life > 0) {
                 int32 m_nextX = monster.x;
                 int32 m_nextY = monster.y;
                 int32 xDiff = x - monster.x;
                 int32 yDiff = y - monster.y;
-                if (xDiff > yDiff) {
-                    m_nextX += xDiff > int32(0) ? int32(1) : int32(-1);
+
+                if (Math.abs(xDiff) > Math.abs(yDiff)) {
+                    m_nextX += (xDiff > int32(0) ? int32(1) : int32(-1));
+                    if (
+                        GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
+                        isTakenByOtherMonster(monsters, m_nextX, m_nextY)
+                    ) {
+                        m_nextY += (yDiff > int32(0) ? int32(1) : int32(-1));
+                        m_nextX = monster.x;
+                        if (
+                            GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
+                            isTakenByOtherMonster(monsters, m_nextX, m_nextY)
+                        ) {
+                            m_nextY = monster.y;
+                        }
+                    }
                 } else {
-                    m_nextY += yDiff > int32(0) ? int32(1) : int32(-1);
+                    m_nextY += (yDiff > int32(0) ? int32(1) : int32(-1));
+                    if (
+                        GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
+                        isTakenByOtherMonster(monsters, m_nextX, m_nextY)
+                    ) {
+                        m_nextX += (xDiff > int32(0) ? int32(1) : int32(-1));
+                        m_nextY = monster.y;
+                        if (
+                            GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
+                            isTakenByOtherMonster(monsters, m_nextX, m_nextY)
+                        ) {
+                            m_nextX = monster.x;
+                        }
+                    }
                 }
                 // TODO walls
-                if (m_nextX == x && nextY == y) {
+                if (m_nextX == x && m_nextY == y) {
                     // Player life ---
                 } else {
                     monster.x = m_nextX;
@@ -151,6 +178,15 @@ contract GameReveal is Game {
             }
         }
         stateChanges.newPosition = position;
+    }
+
+    function isTakenByOtherMonster(Monster[5] memory monsters, int32 x, int32 y) internal pure returns (bool) {
+        for (uint256 i = 0; i < 5; i++) {
+            if (monsters[i].x == x && monsters[i].y == y && monsters[i].life > 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {
