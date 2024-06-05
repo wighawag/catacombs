@@ -50,7 +50,7 @@ contract GameReveal is Game {
         bool revetOnInvalidMoves
     ) public pure returns (StateChanges memory stateChanges) {
         stateChanges = initialStateChanges(context);
-        for (uint256 i = 0; i < MAX_PATH_LENGTH; i++) {
+        for (uint256 i = 0; i < context.actions.length; i++) {
             _step(stateChanges, context.actions[i], revetOnInvalidMoves);
         }
     }

@@ -25,6 +25,7 @@ const defaultSettings = {
 	outputSelection: {
 		'*': {
 			'*': ['evm.methodIdentifiers'],
+			'*': ['evm.gasEstimates'],
 		},
 	},
 	evmVersion: 'cancun',
