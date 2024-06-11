@@ -3,18 +3,18 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "@farcaster/hub-nodejs": "^0.11.12",
-    "frog": "latest",
-    "hono": "^4",
-    "viem": "^2.13.5",
+    "@farcaster/hub-nodejs": "^0.11.14",
+    "frog": "^0.11.6",
+    "hono": "^4.4.5",
     "template-game-common": "workspace:*",
     "template-game-contracts": "workspace:*",
-    "template-game-contracts-js": "workspace:*"
+    "template-game-contracts-js": "workspace:*",
+    "viem": "^2.13.8"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240512.0",
+    "@cloudflare/workers-types": "^4.20240605.0",
     "as-soon": "^0.0.9",
-    "wrangler": "^3.56.0"
+    "wrangler": "^3.60.1"
   },
   "scripts": {
     "sql2ts": "node sql2ts.cjs characters",

@@ -7,10 +7,10 @@
 	"devDependencies": {
 		"ask-env": "^0.0.1",
 		"ldenv": "^0.3.10",
-		"prettier": "^3.2.5",
+		"prettier": "^3.3.2",
 		"sharp": "^0.33.4",
 		"syncpack": "^12.3.2",
-		"vitepress": "1.2.2"
+		"vitepress": "1.2.3"
 	},
 	"pnpm": {
 		"supportedArchitectures": {

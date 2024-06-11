@@ -23,14 +23,14 @@
     "src"
   ],
   "dependencies": {
-    "@types/node": "^20.12.12",
+    "@types/node": "^20.14.2",
     "named-logs": "^0.2.4",
-    "viem": "^2.12.1"
+    "viem": "^2.13.8"
   },
   "devDependencies": {
     "ldenv": "^0.3.10",
     "pkgroll": "^2.0.2",
-    "prettier": "^3.2.5",
+    "prettier": "^3.3.2",
     "typescript": "^5.4.5"
   },
   "scripts": {
