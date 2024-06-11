@@ -180,6 +180,7 @@
             <key type="filename">tiles/spider_00.png</key>
             <key type="filename">tiles/spider_01.png</key>
             <key type="filename">tiles/spider_02.png</key>
+            <key type="filename">tiles/tomb.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
