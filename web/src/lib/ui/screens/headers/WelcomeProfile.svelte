@@ -1,11 +1,11 @@
 <script lang="ts">
 	import HPBar from '../../components/HPBar.svelte';
 	import IconSkull from '$data/assets/skull-key-white.png';
+	import {portrait} from '$lib/data/characters';
 
 	export let characterClass: number = 0;
 
-	const portraits = ['port_war_6x.png', 'port_adv_6x.png', 'port_wiz_6x.png', 'port_bar_6x.png'];
-	$: classPortrait = `/images/ui/portraits/${portraits[characterClass]}`;
+	$: classPortrait = portrait(characterClass);
 	$: characterClassName = characterClass === 0 ? 'Barbarian' : 'Unknown';
 </script>
 
