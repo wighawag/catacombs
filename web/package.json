@@ -1,0 +1,39 @@
+{
+	"name": "template-game-web",
+	"version": "0.0.1",
+	"private": true,
+	"type": "module",
+	"dependencies": {
+		"@picocss/pico": "^2.0.6"
+	},
+	"devDependencies": {
+		"@rocketh/export": "^0.10.7",
+		"@sveltejs/adapter-static": "^3.0.0",
+		"@sveltejs/kit": "^2.0.0",
+		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"ipfs-gateway-emulator": "4.2.1-ipfs.2",
+		"prettier": "^3.1.1",
+		"prettier-plugin-svelte": "^3.1.2",
+		"pwag": "0.3.0",
+		"sass": "^1.77.5",
+		"svelte": "^4.2.7",
+		"svelte-check": "^3.6.0",
+		"tslib": "^2.4.1",
+		"typescript": "^5.0.0",
+		"vite": "^5.0.3",
+		"vite-plugin-node-polyfills": "^0.22.0",
+		"wait-on": "^7.2.0"
+	},
+	"scripts": {
+		"prepare": "pwag static/icon.png src/web-config.json",
+		"dev": "echo 'waiting for src/data/contracts.ts...'; wait-on src/data/contracts.ts && ldenv vite dev",
+		"build": "pnpm run prepare && ldenv vite build",
+		"preview": "ldenv vite preview",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"format:check": "prettier --check .",
+		"format": "prettier --write .",
+		"svelte-check": "svelte-check",
+		"serve": "ipfs-emulator --only -d build -p 8080"
+	}
+}

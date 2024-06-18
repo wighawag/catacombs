@@ -1,0 +1,168 @@
+/* ------------------------------------------------- */
+/* BASIC STYLES */
+/* ------------------------------------------------- */
+:root {
+	background-color: var(--color-surface-500);
+	color: var(--color-text-on-surface-500);
+
+	font-family: 'Noto Sans', Verdana, sans-serif;
+}
+
+a {
+	color: var(--color-text-for-links);
+	text-decoration: underline;
+}
+a:visited {
+	color: var(--color-text-for-links);
+}
+a:hover {
+	/* font-weight: 900; */
+	text-decoration: initial;
+}
+/* ------------------------------------------------- */
+
+/* ------------------------------------------------- */
+/* buttons
+/* ------------------------------------------------- */
+button {
+	border: none;
+	font: inherit;
+	cursor: pointer;
+	pointer-events: auto;
+}
+
+button,
+a[role='button'] {
+	background: var(--color-primary-500);
+	color: var(--color-surface-500);
+
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+
+	cursor: pointer;
+	-webkit-user-select: none;
+	user-select: none;
+
+	border-radius: 0.5rem;
+
+	line-height: 1em;
+	font-weight: 600;
+	text-decoration-line: none;
+
+	height: fit-content;
+	padding: 0.5rem;
+	min-height: 2rem;
+	padding-inline: 0.75rem;
+	font-size: 0.875rem;
+}
+
+button:hover,
+a[role='button']:hover {
+	background: var(--color-primary-600);
+	color: var(--color-surface-500);
+}
+
+button:disabled,
+a[role='button']:disabled {
+	background-color: gray !important;
+}
+
+button.icon {
+	background: inherit;
+	color: inherit;
+	padding: 0;
+}
+
+button.icon:hover {
+	border: 2px solid gray;
+}
+
+button[role='link'] {
+	background: inherit;
+	color: var(--color-text-for-links);
+
+	cursor: pointer;
+	-webkit-user-select: none;
+	user-select: none;
+
+	line-height: 1em;
+	font-weight: 600;
+	text-decoration-line: underline;
+}
+
+button[role='link']:hover {
+	text-decoration-line: unset;
+}
+
+/* ------------------------------------------------- */
+
+/* smooth scrolling */
+
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
+}
+
+.lucide {
+	min-width: 1em;
+	width: 1em;
+	height: 1em;
+	display: inline;
+	vertical-align: baseline;
+}
+
+@keyframes blink {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+html,
+body {
+	height: 100%;
+	width: 100%;
+	padding: 0;
+	margin: 0;
+}
+
+:root {
+	--jsonBracketHoverBackground: var(--color-primary-500);
+}
+
+#root {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	padding: 1rem;
+	gap: 1rem;
+}
+
+#root > header {
+	height: 3rem;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	flex: none;
+}
+
+#root > main {
+	flex: auto;
+	overflow-y: auto;
+	-webkit-overflow-scrolling: touch;
+	flex: auto;
+}
+
+#root > footer {
+	display: flex;
+	justify-content: center;
+	align-items: end;
+	padding: 1rem;
+	height: 3rem;
+	flex: none;
+}

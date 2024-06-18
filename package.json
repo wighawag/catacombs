@@ -30,6 +30,9 @@
 			"remote-account>named-logs": "npm:named-logs-for-servers@0.0.1",
 			"fuzd-scheduler>named-logs": "npm:named-logs-for-servers@0.0.1",
 			"fuzd-tlock-decrypter>named-logs": "npm:named-logs-for-servers@0.0.1"
+		},
+		"patchedDependencies": {
+			"@sveltejs/kit@2.5.10": "patches/@sveltejs__kit@2.5.10.patch"
 		}
 	},
 	"scripts": {
