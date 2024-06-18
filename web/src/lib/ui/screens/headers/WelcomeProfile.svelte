@@ -57,7 +57,7 @@
 	}
 	.info-area {
 		margin-left: 0.4rem;
-		max-width: 7rem;
+		max-width: 12rem;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
