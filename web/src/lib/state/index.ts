@@ -4,23 +4,15 @@ import {initConnection} from '$lib/blockchain/connection';
 import {initContractState} from '$lib/blockchain/contractState';
 import {defaultRPC} from '$lib/config';
 import {createStore} from '$utils/stores/utils';
-import {derived} from 'svelte/store';
+import {derived, get} from 'svelte/store';
 
-export const connection = initConnection();
-
-export const contractState = initContractState(connection);
+export type Context = {context: 'loading' | 'introduction' | 'game'};
 
 export type IntroductionState = {
 	step: number;
 };
-export const introductionState = derived(page, ($page) => {
-	const step = Number($page.url.hash ? $page.url.hash.slice('#introduction_'.length) || 0 : 0);
-	return {
-		step,
-	} satisfies IntroductionState;
-});
 
-export async function start() {
+async function start() {
 	if (!defaultRPC?.url) {
 		throw new Error(`no RPC URL provided`);
 	}
@@ -30,13 +22,20 @@ export async function start() {
 	}
 }
 
-export type Context = {context: 'loading' | 'introduction' | 'game'};
+const connection = initConnection();
+
+const contractState = initContractState(connection);
+
+const introductionState = derived(page, ($page) => {
+	const step = Number($page.url.hash ? $page.url.hash.slice('#introduction_'.length) || 0 : 0);
+	return {
+		step,
+	} satisfies IntroductionState;
+});
 
 const {readable: context, $state: $context, set: setContext} = createStore<Context>({context: 'loading'});
 
-export {context};
-
-export const playerStatus = derived(
+const playerStatus = derived(
 	[connection, contractState.status, contractState.state],
 	([$connection, $contractStatus, $contractState]) => {
 		if (!$connection.providerWithoutSigner) {
@@ -66,3 +65,10 @@ export const playerStatus = derived(
 );
 
 start();
+
+export {context, connection, contractState, playerStatus, introductionState};
+
+if (typeof window != 'undefined') {
+	(window as any).state = {context, connection, contractState, playerStatus, introductionState};
+	(window as any).get = get;
+}
