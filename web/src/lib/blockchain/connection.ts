@@ -89,10 +89,19 @@ export function initConnection() {
 		}
 	}
 
+	function logout() {
+		set({
+			providerWithoutSigner: $state.providerWithoutSigner,
+			providerWithSigner: undefined,
+			address: undefined,
+		});
+	}
+
 	return {
 		...readable,
 		initProviderWithHTTPEndpoint,
 		loginWithEmail,
 		initSignerFromLocalStorage,
+		logout,
 	};
 }

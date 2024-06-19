@@ -1,5 +1,6 @@
 <script lang="ts">
 	import IconSkull from '$data/assets/skull-key-white.png'; // TODO remove ?
+	import {connection} from '$lib/state';
 	import WelcomeProfile from '$lib/ui/screens/headers/WelcomeProfile.svelte';
 	import BorderedContainer from '../components/BorderedContainer.svelte';
 
@@ -9,25 +10,26 @@
 	export let subtext: string | undefined = undefined;
 	export let askKey = false;
 	export let signIn = false;
-	export let btnText: string;
-	export let btnPressed: () => Promise<void>;
-	export let btnDisabled: boolean;
+	export let signOut = false;
+	export let btnText: string | undefined = undefined;
+	export let btnPressed: (() => Promise<void> | void) | undefined = undefined;
+	export let btnDisabled: boolean = false;
 </script>
 
 {#if header === 'logo'}
 	<header class="logo">
-		<img style="height:63px" src={'/title.png'} alt="Ethernal" />
+		<img src={'/title.png'} alt="Ethernal" />
 	</header>
 {/if}
 
 {#if header === 'profile'}
-	<header class="default-screen--header">
+	<header>
 		<WelcomeProfile />
 	</header>
 {/if}
 
 {#if header === 'profile-usedKey'}
-	<header class="default-screen--header">
+	<header>
 		<WelcomeProfile />
 	</header>
 {/if}
@@ -38,7 +40,7 @@
 			<div></div>
 			<div class="content-middle">
 				{#if text}
-					<h1>{text}</h1>
+					<h2>{text}</h2>
 				{:else}
 					<slot />
 				{/if}
@@ -64,7 +66,13 @@
 
 				{#if signIn}
 					<p class="sign-in">
-						Already started? <button role="link" on:click={async () => console.log('signning..')}>Sign in</button>
+						Already started? <button role="link" on:click={async () => connection.loginWithEmail()}>Sign in</button>
+					</p>
+				{/if}
+
+				{#if signOut}
+					<p class="sign-in">
+						Want to switch account? <button role="link" on:click={async () => connection.logout()}>Sign out</button>
 					</p>
 				{/if}
 			</div>
@@ -86,6 +94,9 @@
 	.logo {
 		display: flex;
 		justify-items: center;
+	}
+	.logo > img {
+		height: 100%;
 	}
 
 	.sign-in {

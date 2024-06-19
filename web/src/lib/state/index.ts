@@ -1,16 +1,11 @@
 import {browser} from '$app/environment';
+import {goto, replaceState} from '$app/navigation';
 import {page} from '$app/stores';
 import {initConnection} from '$lib/blockchain/connection';
 import {initContractState} from '$lib/blockchain/contractState';
 import {defaultRPC} from '$lib/config';
 import {createStore} from '$utils/stores/utils';
 import {derived, get} from 'svelte/store';
-
-export type Context = {context: 'loading' | 'introduction' | 'game'};
-
-export type IntroductionState = {
-	step: number;
-};
 
 async function start() {
 	if (!defaultRPC?.url) {
@@ -26,12 +21,35 @@ const connection = initConnection();
 
 const contractState = initContractState(connection);
 
-const introductionState = derived(page, ($page) => {
+export type IntroductionState = {
+	step: number;
+};
+
+const readableIntroductionState = derived(page, ($page) => {
 	const step = Number($page.url.hash ? $page.url.hash.slice('#introduction_'.length) || 0 : 0);
+	console.log({newSTEP: step});
 	return {
 		step,
 	} satisfies IntroductionState;
 });
+
+const introductionState = {
+	...readableIntroductionState,
+	next() {
+		const url = new URL(get(page).url);
+		url.hash = `#introduction_${get(readableIntroductionState).step + 1}`;
+		console.log({next: url});
+		goto(url);
+	},
+	back() {
+		const url = new URL(get(page).url);
+		url.hash = `#introduction_${get(readableIntroductionState).step - 1}`;
+		console.log({back: url});
+		goto(url);
+	},
+};
+
+export type Context = {context: 'loading' | 'start' | 'game'};
 
 const {readable: context, $state: $context, set: setContext} = createStore<Context>({context: 'loading'});
 
@@ -42,8 +60,7 @@ const playerStatus = derived(
 			return 'loading';
 		}
 		if (!$connection.providerWithSigner) {
-			// we jump right into the introduction
-			setContext({context: 'introduction'});
+			setContext({context: 'start'});
 			return 'unconnected';
 		}
 		if ($contractStatus.state === 'IndexingLatest') {
@@ -54,8 +71,7 @@ const playerStatus = derived(
 				}
 				return 'in-game-already';
 			} else {
-				// we jump right into the introduction
-				setContext({context: 'introduction'});
+				setContext({context: 'start'});
 				return 'first-time';
 			}
 		} else {

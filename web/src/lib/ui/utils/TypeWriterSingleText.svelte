@@ -10,9 +10,28 @@
 		text = 'dsdsa';
 	}
 
+	function emptyCharacters(str: string, start: number, extraCharactersAsRatio: number = 0) {
+		let newStr = str.slice(0, start);
+		for (let i = start; i < str.length; i++) {
+			const char = str.charAt(i);
+			if (char == ' ') {
+				newStr += ' ';
+			} else {
+				newStr += '&nbsp;';
+			}
+		}
+		for (let e = 0; e < Math.ceil((str.length - start) * extraCharactersAsRatio); e++) {
+			newStr += '&nbsp;';
+		}
+
+		return newStr;
+	}
+
+	const extraCharactersAsRatio = 0;
+
 	let lastText: string;
 	let lastStartTime: number;
-	let currentText: string | null = null;
+	let currentText: string = emptyCharacters(text, 0, extraCharactersAsRatio);
 	let duration: number;
 	let doneEmitted: boolean;
 
@@ -30,9 +49,9 @@
 		// eslint-disable-next-line no-bitwise
 		const i = ~~(text.length * t);
 		if (i === 0) {
-			currentText = null;
+			currentText = emptyCharacters(text, 0, extraCharactersAsRatio);
 		} else {
-			currentText = text.slice(0, i);
+			currentText = emptyCharacters(text, i, extraCharactersAsRatio);
 		}
 
 		if (!doneEmitted && now - lastStartTime > duration) {
@@ -46,14 +65,12 @@
 	update(performance.now());
 </script>
 
-{#if currentText == null}
-	<p>&nbsp;</p>
-{:else}
-	<p>{currentText}</p>
-{/if}
+<p>{@html currentText}</p>
 
 <style>
 	p {
+		font-family: monospace;
+		font-size: 15px;
 		text-align: left;
 	}
 </style>

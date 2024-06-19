@@ -1,19 +1,16 @@
 <script lang="ts">
 	import TypingTextScreen from '$lib/ui/utils/TypingTextScreen.svelte';
 	import DefaultScreen from '../DefaultScreen.svelte';
-	import {page} from '$app/stores';
-	import {goto} from '$app/navigation';
 	import CharacterSelectionScreen from './CharacterSelectionScreen.svelte';
-	import {connection} from '$lib/state';
-
-	$: step = Number($page.url.hash ? $page.url.hash.slice('#introduction_'.length) || 0 : 0);
-
-	$: console.log({step});
+	import {connection, introductionState, playerStatus} from '$lib/state';
+	import LoadingScreen from '../loading/LoadingScreen.svelte';
 
 	async function next() {
-		const url = new URL($page.url);
-		url.hash = `#introduction_${step + 1}`;
-		goto(url);
+		introductionState.next();
+	}
+
+	async function back() {
+		introductionState.back();
 	}
 
 	function mint() {
@@ -35,7 +32,7 @@
 	async function gotoGameScreen(): Promise<void> {}
 </script>
 
-{#if step == 0}
+{#if $introductionState.step == 0}
 	<DefaultScreen
 		header="logo"
 		signIn={true}
@@ -45,9 +42,9 @@
 		text="Welcome!"
 		btnDisabled={false}
 	></DefaultScreen>
-{:else if step == 1}
+{:else if $introductionState.step == 1}
 	<CharacterSelectionScreen {next}></CharacterSelectionScreen>
-{:else if step == 2}
+{:else if $introductionState.step == 2}
 	<!-- TODO title THE ARRIVAL-->
 	<TypingTextScreen
 		buttonText="Continue"
@@ -57,14 +54,14 @@
 		also damnation..."
 		{next}
 	/>
-{:else if step == 3}
+{:else if $introductionState.step == 3}
 	<TypingTextScreen
 		buttonText="Continue"
 		disableSkip={true}
 		text="Well, sounds like a bunch of scary stories to keep people away."
 		{next}
 	/>
-{:else if step == 4}
+{:else if $introductionState.step == 4}
 	<!-- TODO title THE ENTRANCE-->
 	<TypingTextScreen
 		buttonText="Continue"
@@ -74,36 +71,68 @@
 		will even fight with you. Your anticipation grows..."
 		{next}
 	/>
-{:else if step == 5}
-	<TypingTextScreen
-		buttonText="Sign-in"
-		disableSkip={true}
-		text="But before, let's make sure you are prepared. Get your gears and coins before setting off for the unknown..."
-		next={signin}
-	/>
-{:else if step == 6}
-	<!-- AUTO STEP-->
-	{#if true}
-		<!-- $state.inDungeon -->
-		<DefaultScreen btnDisabled={false} header="profile" btnText="onward!" btnPressed={gotoGameScreen}
-			><h1>Welcome back!</h1>
-			<p>We found your character in the dungeon. Please proceed.</p></DefaultScreen
-		>
-	{:else}
+{:else if $introductionState.step == 5}
+	{#if $playerStatus == 'loading'}
+		<LoadingScreen />
+	{:else if $playerStatus == 'catchingup'}
+		<LoadingScreen />
+	{:else if $playerStatus == 'unconnected'}
 		<TypingTextScreen
 			buttonText="Sign-in"
 			disableSkip={true}
 			text="But before, let's make sure you are prepared. Get your gears and coins before setting off for the unknown..."
 			next={signin}
 		/>
+	{:else if $playerStatus == 'in-game-already'}
+		<DefaultScreen
+			header="profile"
+			btnText="continue"
+			text="Welcome back"
+			subtext="Continue where you left"
+			btnPressed={gotoGameScreen}
+			signOut={true}
+		/>
+	{:else if $playerStatus == 'first-time'}
+		<TypingTextScreen
+			buttonText="continue"
+			disableSkip={true}
+			text={`I see that you already start prepared ${$connection.address}`}
+			{next}
+		/>
+	{:else}
+		Invalid playerStatus: {$playerStatus}
 	{/if}
-{:else if step == 7}
-	<TypingTextScreen
-		buttonText="Pay for food"
-		disableSkip={true}
-		waitText="The elemental counts your money while you check the food...."
-		text="An elemental appears: “You need food to survive in the dungeon. Remember, in the Ethernal every day
-      will cost you food.”"
-		next={mint}
-	/>
+{:else if $introductionState.step == 6}
+	{#if $playerStatus == 'loading'}
+		<LoadingScreen />
+	{:else if $playerStatus == 'catchingup'}
+		<LoadingScreen />
+	{:else if $playerStatus == 'unconnected'}
+		<TypingTextScreen
+			buttonText="go back"
+			disableSkip={true}
+			text="Wait, you need to be logged-in to continue"
+			next={back}
+		/>
+	{:else if $playerStatus == 'in-game-already'}
+		<DefaultScreen
+			header="profile"
+			btnText="continue"
+			text="Welcome back"
+			subtext="Continue where you left"
+			btnPressed={gotoGameScreen}
+			signOut={true}
+		/>
+	{:else if $playerStatus == 'first-time'}
+		<TypingTextScreen
+			buttonText="Pay for food"
+			disableSkip={true}
+			waitText="The elemental counts your money while you check the food...."
+			text="An elemental appears: “You need food to survive in the dungeon. Remember, in the Ethernal every day
+  will cost you food.”"
+			next={mint}
+		/>
+	{:else}
+		Invalid playerStatus: {$playerStatus}
+	{/if}
 {/if}

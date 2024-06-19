@@ -1,14 +1,21 @@
 <script lang="ts">
 	import IntroductionScreen from './intro/IntroductionScreen.svelte';
-	import {context, playerStatus} from '$lib/state';
+	import {context, introductionState, playerStatus} from '$lib/state';
+	import StartScreen from './StartScreen.svelte';
+	import LoadingScreen from './loading/LoadingScreen.svelte';
+	import GameScreen from './game/GameScreen.svelte';
 </script>
 
 {#if $context.context === 'loading'}
-	Loading {$playerStatus}
-{:else if $context.context === 'introduction'}
-	<IntroductionScreen />
+	<LoadingScreen />
+{:else if $context.context === 'start'}
+	{#if $introductionState.step > 0}
+		<IntroductionScreen />
+	{:else}
+		<StartScreen />
+	{/if}
 {:else if $context.context === 'game'}
-	Game {$playerStatus}
+	<GameScreen />
 {:else}
 	Invalid {$playerStatus}
 {/if}
