@@ -390,7 +390,7 @@ export class Camera extends BasicObjectStore<CameraState> {
 	updateZoom(offsetX: number, offsetY: number, dir: 1 | -1 | 0): void {
 		const {x, y} = this.screenToWorld(offsetX, offsetY);
 
-		const maxSize = 500 * 500; //700 * 700; was too big
+		const maxSize = 50 * 50; //700 * 700; was too big
 		const minSize = 1 * 1;
 
 		const size = this.$store.width * this.$store.height;

@@ -58,16 +58,16 @@ export class Textured2DProgram {
 		this.programInfo = twgl.createProgramInfo(GL, [vertexShaderSource, fragmentShaderSource]);
 
 		const attributes = {
-			a_position: {numComponents: 2, data: new Float32Array([])},
-			a_tex: {numComponents: 2, data: new Float32Array([])},
-			a_alpha: {numComponents: 1, data: new Float32Array([])},
+			a_position: {numComponents: 2, data: new Float32Array([]), drawType: GL.DYNAMIC_DRAW},
+			a_tex: {numComponents: 2, data: new Float32Array([]), drawType: GL.DYNAMIC_DRAW},
+			a_alpha: {numComponents: 1, data: new Float32Array([]), drawType: GL.DYNAMIC_DRAW},
 		};
 		this.bufferInfo = twgl.createBufferInfoFromArrays(GL, attributes);
 
 		this.attributes = {
-			positions: {data: new Float32Array(9999999), nextIndex: 0},
-			texs: {data: new Float32Array(9999999), nextIndex: 0},
-			alphas: {data: new Float32Array(9999999), nextIndex: 0},
+			positions: {data: new Float32Array(1_000_000), nextIndex: 0},
+			texs: {data: new Float32Array(1_000_000), nextIndex: 0},
+			alphas: {data: new Float32Array(1_000_000), nextIndex: 0},
 		};
 	}
 
