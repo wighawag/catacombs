@@ -31,20 +31,28 @@ export const globalQueryParams = [
 	'asPlayer',
 ];
 
+function hostURI() {
+	if (browser) {
+		return `${location.protocol}//${location.hostname}`;
+	} else {
+		return `http://localhost`;
+	}
+}
+
 function transformURI<STR extends string | undefined>(uri: STR): STR extends string ? string : undefined;
 function transformURI(uri: string): string | undefined {
 	const d = (() => {
-		if (uri && browser) {
+		if (uri) {
 			if (uri.startsWith('WEBHOST')) {
 				const portAndPath = uri.split(':')[1];
 				if (portAndPath) {
-					return `${location.protocol}//${location.hostname}:${portAndPath}`;
+					return `${hostURI()}:${portAndPath}`;
 				} else {
 					const firstSlash = uri.indexOf('/');
 					if (firstSlash >= 0) {
-						return `${location.protocol}//${location.hostname}${uri.slice(firstSlash)}`;
+						return `${hostURI()}${uri.slice(firstSlash)}`;
 					} else {
-						return `${location.protocol}//${location.hostname}`;
+						return `${hostURI()}`;
 					}
 				}
 			}

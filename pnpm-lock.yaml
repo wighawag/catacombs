@@ -361,8 +361,8 @@ importers:
         specifier: ^1.3.0
         version: 1.3.0
       eip-1193-signer:
-        specifier: ^0.0.2
-        version: 0.0.2(typescript@5.4.5)
+        specifier: ^0.0.3
+        version: 0.0.3(typescript@5.4.5)
       ethereum-indexer-browser:
         specifier: ^0.7.6
         version: 0.7.6(typescript@5.4.5)
@@ -424,9 +424,6 @@ importers:
       vite-plugin-node-polyfills:
         specifier: ^0.22.0
         version: 0.22.0(vite@5.2.13)
-      vite-plugin-qrcode:
-        specifier: ^0.2.3
-        version: 0.2.3(vite@5.2.13)
       wait-on:
         specifier: ^7.2.0
         version: 7.2.0
@@ -5182,17 +5179,6 @@ packages:
       promise-throttle: 1.1.2
     dev: true
 
-  /eip-1193-signer@0.0.2(typescript@5.4.5):
-    resolution: {integrity: sha512-z+Gys1SMWEmIG5xtdiO5RbY84EIkFBjja6ikTkS/kUNP9qrWQgsu6k8WI75mjivAN3OgZHUEz+lXGgbiZ56iLg==}
-    dependencies:
-      viem: 2.13.8(typescript@5.4.5)
-    transitivePeerDependencies:
-      - bufferutil
-      - typescript
-      - utf-8-validate
-      - zod
-    dev: false
-
   /eip-1193-signer@0.0.2(zod@3.23.8):
     resolution: {integrity: sha512-z+Gys1SMWEmIG5xtdiO5RbY84EIkFBjja6ikTkS/kUNP9qrWQgsu6k8WI75mjivAN3OgZHUEz+lXGgbiZ56iLg==}
     dependencies:
@@ -5203,6 +5189,17 @@ packages:
       - utf-8-validate
       - zod
     dev: true
+
+  /eip-1193-signer@0.0.3(typescript@5.4.5):
+    resolution: {integrity: sha512-y4b1Yle04B8dVQ0oE2/C3LYMH1sA5UIZA0Op9MvrPki37I2Qgk5OQsdILTH3H+r7li/mcjBZFf2aSgoNlE2Sfg==}
+    dependencies:
+      viem: 2.13.8(typescript@5.4.5)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+    dev: false
 
   /eip-1193@0.5.0:
     resolution: {integrity: sha512-E800aS6F1CW+L4Ub+DWaAqJFe4C2TOfj2fAQNNk+XT6gN2oITyYgjfj5MFOrxM0kju9cF3j9kV2v8s22kAlYkA==}
@@ -10474,16 +10471,6 @@ packages:
       vite: 5.2.13(sass@1.77.5)
     transitivePeerDependencies:
       - rollup
-    dev: true
-
-  /vite-plugin-qrcode@0.2.3(vite@5.2.13):
-    resolution: {integrity: sha512-TFzhf20v29hnh2XEoZ2kxg8Ff/ui36pR7PGDaHaKEmsQaRagv31XacHxbw5O07HcC1Mkr4tKcYb+PFASSceHmw==}
-    engines: {node: ^14.13.1 || ^16.0.0 || >=18}
-    peerDependencies:
-      vite: ^3.0.0 || ^4.0.0 || ^5.0.0
-    dependencies:
-      qrcode-terminal: 0.12.0
-      vite: 5.2.13(sass@1.77.5)
     dev: true
 
   /vite@5.2.11(@types/node@20.14.2):

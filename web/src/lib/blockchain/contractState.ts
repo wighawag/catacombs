@@ -6,6 +6,7 @@ import {logs} from 'named-logs';
 import {url} from '$utils/path';
 import type {Connection} from './connection';
 import type {Readable} from 'svelte/store';
+import {browser} from '$app/environment';
 
 const namedLogger = logs('state');
 
@@ -66,7 +67,9 @@ export function initContractState(connection: Readable<Connection>) {
 			},
 		}).then((v) => {
 			namedLogger.log(`initialised`, v);
-			indexContinuously(provider);
+			if (browser) {
+				indexContinuously(provider);
+			}
 		});
 	}
 

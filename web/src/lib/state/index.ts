@@ -1,13 +1,12 @@
+import {browser} from '$app/environment';
 import {page} from '$app/stores';
 import {initConnection} from '$lib/blockchain/connection';
 import {initContractState} from '$lib/blockchain/contractState';
 import {defaultRPC} from '$lib/config';
 import {createStore} from '$utils/stores/utils';
-import type {StatusState} from 'ethereum-indexer-browser';
-import {derived, writable, type Readable} from 'svelte/store';
-import type {Data} from 'template-game-indexer';
+import {derived} from 'svelte/store';
 
-export const connection = initConnection(defaultRPC?.url);
+export const connection = initConnection();
 
 export const contractState = initContractState(connection);
 
@@ -21,30 +20,49 @@ export const introductionState = derived(page, ($page) => {
 	} satisfies IntroductionState;
 });
 
-export type GameState = {
-	loaded: boolean;
-	character: boolean;
-};
-
-export const {readable: gameState} = createStore<GameState>({
-	loaded: false,
-	character: false,
-});
-
-export type Context = {
-	context: 'loading' | 'introduction' | 'game';
-};
-export const {readable: currentContext} = createStore<Context>({context: 'loading'});
-
-function initContext(indexingStatus: Readable<StatusState>, contractState: Readable<Data>) {
-	const unsubscribeFromIndexingStatus = indexingStatus.subscribe(($status) => {
-		// if ($status)
-	});
-
-	const unsubscribeFromContractState = contractState.subscribe(($state) => {});
-
-	function stop() {}
-	return {
-		stop,
-	};
+export async function start() {
+	if (!defaultRPC?.url) {
+		throw new Error(`no RPC URL provided`);
+	}
+	const provider = await connection.initProviderWithHTTPEndpoint(defaultRPC?.url);
+	if (provider && browser) {
+		await connection.initSignerFromLocalStorage();
+	}
 }
+
+export type Context = {context: 'loading' | 'introduction' | 'game'};
+
+const {readable: context, $state: $context, set: setContext} = createStore<Context>({context: 'loading'});
+
+export {context};
+
+export const playerStatus = derived(
+	[connection, contractState.status, contractState.state],
+	([$connection, $contractStatus, $contractState]) => {
+		if (!$connection.providerWithoutSigner) {
+			return 'loading';
+		}
+		if (!$connection.providerWithSigner) {
+			// we jump right into the introduction
+			setContext({context: 'introduction'});
+			return 'unconnected';
+		}
+		if ($contractStatus.state === 'IndexingLatest') {
+			if ($contractState.controllers[$connection.address]) {
+				if ($context.context === 'loading') {
+					// we jump right into the game
+					setContext({context: 'game'});
+				}
+				return 'in-game-already';
+			} else {
+				// we jump right into the introduction
+				setContext({context: 'introduction'});
+				return 'first-time';
+			}
+		} else {
+			return 'catchingup';
+		}
+	},
+);
+
+start();
