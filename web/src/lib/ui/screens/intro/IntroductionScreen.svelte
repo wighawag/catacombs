@@ -4,6 +4,7 @@
 	import CharacterSelectionScreen from './CharacterSelectionScreen.svelte';
 	import {connection, introductionState, playerStatus} from '$lib/state';
 	import LoadingScreen from '../loading/LoadingScreen.svelte';
+	import IntroductionGameScreen from '../game/IntroductionGameScreen.svelte';
 
 	async function next() {
 		introductionState.next();
@@ -32,17 +33,7 @@
 	async function gotoGameScreen(): Promise<void> {}
 </script>
 
-{#if $introductionState.step == 0}
-	<DefaultScreen
-		header="logo"
-		signIn={true}
-		footer="social"
-		btnText="Start A New Adventure"
-		btnPressed={next}
-		text="Welcome!"
-		btnDisabled={false}
-	></DefaultScreen>
-{:else if $introductionState.step == 1}
+{#if $introductionState.step == 1}
 	<CharacterSelectionScreen {next}></CharacterSelectionScreen>
 {:else if $introductionState.step == 2}
 	<!-- TODO title THE ARRIVAL-->
@@ -103,6 +94,39 @@
 		Invalid playerStatus: {$playerStatus}
 	{/if}
 {:else if $introductionState.step == 6}
+	{#if $playerStatus == 'loading'}
+		<LoadingScreen />
+	{:else if $playerStatus == 'catchingup'}
+		<LoadingScreen />
+	{:else if $playerStatus == 'unconnected'}
+		<TypingTextScreen
+			buttonText="go back"
+			disableSkip={true}
+			text="Wait, you need to be logged-in to continue"
+			next={back}
+		/>
+	{:else if $playerStatus == 'in-game-already'}
+		<DefaultScreen
+			header="profile"
+			btnText="continue"
+			text="Welcome back"
+			subtext="Continue where you left"
+			btnPressed={gotoGameScreen}
+			signOut={true}
+		/>
+	{:else if $playerStatus == 'first-time'}
+		<TypingTextScreen
+			buttonText="continue"
+			disableSkip={true}
+			text={`You see the Catacombs in the mist of the morning, you descend into what they call the hall, the first level, where the main entrance lies beneath`}
+			{next}
+		/>
+	{:else}
+		Invalid playerStatus: {$playerStatus}
+	{/if}
+{:else if $introductionState.step == 7}
+	<IntroductionGameScreen />
+{:else if $introductionState.step == 8}
 	{#if $playerStatus == 'loading'}
 		<LoadingScreen />
 	{:else if $playerStatus == 'catchingup'}

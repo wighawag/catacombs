@@ -366,12 +366,27 @@ importers:
       ethereum-indexer-browser:
         specifier: ^0.7.6
         version: 0.7.6(typescript@5.4.5)
+      focus-trap:
+        specifier: ^7.5.4
+        version: 7.5.4
       named-logs:
         specifier: ^0.2.4
         version: 0.2.4
+      template-game-common:
+        specifier: workspace:*
+        version: link:../common
+      template-game-contracts-js:
+        specifier: workspace:*
+        version: link:../contracts-js
       template-game-indexer:
         specifier: workspace:*
         version: link:../indexer
+      twgl.js:
+        specifier: ^5.5.4
+        version: 5.5.4
+      viem:
+        specifier: ^2.13.8
+        version: 2.13.8(typescript@5.4.5)
     devDependencies:
       '@rocketh/export':
         specifier: ^0.10.7
@@ -5865,7 +5880,6 @@ packages:
     resolution: {integrity: sha512-N7kHdlgsO/v+iD/dMoJKtsSqs5Dz/dXZVebRgJw23LDk+jMi/974zyiOYDziY2JPp8xivq9BmUGwIJMiuSBi7w==}
     dependencies:
       tabbable: 6.2.0
-    dev: true
 
   /follow-redirects@1.15.6(debug@4.3.5):
     resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
@@ -9961,7 +9975,6 @@ packages:
 
   /tabbable@6.2.0:
     resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
-    dev: true
 
   /table-layout@1.0.2:
     resolution: {integrity: sha512-qd/R7n5rQTRFi+Zf2sk5XVVd9UQl6ZkduPFC3S7WEGJAmetDTjY3qPN50eSKzwuzEyQKy5TN2TiZdkIjos2L6A==}
@@ -10173,6 +10186,10 @@ packages:
   /tweetnacl@1.0.3:
     resolution: {integrity: sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==}
     dev: true
+
+  /twgl.js@5.5.4:
+    resolution: {integrity: sha512-6kFOmijOpmblTN9CCwOTCxK4lPg7rCyQjLuub6EMOlEp89Ex6yUcsMjsmH7andNPL2NE3XmHdqHeP5gVKKPhxw==}
+    dev: false
 
   /type-detect@4.0.8:
     resolution: {integrity: sha512-0fr/mIH1dlO+x7TlcMy+bIDqKPsw/70tVyeHW787goQjhmqaZe10uwLujubK9q9Lg6Fiho1KUKDYz0Z7k7g5/g==}
