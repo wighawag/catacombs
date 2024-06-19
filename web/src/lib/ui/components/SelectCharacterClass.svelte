@@ -12,7 +12,7 @@
 </script>
 
 <h3>Select a class</h3>
-<div class="container">
+<div class="container hide">
 	<label class:disabled={characterClassIndex != 0} class="selection-box">
 		<input type="radio" bind:group={characterClassIndex} value={'0'} />
 		<img src={portrait(0)} alt={characterClassInfo(0).name} />

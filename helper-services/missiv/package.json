@@ -9,7 +9,7 @@
     },
     "scripts": {
         "prepare": "set-defaults .",
-        "dev:worker": "wrangler d1 execute missiv-db --local --file=./node_modules/missiv-server/schema.sql && wrangler dev -c ./wrangler.toml --port 34003",
+        "dev:worker": "wrangler d1 execute missiv-db --local --file=./node_modules/missiv-server/schema.sql && wrangler dev -c ./wrangler.toml --ip 0.0.0.0 --port 34003",
         "dev": "pnpm run /^dev:.*/",
         "wrangler": "wrangler"
     }

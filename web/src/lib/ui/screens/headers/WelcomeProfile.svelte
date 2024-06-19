@@ -45,7 +45,7 @@
 	}
 	.icon {
 		height: 100%;
-		min-width: 48px;
+		width: 48px;
 		border: 1px white dashed;
 	}
 	.text-right {
@@ -57,7 +57,7 @@
 	}
 	.info-area {
 		margin-left: 0.4rem;
-		max-width: 12rem;
+		max-width: 14rem;
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;

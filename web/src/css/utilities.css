@@ -31,4 +31,8 @@ hide element so that only screen-reader can "see" them
 .invisible {
 	visibility: hidden;
 }
+
+.hide {
+	display: none;
+}
 /* ------------------------------------------------- */

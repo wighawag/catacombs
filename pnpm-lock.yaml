@@ -348,9 +348,30 @@ importers:
 
   web:
     dependencies:
+      '@noble/hashes':
+        specifier: ^1.4.0
+        version: 1.4.0
       '@picocss/pico':
         specifier: ^2.0.6
         version: 2.0.6
+      '@renraku/alchemy-login':
+        specifier: ^0.0.9
+        version: 0.0.9
+      '@scure/bip39':
+        specifier: ^1.3.0
+        version: 1.3.0
+      eip-1193-signer:
+        specifier: ^0.0.2
+        version: 0.0.2(typescript@5.4.5)
+      ethereum-indexer-browser:
+        specifier: ^0.7.6
+        version: 0.7.6(typescript@5.4.5)
+      named-logs:
+        specifier: ^0.2.4
+        version: 0.2.4
+      template-game-indexer:
+        specifier: workspace:*
+        version: link:../indexer
     devDependencies:
       '@rocketh/export':
         specifier: ^0.10.7
@@ -364,6 +385,12 @@ importers:
       '@sveltejs/vite-plugin-svelte':
         specifier: ^3.0.0
         version: 3.1.1(svelte@4.2.18)(vite@5.2.13)
+      eip-1193:
+        specifier: ^0.5.0
+        version: 0.5.0
+      eip-1193-jsonrpc-provider:
+        specifier: ^0.4.0
+        version: 0.4.0
       ipfs-gateway-emulator:
         specifier: 4.2.1-ipfs.2
         version: 4.2.1-ipfs.2
@@ -397,6 +424,9 @@ importers:
       vite-plugin-node-polyfills:
         specifier: ^0.22.0
         version: 0.22.0(vite@5.2.13)
+      vite-plugin-qrcode:
+        specifier: ^0.2.3
+        version: 0.2.3(vite@5.2.13)
       wait-on:
         specifier: ^7.2.0
         version: 7.2.0
@@ -2633,6 +2663,12 @@ packages:
     resolution: {integrity: sha512-Vvn3zZrhQZkkBE8LSuW3em98c0FwgO4nxzv6OdSxPKJIEKY2bGbHn+mhGIPerzI4twdxaP8/0+06HBpwf345Lw==}
     dev: false
 
+  /@renraku/alchemy-login@0.0.9:
+    resolution: {integrity: sha512-iYLYNEosFh00traY7P5iFAQy/8GeBRuG6/+ph2NrQLvTlEFpNYgKQFhnsxHHTHKhlPkY8Eh44ULMQLnUALmYHA==}
+    dependencies:
+      sveltore: 0.0.2
+    dev: false
+
   /@resvg/resvg-wasm@2.4.0:
     resolution: {integrity: sha512-C7c51Nn4yTxXFKvgh2txJFNweaVcfUPQxwEUFw4aWsCmfiBDJsTSwviIF8EcwjQ6k8bPyMWCl1vw4BdxE569Cg==}
     engines: {node: '>= 10'}
@@ -3028,7 +3064,6 @@ packages:
     dependencies:
       '@noble/hashes': 1.4.0
       '@scure/base': 1.1.6
-    dev: true
 
   /@sentry/core@5.30.0:
     resolution: {integrity: sha512-TmfrII8w1PQZSZgPpUESqjB+jC6MvZJZdLtE/0hZ+SrnKhW3x5WlYLvTXZpcWePYBku7rl2wn1RZu6uT0qCTeg==}
@@ -3413,7 +3448,7 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.2.13(sass@1.77.5)
+      vite: 5.2.13(@types/node@20.14.2)
       vue: 3.4.27
     dev: true
 
@@ -3872,6 +3907,7 @@ packages:
     dependencies:
       normalize-path: 3.0.0
       picomatch: 2.3.1
+    dev: true
 
   /argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
@@ -4057,6 +4093,7 @@ packages:
   /binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
+    dev: true
 
   /bl@0.8.2:
     resolution: {integrity: sha512-pfqikmByp+lifZCS0p6j6KreV6kNU6Apzpm2nKOk+94cZb/jvle55+JxWiByUQ0Wo/+XnDXEy5MxxKMb6r0VIw==}
@@ -4429,6 +4466,7 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.3
+    dev: true
 
   /ci-info@2.0.0:
     resolution: {integrity: sha512-5tK7EtrZ0N+OLFMthtqOj4fI2Jeb88C4CAZPu25LDVUgXJ0A3Js4PMGqrn0JU1W0Mh1/Z8wZzYPxqUrXeBboCQ==}
@@ -5144,6 +5182,17 @@ packages:
       promise-throttle: 1.1.2
     dev: true
 
+  /eip-1193-signer@0.0.2(typescript@5.4.5):
+    resolution: {integrity: sha512-z+Gys1SMWEmIG5xtdiO5RbY84EIkFBjja6ikTkS/kUNP9qrWQgsu6k8WI75mjivAN3OgZHUEz+lXGgbiZ56iLg==}
+    dependencies:
+      viem: 2.13.8(typescript@5.4.5)
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+    dev: false
+
   /eip-1193-signer@0.0.2(zod@3.23.8):
     resolution: {integrity: sha512-z+Gys1SMWEmIG5xtdiO5RbY84EIkFBjja6ikTkS/kUNP9qrWQgsu6k8WI75mjivAN3OgZHUEz+lXGgbiZ56iLg==}
     dependencies:
@@ -5465,7 +5514,6 @@ packages:
       - typescript
       - utf-8-validate
       - zod
-    dev: true
 
   /ethereum-indexer-cli@0.6.30(typescript@5.4.5):
     resolution: {integrity: sha512-3ZJio0hQSVV/l7EdjWy1TIR8S3fAyeMXAyMaftZHXF2cHPPMr/JKiScdo/VUeictd/x+fOIe6ZDO3bArsARSaw==}
@@ -5577,7 +5625,6 @@ packages:
     resolution: {integrity: sha512-XuFcnpp1llY+1iMAUuaDzBet+Cso754zuROr1Us/W9/r+Fxv0Y8liqa09pOWofO5nL4lI4j8c6fuayokfnIbfQ==}
     dependencies:
       named-logs: 0.2.4
-    dev: true
 
   /ethereum-indexer@0.6.21(typescript@5.4.5):
     resolution: {integrity: sha512-2jhvea/wl6FASc8GS5YzzPG2Cvn+mk9E5xHR/Qwv6XWsnb9sJkDshOxT2bWRlvaw9dyQ2dfpKI8QyYwE0ZiOng==}
@@ -5904,7 +5951,7 @@ packages:
       path-browserify: 1.0.1
       valibot: 0.30.0
       viem: 2.13.8(zod@3.23.8)
-      vite: 5.2.13(sass@1.77.5)
+      vite: 5.2.13(@types/node@20.14.2)
     transitivePeerDependencies:
       - '@types/node'
       - bufferutil
@@ -6520,7 +6567,6 @@ packages:
 
   /idb-keyval@6.2.1:
     resolution: {integrity: sha512-8Sb3veuYCyrZL+VBt9LJfZjLUPWVvqn8tG28VqYNFCo43KHcKuq+b4EiXGeuaLAQWL2YmyDgMp2aSpH9JHsEQg==}
-    dev: true
 
   /idb-wrapper@1.7.2:
     resolution: {integrity: sha512-zfNREywMuf0NzDo9mVsL0yegjsirJxHpKHvWcyRozIqQy89g0a3U+oBPOCN4cc0oCiOuYgZHimzaW/R46G1Mpg==}
@@ -6550,6 +6596,7 @@ packages:
 
   /immutable@4.3.6:
     resolution: {integrity: sha512-Ju0+lEMyzMVZarkTn/gqRpdqd5dOPaz1mCZ0SH3JV6iFw81PldE/PEB1hWVEA288HPt4WXW8O7AWxB10M+03QQ==}
+    dev: true
 
   /import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
@@ -6651,6 +6698,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       binary-extensions: 2.3.0
+    dev: true
 
   /is-builtin-module@3.2.1:
     resolution: {integrity: sha512-BSLE3HnV2syZ0FK0iMA/yUGplUeMmNz4AW5fnTunbCIqZi4vG3WjJT9FHMy5D69xmAYBHXQhJdALdpwVxV501A==}
@@ -7777,7 +7825,7 @@ packages:
     dependencies:
       '@noble/ciphers': 0.5.1
       '@noble/curves': 1.3.0
-      '@noble/hashes': 1.3.3
+      '@noble/hashes': 1.4.0
       '@noble/secp256k1': 2.0.0
       missiv: 0.0.9
       valibot: 0.28.1
@@ -8034,6 +8082,7 @@ packages:
   /normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
+    dev: true
 
   /npm-package-arg@11.0.2:
     resolution: {integrity: sha512-IGN0IAwmhDJwy13Wc8k+4PEbTPhpJnMtfR53ZbOyjkvmEcLS4nCwp6mvMWjS5sUjeiW3mpx6cHmuhKEu9XmcQw==}
@@ -8885,6 +8934,7 @@ packages:
     engines: {node: '>=8.10.0'}
     dependencies:
       picomatch: 2.3.1
+    dev: true
 
   /reduce-flatten@2.0.0:
     resolution: {integrity: sha512-EJ4UNY/U1t2P/2k6oqotuX2Cc3T6nxJwsM0N0asT7dhrtH1ltUxDn4NalSYmPE2rCkVpcf/X6R0wDwcFpzhd4w==}
@@ -9180,6 +9230,7 @@ packages:
       chokidar: 3.6.0
       immutable: 4.3.6
       source-map-js: 1.2.0
+    dev: true
 
   /satori@0.10.13:
     resolution: {integrity: sha512-klCwkVYMQ/ZN5inJLHzrUmGwoRfsdP7idB5hfpJ1jfiJk1ErDitK8Hkc6Kll1+Ox2WtqEuGecSZLnmup3CGzvQ==}
@@ -9870,7 +9921,6 @@ packages:
 
   /sveltore@0.0.2:
     resolution: {integrity: sha512-MqUEo9y7Mh4qy5sNEF05+t7sxhGHYa5dv25+xZSulxFMHFlAYUIPAVXp3Eeu6XtpdV0w6P3izmzgwJf07+3UOw==}
-    dev: true
 
   /svgo@3.3.2:
     resolution: {integrity: sha512-OoohrmuUlBs8B8o6MB2Aevn+pRIH9zDALSR+6hhqVfa6fRwG/Qw9VUMSMW9VNg2CFc/MTIfabtdOVl9ODIJjpw==}
@@ -10276,7 +10326,6 @@ packages:
 
   /use-stores@0.1.0:
     resolution: {integrity: sha512-tOrRU5GZlkU5NWsSplQo1oQpmS4Yh5AXOJBnR7Rku/ocpfa1qUZGy1gr+CGyC7NHcggA6ARs9jvkDTv3B9Ks1Q==}
-    dev: true
 
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
@@ -10427,6 +10476,16 @@ packages:
       - rollup
     dev: true
 
+  /vite-plugin-qrcode@0.2.3(vite@5.2.13):
+    resolution: {integrity: sha512-TFzhf20v29hnh2XEoZ2kxg8Ff/ui36pR7PGDaHaKEmsQaRagv31XacHxbw5O07HcC1Mkr4tKcYb+PFASSceHmw==}
+    engines: {node: ^14.13.1 || ^16.0.0 || >=18}
+    peerDependencies:
+      vite: ^3.0.0 || ^4.0.0 || ^5.0.0
+    dependencies:
+      qrcode-terminal: 0.12.0
+      vite: 5.2.13(sass@1.77.5)
+    dev: true
+
   /vite@5.2.11(@types/node@20.14.2):
     resolution: {integrity: sha512-HndV31LWW05i1BLPMUCE1B9E9GFbOu1MbenhS58FuK6owSO5qHm7GiCotrNY1YE5rMeQSFBGmT5ZaLEjFizgiQ==}
     engines: {node: ^18.0.0 || >=20.0.0}
@@ -10497,7 +10556,6 @@ packages:
       rollup: 4.18.0
     optionalDependencies:
       fsevents: 2.3.3
-    dev: true
 
   /vite@5.2.13(sass@1.77.5):
     resolution: {integrity: sha512-SSq1noJfY9pR3I1TUENL3rQYDQCFqgD+lM6fTRAM8Nv6Lsg5hDLaXkjETVeBt+7vZBCMoibD+6IWnT2mJ+Zb/A==}
@@ -10533,6 +10591,7 @@ packages:
       sass: 1.77.5
     optionalDependencies:
       fsevents: 2.3.3
+    dev: true
 
   /vitefu@0.2.5(vite@5.2.13):
     resolution: {integrity: sha512-SgHtMLoqaeeGnd2evZ849ZbACbnwQCIwRH57t18FxcXoZop0uQu0uzlIhJBlF/eWVzuce0sHeqPcDo+evVcg8Q==}
@@ -10571,7 +10630,7 @@ packages:
       mark.js: 8.11.1
       minisearch: 6.3.0
       shiki: 1.6.3
-      vite: 5.2.13(sass@1.77.5)
+      vite: 5.2.13(@types/node@20.14.2)
       vue: 3.4.27
     transitivePeerDependencies:
       - '@algolia/client-search'

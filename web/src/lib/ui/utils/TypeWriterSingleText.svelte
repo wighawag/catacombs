@@ -51,3 +51,9 @@
 {:else}
 	<p>{currentText}</p>
 {/if}
+
+<style>
+	p {
+		text-align: left;
+	}
+</style>

@@ -5,9 +5,9 @@ export function portrait(characterClassIndex: number) {
 
 const classInfos = [
 	{name: 'Warrior', descriptions: ['Basic all around class']},
-	{name: 'Explorer', descriptions: ['Higher coin gain from generating rooms', 'Weak attack gear']},
-	{name: 'Mage', descriptions: ['More cursed gear', 'Strong defense gear', 'Higher elemental gain']},
-	{name: 'Barbarian', descriptions: ['Strong attack gear', 'Weak defense gear', 'Lower elemental and coin gain']},
+	{name: 'Explorer', descriptions: ['Higher coin gain', 'Weak attack gear']},
+	{name: 'Mage', descriptions: ['More cursed gear', 'Strong defense gear']},
+	{name: 'Barbarian', descriptions: ['Strong attack gear', 'Weak defense gear', 'Lower coin gain']},
 ];
 export function characterClassInfo(characterClassIndex: number) {
 	return classInfos[characterClassIndex];

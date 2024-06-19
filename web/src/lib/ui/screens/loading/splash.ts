@@ -1,6 +1,5 @@
 import {BaseStore} from '$utils/stores/base';
-import lcache from '$utils/localCache';
-import {params} from '$lib/config';
+import {params, localCache} from '$lib/config';
 
 const MAX_STAGE = 1;
 
@@ -10,7 +9,7 @@ class SplashStore extends BaseStore<{stage: number}> {
 	private visited: boolean;
 
 	constructor() {
-		const result = lcache.getItem('__visited');
+		const result = localCache.getItem('__visited');
 		const visited = result === 'true';
 		super({stage: visited && MAX_STAGE > 1 ? 1 : 0});
 		this.stageTime = performance.now();
@@ -74,7 +73,7 @@ class SplashStore extends BaseStore<{stage: number}> {
 		}
 
 		if (this.$store.stage === MAX_STAGE) {
-			lcache.setItem('__visited', 'true');
+			localCache.setItem('__visited', 'true');
 		}
 	}
 }

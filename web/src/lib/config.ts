@@ -1,4 +1,4 @@
-import {version} from '$app/environment';
+import {browser, version} from '$app/environment';
 import {dev as devEnvironment} from '$app/environment';
 
 import {getParamsFromLocation, getHashParamsFromLocation} from '$utils/url';
@@ -12,7 +12,9 @@ import {
 	PUBLIC_SNAPSHOT_URI,
 	PUBLIC_MISSIV_URI,
 } from '$env/static/public';
+
 import {initialContractsInfos, contractsInfos} from './blockchain/networks';
+import {LocalCache} from '$utils/localCache';
 
 export const globalQueryParams = [
 	'debug',
@@ -29,14 +31,34 @@ export const globalQueryParams = [
 	'asPlayer',
 ];
 
-export const hashParams = getHashParamsFromLocation();
-export const {params} = getParamsFromLocation();
-
-export const dev = 'dev' in params ? params['dev'] === 'true' : devEnvironment;
-
-export const asPlayer = 'asPlayer' in params ? params['asPlayer'] : undefined;
-
-export const debugTools = 'debugTools' in params ? params['debugTools'] === 'true' : false;
+function transformURI<STR extends string | undefined>(uri: STR): STR extends string ? string : undefined;
+function transformURI(uri: string): string | undefined {
+	const d = (() => {
+		if (uri && browser) {
+			if (uri.startsWith('WEBHOST')) {
+				const portAndPath = uri.split(':')[1];
+				if (portAndPath) {
+					return `${location.protocol}//${location.hostname}:${portAndPath}`;
+				} else {
+					const firstSlash = uri.indexOf('/');
+					if (firstSlash >= 0) {
+						return `${location.protocol}//${location.hostname}${uri.slice(firstSlash)}`;
+					} else {
+						return `${location.protocol}//${location.hostname}`;
+					}
+				}
+			}
+			const url = new URL(uri);
+			if (url.hostname === 'WEBHOST') {
+				url.hostname = location.hostname;
+				return url.toString();
+			}
+		}
+		return uri;
+	})();
+	console.log({uri: d});
+	return d;
+}
 
 function noEndSlash(str: string) {
 	if (str.endsWith('/')) {
@@ -45,15 +67,19 @@ function noEndSlash(str: string) {
 	return str;
 }
 
-const snapshotURI = params['snapshot'] || PUBLIC_SNAPSHOT_URI;
-export const remoteIndexedState = snapshotURI ? `${noEndSlash(snapshotURI)}/${initialContractsInfos.name}/` : undefined;
+export const hashParams = getHashParamsFromLocation();
+export const {params} = getParamsFromLocation();
 
 const contractsChainId = initialContractsInfos.chainId as string;
-let defaultRPCURL: string | undefined = params['ethnode'];
 
 let blockTime: number = 15;
 
 let isUsingLocalDevNetwork = false;
+
+// ------------------------------------------------------------------------------------------------
+// DEFAULT RPC URL
+// ------------------------------------------------------------------------------------------------
+let defaultRPCURL: string | undefined = params['ethnode'];
 if (contractsChainId === '1337' || contractsChainId === '31337') {
 	isUsingLocalDevNetwork = true;
 	if (!defaultRPCURL) {
@@ -70,24 +96,38 @@ if (!defaultRPCURL) {
 		defaultRPCURL = url;
 	}
 }
+defaultRPCURL = transformURI(defaultRPCURL);
+// ------------------------------------------------------------------------------------------------
 
-const localRPC =
-	isUsingLocalDevNetwork && PUBLIC_DEV_NODE_URI ? {chainId: contractsChainId, url: PUBLIC_DEV_NODE_URI} : undefined;
+export const dev = 'dev' in params ? params['dev'] === 'true' : devEnvironment;
+
+export const asPlayer = 'asPlayer' in params ? params['asPlayer'] : undefined;
+
+export const debugTools = 'debugTools' in params ? params['debugTools'] === 'true' : false;
+
+const snapshotURI = transformURI(params['snapshot'] || PUBLIC_SNAPSHOT_URI);
+export const remoteIndexedState = snapshotURI ? `${noEndSlash(snapshotURI)}/${initialContractsInfos.name}/` : undefined;
+
+const devURI = transformURI(PUBLIC_DEV_NODE_URI);
+
+const localRPC = isUsingLocalDevNetwork && devURI ? {chainId: contractsChainId, url: devURI} : undefined;
 
 const defaultRPC = defaultRPCURL ? {chainId: contractsChainId, url: defaultRPCURL} : undefined;
 
-const SYNC_URI = params['sync'] || PUBLIC_SYNC_URI; //  'http://invalid.io'; // to emulate connection loss :)
-const SYNC_DB_NAME = 'game-' + initialContractsInfos.chainId + '-' + initialContractsInfos.contracts.Game.address;
+const syncURI = transformURI(params['sync'] || PUBLIC_SYNC_URI); //  'http://invalid.io'; // to emulate connection loss :)
+const syncDBName = 'game-' + initialContractsInfos.chainId + '-' + initialContractsInfos.contracts.Game.address;
 
-const FUZD_URI = noEndSlash(params['fuzd'] ? (params['fuzd'] == 'false' ? '' : params['fuzd']) : PUBLIC_FUZD_URI);
+const fuzdURI = noEndSlash(
+	params['fuzd'] ? (params['fuzd'] == 'false' ? '' : transformURI(params['fuzd'])) : transformURI(PUBLIC_FUZD_URI),
+);
 
-const MISSIV_URI = noEndSlash(
+const missivURI = noEndSlash(
 	params['missiv'] ? (params['missiv'] == 'false' ? '' : params['missiv']) : PUBLIC_MISSIV_URI,
 );
 
-const syncInfo = SYNC_URI
+const syncInfo = syncURI
 	? {
-			uri: SYNC_URI,
+			uri: syncURI,
 		}
 	: undefined;
 
@@ -100,11 +140,13 @@ export {
 	isUsingLocalDevNetwork,
 	localRPC,
 	blockTime,
-	SYNC_DB_NAME,
+	syncDBName,
 	syncInfo,
-	FUZD_URI,
-	MISSIV_URI,
+	fuzdURI,
+	missivURI,
 	blockchainExplorer,
 };
+
+export const localCache = new LocalCache(syncDBName);
 
 console.log(`VERSION: ${version}`);

@@ -1,8 +1,7 @@
 import {base} from '$app/paths';
-import {SYNC_DB_NAME} from '$lib/config';
 import {writable, type Readable, type Writable} from 'svelte/store';
 
-class LocalCache {
+export class LocalCache {
 	private _prefix: string;
 	public upgraded: Readable<boolean>;
 	constructor(private version?: string) {
@@ -65,6 +64,3 @@ class LocalCache {
 		}
 	}
 }
-
-// can force version change
-export default new LocalCache(SYNC_DB_NAME);
