@@ -20,7 +20,7 @@ export const globalQueryParams = [
 	'debug',
 	'log',
 	'ethnode',
-	'_d_eruda',
+	'eruda',
 	'dev',
 	'ethnode',
 	'sync',

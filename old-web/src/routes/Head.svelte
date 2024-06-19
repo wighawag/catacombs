@@ -50,7 +50,7 @@
 		<script>
 			(function () {
 				let params = new URLSearchParams(window.location.search);
-				const eruda_options = params.get('_d_eruda');
+				const eruda_options = params.get('eruda');
 				if (eruda_options !== '' && !eruda_options && localStorage.getItem('active-eruda') != 'true') return;
 				const _ = '';
 				let add_plugins = '';
