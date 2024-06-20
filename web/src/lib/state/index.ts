@@ -41,9 +41,9 @@ const introductionState = {
 		console.log({next: url});
 		goto(url);
 	},
-	back() {
+	back(step?: number) {
 		const url = new URL(get(page).url);
-		url.hash = `#introduction_${get(readableIntroductionState).step - 1}`;
+		url.hash = `#introduction_${step ? step : get(readableIntroductionState).step - 1}`;
 		console.log({back: url});
 		goto(url);
 	},

@@ -33,14 +33,16 @@ function merge(
 			: {},
 		monsters: [],
 	};
-	viewState.currentCharacter = '1';
+	viewState.currentCharacter = connection.address ? '1' : undefined;
 
-	const currentCharacter = viewState.characters[viewState.currentCharacter];
-	let currentPosition = currentCharacter.position;
-	for (const move of memory.moves) {
-		currentPosition = move.position;
+	if (viewState.currentCharacter) {
+		const currentCharacter = viewState.characters[viewState.currentCharacter];
+		let currentPosition = currentCharacter.position;
+		for (const move of memory.moves) {
+			currentPosition = move.position;
+		}
+		currentCharacter.position = currentPosition;
 	}
-	currentCharacter.position = currentPosition;
 
 	if (memory.stateChanges) {
 		viewState.monsters = memory.stateChanges.monsters;

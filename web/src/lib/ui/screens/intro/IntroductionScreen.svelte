@@ -10,8 +10,8 @@
 		introductionState.next();
 	}
 
-	async function back() {
-		introductionState.back();
+	async function back(step?: number) {
+		introductionState.back(step);
 	}
 
 	function mint() {
@@ -33,7 +33,11 @@
 	async function gotoGameScreen(): Promise<void> {}
 </script>
 
-{#if $introductionState.step == 1}
+{#if $playerStatus == 'loading'}
+	<LoadingScreen />
+{:else if $playerStatus == 'catchingup'}
+	<LoadingScreen />
+{:else if $introductionState.step == 1}
 	<CharacterSelectionScreen {next}></CharacterSelectionScreen>
 {:else if $introductionState.step == 2}
 	<!-- TODO title THE ARRIVAL-->
@@ -63,11 +67,7 @@
 		{next}
 	/>
 {:else if $introductionState.step == 5}
-	{#if $playerStatus == 'loading'}
-		<LoadingScreen />
-	{:else if $playerStatus == 'catchingup'}
-		<LoadingScreen />
-	{:else if $playerStatus == 'unconnected'}
+	{#if $playerStatus == 'unconnected'}
 		<TypingTextScreen
 			buttonText="Sign-in"
 			disableSkip={true}
@@ -94,16 +94,12 @@
 		Invalid playerStatus: {$playerStatus}
 	{/if}
 {:else if $introductionState.step == 6}
-	{#if $playerStatus == 'loading'}
-		<LoadingScreen />
-	{:else if $playerStatus == 'catchingup'}
-		<LoadingScreen />
-	{:else if $playerStatus == 'unconnected'}
+	{#if $playerStatus == 'unconnected'}
 		<TypingTextScreen
 			buttonText="go back"
 			disableSkip={true}
 			text="Wait, you need to be logged-in to continue"
-			next={back}
+			next={() => back(5)}
 		/>
 	{:else if $playerStatus == 'in-game-already'}
 		<DefaultScreen
@@ -125,18 +121,34 @@
 		Invalid playerStatus: {$playerStatus}
 	{/if}
 {:else if $introductionState.step == 7}
-	<IntroductionGameScreen />
-{:else if $introductionState.step == 8}
-	{#if $playerStatus == 'loading'}
-		<LoadingScreen />
-	{:else if $playerStatus == 'catchingup'}
-		<LoadingScreen />
-	{:else if $playerStatus == 'unconnected'}
+	{#if $playerStatus == 'unconnected'}
 		<TypingTextScreen
 			buttonText="go back"
 			disableSkip={true}
 			text="Wait, you need to be logged-in to continue"
-			next={back}
+			next={() => back(5)}
+		/>
+	{:else if $playerStatus == 'in-game-already'}
+		<DefaultScreen
+			header="profile"
+			btnText="continue"
+			text="Welcome back"
+			subtext="Continue where you left"
+			btnPressed={gotoGameScreen}
+			signOut={true}
+		/>
+	{:else if $playerStatus == 'first-time'}
+		<IntroductionGameScreen />
+	{:else}
+		Invalid playerStatus: {$playerStatus}
+	{/if}
+{:else if $introductionState.step == 8}
+	{#if $playerStatus == 'unconnected'}
+		<TypingTextScreen
+			buttonText="go back"
+			disableSkip={true}
+			text="Wait, you need to be logged-in to continue"
+			next={() => back(5)}
 		/>
 	{:else if $playerStatus == 'in-game-already'}
 		<DefaultScreen
