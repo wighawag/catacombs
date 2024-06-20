@@ -1,6 +1,6 @@
 <script lang="ts">
 	import WebGLCanvas from '$lib/render/WebGLCanvas.svelte';
-	import {gameView} from '$lib/state/ViewState';
+	import {gameView} from '$lib/state/IntroductionViewState';
 </script>
 
 <div class="canvas">

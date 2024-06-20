@@ -38,7 +38,7 @@
 		unsubscribeFromCamera = camera.subscribe((v) => renderer.updateView(v));
 
 		const actionHandler = new ActionHandler();
-		actionHandler.start(camera, canvas);
+		actionHandler.start(camera, canvas, state);
 
 		unsubscribeFromState = state.subscribe(($state) => {
 			renderer.updateState($state);

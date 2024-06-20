@@ -1,4 +1,4 @@
-import {gameView} from '$lib/state/ViewState';
+import {type GameView} from '$lib/state/ViewState';
 
 import {get} from 'svelte/store';
 import {modalStack} from '$utils/ui/modals/ModalContainer.svelte';
@@ -12,11 +12,15 @@ import {connection} from '$lib/state';
 export class ActionHandler {
 	camera!: Camera;
 	canvas!: HTMLCanvasElement;
+	gameView!: GameView;
+
 	keydown!: (ev: KeyboardEvent) => void;
 	keyup!: (ev: KeyboardEvent) => void;
-	start(camera: Camera, canvas: HTMLCanvasElement) {
+
+	start(camera: Camera, canvas: HTMLCanvasElement, gameView: GameView) {
 		this.camera = camera;
 		this.canvas = canvas;
+		this.gameView = gameView;
 		this.camera.onClick = (x, y) => {
 			this.onCellClicked(Math.floor(x), Math.floor(y));
 		};
@@ -33,7 +37,7 @@ export class ActionHandler {
 	}
 
 	async onKeyDown(ev: KeyboardEvent) {
-		const $gameView = get(gameView);
+		const $gameView = get(this.gameView);
 		if (!$gameView.currentCharacter) {
 			console.log('no current character');
 			return;

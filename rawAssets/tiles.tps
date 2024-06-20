@@ -196,6 +196,7 @@
                 <false/>
             </struct>
             <key type="filename">tiles/wall_horiz.png</key>
+            <key type="filename">tiles/wall_horiz_white.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -211,6 +212,7 @@
                 <false/>
             </struct>
             <key type="filename">tiles/wall_vert.png</key>
+            <key type="filename">tiles/wall_vert_white.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>

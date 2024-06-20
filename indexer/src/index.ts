@@ -3,7 +3,7 @@ import {fromJSProcessor} from 'ethereum-indexer-js-processor';
 import contractsInfo from './contracts';
 import {bigIntIDToXY} from 'template-game-common';
 
-enum ControllerType {
+export enum ControllerType {
 	None = 0,
 	Basic,
 	Owner,
