@@ -38,7 +38,7 @@
 	.monster img {
 		width: 256px;
 		image-rendering: pixelated;
-		filter: sepia();
+		filter: sepia() hue-rotate(115deg) brightness(100%) saturate(200%);
 	}
 
 	.actions {
