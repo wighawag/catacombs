@@ -1,4 +1,8 @@
-<div class="content">
+<script>
+	import {fade} from 'svelte/transition';
+</script>
+
+<div class="content" transition:fade>
 	<div class="text">A skeleton jumped out from the corner of the room.</div>
 	<div class="monster">
 		<img alt="skeleton" src="/images/monsters/skeleton.png" />
@@ -34,6 +38,7 @@
 	.monster img {
 		width: 256px;
 		image-rendering: pixelated;
+		filter: sepia();
 	}
 
 	.actions {
