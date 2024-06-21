@@ -11,8 +11,16 @@
 </header>
 
 <main>
-	<div class="canvas">
-		<WebGlCanvas state={gameView} />
+	<div style="width:100%; height: 100%; position: relative;">
+		<div class="canvas">
+			<WebGlCanvas state={gameView} />
+		</div>
+		<div
+			id="game-overlay"
+			style="position: absolute; top:0; left:0; width:100%; height: 100%; pointer-events: none; overflow: hidden;"
+		>
+			<Overlay {gameView} />
+		</div>
 	</div>
 </main>
 
@@ -23,8 +31,6 @@
 		for updates
 	</p> -->
 </footer>
-
-<Overlay {gameView} />
 
 <style>
 	.canvas {
