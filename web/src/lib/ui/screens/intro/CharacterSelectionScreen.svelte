@@ -14,14 +14,18 @@
 
 <DefaultScreen
 	header="logo"
-	btnText="Go forth"
-	btnPressed={async () => {
-		if (name && name !== '') {
-			//characterChoice.setData({name, characterClass});
-			next();
-		}
-	}}
-	btnDisabled={!(name && name !== '')}
+	btn={[
+		{
+			text: 'Go forth',
+			func: async () => {
+				if (name && name !== '') {
+					//characterChoice.setData({name, characterClass});
+					next();
+				}
+			},
+			disabled: !(name && name !== ''),
+		},
+	]}
 >
 	<SelectCharacterClass bind:characterClassIndex bind:name />
 </DefaultScreen>

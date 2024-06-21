@@ -15,31 +15,25 @@
 		header="logo"
 		signIn={true}
 		footer="social"
-		btnText="Start A New Adventure"
-		btnPressed={startIntroduction}
+		btn={[{text: 'Start A New Adventure', func: startIntroduction}]}
 		text="Welcome!"
-		btnDisabled={false}
 	></DefaultScreen>
 {:else if $playerStatus === 'in-game-already'}
 	<DefaultScreen
 		header="logo"
 		footer="social"
-		btnText="Continue"
-		btnPressed={startIntroduction}
+		btn={[{text: 'Continue', func: startIntroduction}]}
 		text="Welcome back!"
 		subtext="You are already in the Catacombs. Come explore more..."
-		btnDisabled={false}
 		signOut={true}
 	></DefaultScreen>
 {:else if $playerStatus === 'first-time'}
 	<DefaultScreen
 		header="logo"
 		footer="social"
-		btnText="Start A New Adventure"
-		btnPressed={startIntroduction}
+		btn={[{text: 'Start A New Adventure', func: startIntroduction}]}
 		text="Welcome back!"
 		subtext="You have yet to create a character and discover the Catacombs!"
-		btnDisabled={false}
 		signOut={true}
 	></DefaultScreen>
 {:else}

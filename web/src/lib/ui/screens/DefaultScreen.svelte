@@ -4,6 +4,8 @@
 	import WelcomeProfile from '$lib/ui/screens/headers/WelcomeProfile.svelte';
 	import BorderedContainer from '../components/BorderedContainer.svelte';
 
+	type ButtonData = {text: string; func: () => Promise<void> | void; disabled?: boolean};
+
 	export let header: string; // TODO options or element
 	export let footer: string | undefined = undefined; // TODO options or element
 	export let text: string | undefined = undefined;
@@ -11,9 +13,17 @@
 	export let askKey = false;
 	export let signIn = false;
 	export let signOut = false;
-	export let btnText: string | undefined = undefined;
-	export let btnPressed: (() => Promise<void> | void) | undefined = undefined;
-	export let btnDisabled: boolean = false;
+	export let btn: ButtonData[] = [];
+
+	$: currentButton = btn.reduce<ButtonData | undefined>((prev, curr) => {
+		if (!prev || prev.disabled) {
+			if (!curr.disabled) {
+				return curr;
+			}
+			return curr;
+		}
+		return prev;
+	}, undefined);
 </script>
 
 {#if header === 'logo'}
@@ -51,8 +61,10 @@
 			<div></div>
 
 			<div class="content-bottom">
-				{#if btnText}
-					<button disabled={btnDisabled} class="wide full" on:click={btnPressed}>{btnText}</button>
+				{#if currentButton}
+					<button disabled={currentButton.disabled} class="wide full" on:click={currentButton.func}
+						>{currentButton.text}</button
+					>
 				{/if}
 
 				{#if askKey}

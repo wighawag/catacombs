@@ -13,11 +13,11 @@
 {:else if $playerStatus == 'catchingup'}
 	<LoadingScreen />
 {:else if $playerStatus == 'unconnected'}
-	<DefaultScreen header="profile" btnText="Sign-in" text="Please login" btnPressed={signIn} />
+	<DefaultScreen header="profile" btn={[{text: 'Sign-in', func: signIn}]} text="Please login" />
 {:else if $playerStatus == 'in-game-already'}
 	Game
 {:else if $playerStatus == 'first-time'}
-	<DefaultScreen header="logo" btnText="ok" text="Welcome" btnPressed={goToIntro} />
+	<DefaultScreen header="logo" btn={[{text: 'ok', func: goToIntro}]} text="Welcome" />
 {:else}
 	Invalid playerStatus: {$playerStatus}
 {/if}

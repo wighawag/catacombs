@@ -6,8 +6,12 @@
 	export let text: string;
 	export let charTime = 50;
 
+	export let progress: number = 0;
+	export let timeLeft: number = Number.MAX_SAFE_INTEGER;
+
+	let advance = 0;
 	export function skip() {
-		text = 'dsdsa';
+		advance = Number.MAX_SAFE_INTEGER;
 	}
 
 	function emptyCharacters(str: string, start: number, extraCharactersAsRatio: number = 0) {
@@ -35,7 +39,8 @@
 	let duration: number;
 	let doneEmitted: boolean;
 
-	const update = (now: number) => {
+	const update = (time: number) => {
+		const now = time + advance;
 		if (text !== lastText) {
 			doneEmitted = false;
 			// console.log('replacing ' + lastText + ' with ' + text);
@@ -44,15 +49,20 @@
 			duration = text.length * charTime;
 			// console.log({lastStartTime, now, duration});
 		}
-		const t = (now - lastStartTime) / duration;
+		const timePast = now - lastStartTime;
+		const t = timePast / duration;
+
+		timeLeft = Math.max(0, duration - timePast);
 
 		// eslint-disable-next-line no-bitwise
-		const i = ~~(text.length * t);
+		const i = Math.min(text.length * t, text.length);
 		if (i === 0) {
 			currentText = emptyCharacters(text, 0, extraCharactersAsRatio);
 		} else {
 			currentText = emptyCharacters(text, i, extraCharactersAsRatio);
 		}
+
+		progress = i / text.length;
 
 		if (!doneEmitted && now - lastStartTime > duration) {
 			doneEmitted = true;

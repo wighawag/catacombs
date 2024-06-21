@@ -43,7 +43,6 @@
 	<!-- TODO title THE ARRIVAL-->
 	<TypingTextScreen
 		buttonText="Continue"
-		disableSkip={true}
 		text="You are carefully pacing down a darkened path. Gloom had set in hours before. You knew the stories about this
 		place you are heading: there is untold wealth in that labyrinth, leftover from a forgotten civilization. There is
 		also damnation..."
@@ -52,7 +51,6 @@
 {:else if $introductionState.step == 3}
 	<TypingTextScreen
 		buttonText="Continue"
-		disableSkip={true}
 		text="Well, sounds like a bunch of scary stories to keep people away."
 		{next}
 	/>
@@ -60,7 +58,6 @@
 	<!-- TODO title THE ENTRANCE-->
 	<TypingTextScreen
 		buttonText="Continue"
-		disableSkip={true}
 		text="There’s a reason they have stayed away, but the reason you’ve come is stronger still. Get as much loot as you
 		can, and then get out. And if you encounter others like yourself, earn some cash by selling them your loot. Or, they
 		will even fight with you. Your anticipation grows..."
@@ -70,23 +67,20 @@
 	{#if $playerStatus == 'unconnected'}
 		<TypingTextScreen
 			buttonText="Sign-in"
-			disableSkip={true}
 			text="But before, let's make sure you are prepared. Get your gears and coins before setting off for the unknown..."
 			next={signin}
 		/>
 	{:else if $playerStatus == 'in-game-already'}
 		<DefaultScreen
 			header="profile"
-			btnText="continue"
+			btn={[{text: 'continue', func: gotoGameScreen}]}
 			text="Welcome back"
 			subtext="Continue where you left"
-			btnPressed={gotoGameScreen}
 			signOut={true}
 		/>
 	{:else if $playerStatus == 'first-time'}
 		<TypingTextScreen
 			buttonText="continue"
-			disableSkip={true}
 			text={`I see that you already start prepared ${$connection.address}`}
 			{next}
 		/>
@@ -95,25 +89,18 @@
 	{/if}
 {:else if $introductionState.step == 6}
 	{#if $playerStatus == 'unconnected'}
-		<TypingTextScreen
-			buttonText="go back"
-			disableSkip={true}
-			text="Wait, you need to be logged-in to continue"
-			next={() => back(5)}
-		/>
+		<TypingTextScreen buttonText="go back" text="Wait, you need to be logged-in to continue" next={() => back(5)} />
 	{:else if $playerStatus == 'in-game-already'}
 		<DefaultScreen
 			header="profile"
-			btnText="continue"
+			btn={[{text: 'continue', func: gotoGameScreen}]}
 			text="Welcome back"
 			subtext="Continue where you left"
-			btnPressed={gotoGameScreen}
 			signOut={true}
 		/>
 	{:else if $playerStatus == 'first-time'}
 		<TypingTextScreen
 			buttonText="continue"
-			disableSkip={true}
 			text={`You see the Catacombs in the mist of the morning, you descend into what they call the hall, the first level, where the main entrance lies beneath`}
 			{next}
 		/>
@@ -122,19 +109,13 @@
 	{/if}
 {:else if $introductionState.step == 7}
 	{#if $playerStatus == 'unconnected'}
-		<TypingTextScreen
-			buttonText="go back"
-			disableSkip={true}
-			text="Wait, you need to be logged-in to continue"
-			next={() => back(5)}
-		/>
+		<TypingTextScreen buttonText="go back" text="Wait, you need to be logged-in to continue" next={() => back(5)} />
 	{:else if $playerStatus == 'in-game-already'}
 		<DefaultScreen
 			header="profile"
-			btnText="continue"
+			btn={[{text: 'continue', func: gotoGameScreen}]}
 			text="Welcome back"
 			subtext="Continue where you left"
-			btnPressed={gotoGameScreen}
 			signOut={true}
 		/>
 	{:else if $playerStatus == 'first-time'}
@@ -144,25 +125,18 @@
 	{/if}
 {:else if $introductionState.step == 8}
 	{#if $playerStatus == 'unconnected'}
-		<TypingTextScreen
-			buttonText="go back"
-			disableSkip={true}
-			text="Wait, you need to be logged-in to continue"
-			next={() => back(5)}
-		/>
+		<TypingTextScreen buttonText="go back" text="Wait, you need to be logged-in to continue" next={() => back(5)} />
 	{:else if $playerStatus == 'in-game-already'}
 		<DefaultScreen
 			header="profile"
-			btnText="continue"
+			btn={[{text: 'continue', func: gotoGameScreen}]}
 			text="Welcome back"
 			subtext="Continue where you left"
-			btnPressed={gotoGameScreen}
 			signOut={true}
 		/>
 	{:else if $playerStatus == 'first-time'}
 		<TypingTextScreen
 			buttonText="Pay for food"
-			disableSkip={true}
 			waitText="The elemental counts your money while you check the food...."
 			text="An elemental appears: “You need food to survive in the dungeon. Remember, in the Ethernal every day
   will cost you food.”"
