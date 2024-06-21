@@ -42,13 +42,37 @@ export class ActionHandler {
 			console.log('no current character');
 			return;
 		}
-		const origPosition = memory.$store.stateChanges?.newPosition
-			? bigIntIDToXY(memory.$store.stateChanges.newPosition)
+		const currentStateChanges = memory.$store.stateChanges[memory.$store.stateChanges.length - 1] || undefined;
+		const origPosition = currentStateChanges?.newPosition
+			? bigIntIDToXY(currentStateChanges.newPosition)
 			: $gameView.characters[$gameView.currentCharacter].position;
 		const position = {x: origPosition.x, y: origPosition.y};
 		if (ev.code === 'Space') {
+			console.log('reseting...');
+			memory.reset();
+
+			// TODO DRY
+			const currentStateChanges = memory.$store.stateChanges[memory.$store.stateChanges.length - 1] || undefined;
+			const origPosition = currentStateChanges?.newPosition
+				? bigIntIDToXY(currentStateChanges.newPosition)
+				: $gameView.characters[$gameView.currentCharacter].position;
+			const position = {x: origPosition.x, y: origPosition.y};
+			console.log({position});
+			camera.navigate(position.x, position.y, camera.$store.zoom);
+			return;
+		}
+		if (ev.code === 'Backspace') {
 			console.log('rewinding...');
 			memory.rewind();
+
+			// TODO DRY
+			const currentStateChanges = memory.$store.stateChanges[memory.$store.stateChanges.length - 1] || undefined;
+			const origPosition = currentStateChanges?.newPosition
+				? bigIntIDToXY(currentStateChanges.newPosition)
+				: $gameView.characters[$gameView.currentCharacter].position;
+			const position = {x: origPosition.x, y: origPosition.y};
+			console.log({position});
+			camera.navigate(position.x, position.y, camera.$store.zoom);
 			return;
 		}
 		if (ev.code === 'ArrowUp') {
@@ -63,8 +87,8 @@ export class ActionHandler {
 
 		const {x, y} = origPosition;
 		let monsters: MonsterList;
-		if (memory.$store.stateChanges?.monsters) {
-			monsters = memory.$store.stateChanges?.monsters;
+		if (currentStateChanges?.monsters) {
+			monsters = currentStateChanges?.monsters;
 		} else {
 			const initialStateChanges = await initialiseStateChanges();
 			monsters = initialStateChanges.monsters;

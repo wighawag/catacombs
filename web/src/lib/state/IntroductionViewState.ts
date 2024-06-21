@@ -23,7 +23,7 @@ function merge(
 						id: '1',
 						position: {
 							x: 0,
-							y: 20,
+							y: 0,
 						},
 						controllers: {
 							[connection.address]: ControllerType.Owner,
@@ -35,6 +35,12 @@ function merge(
 	};
 	viewState.currentCharacter = connection.address ? '1' : undefined;
 
+	if (memory.stateChanges.length > 0) {
+		viewState.monsters = memory.stateChanges[memory.stateChanges.length - 1].monsters;
+	} else if (initialState.stateChanges) {
+		viewState.monsters = initialState.stateChanges.monsters;
+	}
+
 	if (viewState.currentCharacter) {
 		const currentCharacter = viewState.characters[viewState.currentCharacter];
 		let currentPosition = currentCharacter.position;
@@ -42,12 +48,14 @@ function merge(
 			currentPosition = move.position;
 		}
 		currentCharacter.position = currentPosition;
-	}
 
-	if (memory.stateChanges) {
-		viewState.monsters = memory.stateChanges.monsters;
-	} else if (initialState.stateChanges) {
-		viewState.monsters = initialState.stateChanges.monsters;
+		for (const monster of viewState.monsters) {
+			if (monster.x == currentCharacter.position.x && monster.y == currentCharacter.position.y) {
+				viewState.inBattle = {
+					monster,
+				};
+			}
+		}
 	}
 
 	return viewState;

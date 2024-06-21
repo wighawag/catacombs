@@ -15,6 +15,9 @@ export type GameViewState = {
 	currentCharacter?: string;
 	characters: {[id: string]: Character};
 	monsters: readonly Monster[];
+	inBattle?: {
+		monster: Monster;
+	};
 };
 // function isValidMove(move: LocalMove) {
 // 	// TODO
@@ -57,8 +60,8 @@ function merge(
 		}
 		currentCharacter.position = currentPosition;
 
-		if (memory.stateChanges) {
-			viewState.monsters = memory.stateChanges.monsters;
+		if (memory.stateChanges.length > 0) {
+			viewState.monsters = memory.stateChanges[memory.stateChanges.length].monsters;
 		} else if (initialState.stateChanges) {
 			viewState.monsters = initialState.stateChanges.monsters;
 		}

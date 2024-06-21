@@ -108,21 +108,27 @@ contract GameReveal is Game {
     ) internal pure {
         uint64 position = stateChanges.newPosition;
         (int32 x, int32 y) = PositionUtils.toXY(position);
+        uint256 monsterIndex = isTakenByOtherMonster(stateChanges.monsters, x, y);
+        if (monsterIndex != type(uint256).max) {
+            _battle(monsterIndex, stateChanges, action, revetOnInvalidMoves);
+        } else {
+            _move(x, y, stateChanges, action, revetOnInvalidMoves);
+        }
+    }
+    function _move(
+        int32 x,
+        int32 y,
+        StateChanges memory stateChanges,
+        Game.Action memory action,
+        bool revetOnInvalidMoves
+    ) internal pure {
+        uint64 position = stateChanges.newPosition;
+        Monster[5] memory monsters = stateChanges.monsters;
         uint64 next = action.position;
         (int32 nextX, int32 nextY) = PositionUtils.toXY(next);
-        Monster[5] memory monsters = stateChanges.monsters;
         Reason invalidMove = GameUtils.isValidMove(x, y, nextX, nextY);
         if (invalidMove == Reason.None) {
-            bool attacked;
-            for (uint256 e = 0; e < 5; e++) {
-                if (monsters[e].life > 0 && monsters[e].x == nextX && monsters[e].y == nextY) {
-                    attacked = true;
-                    monsters[e].life -= 1;
-                }
-            }
-            if (!attacked) {
-                position = next;
-            }
+            position = next;
         } else {
             if (revetOnInvalidMoves) {
                 revert InvalidMove(invalidMove);
@@ -141,13 +147,13 @@ contract GameReveal is Game {
                     m_nextX += (xDiff > int32(0) ? int32(1) : int32(-1));
                     if (
                         GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
-                        isTakenByOtherMonster(monsters, m_nextX, m_nextY)
+                        isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max
                     ) {
                         m_nextY += (yDiff > int32(0) ? int32(1) : int32(-1));
                         m_nextX = monster.x;
                         if (
                             GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
-                            isTakenByOtherMonster(monsters, m_nextX, m_nextY)
+                            isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max
                         ) {
                             m_nextY = monster.y;
                         }
@@ -156,37 +162,44 @@ contract GameReveal is Game {
                     m_nextY += (yDiff > int32(0) ? int32(1) : int32(-1));
                     if (
                         GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
-                        isTakenByOtherMonster(monsters, m_nextX, m_nextY)
+                        isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max
                     ) {
                         m_nextX += (xDiff > int32(0) ? int32(1) : int32(-1));
                         m_nextY = monster.y;
                         if (
                             GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
-                            isTakenByOtherMonster(monsters, m_nextX, m_nextY)
+                            isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max
                         ) {
                             m_nextX = monster.x;
                         }
                     }
                 }
                 // TODO walls
-                if (m_nextX == x && m_nextY == y) {
-                    // Player life ---
-                } else {
-                    monster.x = m_nextX;
-                    monster.y = m_nextY;
-                }
+                monster.x = m_nextX;
+                monster.y = m_nextY;
             }
         }
         stateChanges.newPosition = position;
     }
 
-    function isTakenByOtherMonster(Monster[5] memory monsters, int32 x, int32 y) internal pure returns (bool) {
+    function _battle(
+        uint256 monsterIndex,
+        StateChanges memory stateChanges,
+        Game.Action memory action,
+        bool revetOnInvalidMoves
+    ) internal pure {}
+
+    function isTakenByOtherMonster(
+        Monster[5] memory monsters,
+        int32 x,
+        int32 y
+    ) internal pure returns (uint256 monsterIndex) {
         for (uint256 i = 0; i < 5; i++) {
             if (monsters[i].x == x && monsters[i].y == y && monsters[i].life > 0) {
-                return true;
+                return i;
             }
         }
-        return false;
+        return type(uint256).max;
     }
 
     function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {

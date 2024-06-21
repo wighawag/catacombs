@@ -8,21 +8,27 @@ export type Move = {
 
 export type MemoryState = {
 	moves: Move[];
-	stateChanges?: StateChanges;
+	stateChanges: StateChanges[];
 };
 
-const $store: MemoryState = {moves: []};
+const $store: MemoryState = {moves: [], stateChanges: []};
 const store = writable<MemoryState>($store);
 
 function addMove(move: Move, stateChanges: StateChanges) {
 	$store.moves.push(move);
-	$store.stateChanges = stateChanges;
+	$store.stateChanges.push(stateChanges);
+	store.set($store);
+}
+
+function reset() {
+	$store.moves.splice(0, $store.moves.length);
+	$store.stateChanges.splice(0, $store.stateChanges.length);
 	store.set($store);
 }
 
 function rewind() {
-	$store.moves.splice(0, $store.moves.length);
-	$store.stateChanges = undefined;
+	$store.moves.pop();
+	$store.stateChanges.pop();
 	store.set($store);
 }
 
@@ -31,6 +37,7 @@ export const memory = {
 	subscribe: store.subscribe,
 	addMove,
 	rewind,
+	reset,
 };
 
 if (typeof window != 'undefined') {
