@@ -5,5 +5,13 @@
 </script>
 
 {#if $gameView.inBattle}
-	<Modal>Battle</Modal>
+	<Modal><div class="content">Battle</div></Modal>
 {/if}
+
+<style>
+	.content {
+		width: 100%;
+		height: 100%;
+		background-color: black;
+	}
+</style>

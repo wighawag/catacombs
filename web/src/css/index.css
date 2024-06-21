@@ -9,3 +9,5 @@
 @import './driver.js.css'; /* style for driver.js */
 
 @import './globals.css'; /* classes to use across components */
+
+@import './ui.css';

@@ -17,11 +17,11 @@
 </main>
 
 <footer>
-	<p>
+	<!-- <p>
 		Follow
 		<a href="https://twitter.com/etherplay" target="_blank" rel="noopener noreferrer">@Etherplay</a>
 		for updates
-	</p>
+	</p> -->
 </footer>
 
 <Overlay {gameView} />
