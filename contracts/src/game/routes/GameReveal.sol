@@ -143,6 +143,10 @@ contract GameReveal is Game {
                 int32 xDiff = x - monster.x;
                 int32 yDiff = y - monster.y;
 
+                if (xDiff == 0 && yDiff == 0) {
+                    continue;
+                }
+
                 if (Math.abs(xDiff) > Math.abs(yDiff)) {
                     m_nextX += (xDiff > int32(0) ? int32(1) : int32(-1));
                     if (
