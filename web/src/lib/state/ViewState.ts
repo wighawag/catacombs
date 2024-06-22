@@ -18,6 +18,7 @@ export type GameViewState = {
 	inBattle?: {
 		monster: Monster;
 	};
+	memory: MemoryState;
 };
 // function isValidMove(move: LocalMove) {
 // 	// TODO
@@ -37,6 +38,7 @@ function merge(
 	const viewState: GameViewState = {
 		characters: {},
 		monsters: [],
+		memory,
 	};
 	for (const key of Object.keys(state.characters)) {
 		const onchain = state.characters[key];

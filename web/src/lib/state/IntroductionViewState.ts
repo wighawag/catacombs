@@ -32,6 +32,7 @@ function merge(
 				}
 			: {},
 		monsters: [],
+		memory,
 	};
 	viewState.currentCharacter = connection.address ? '1' : undefined;
 

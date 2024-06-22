@@ -1,15 +1,29 @@
-<script>
+<script lang="ts">
+	import type {GameView} from '$lib/state/ViewState';
+	import {memory} from '$lib/state/memory';
 	import {fade} from 'svelte/transition';
+
+	export let gameView: GameView;
 </script>
 
 <div class="content" transition:fade>
-	<div class="text">A skeleton jumped out from the corner of the room.</div>
-	<div class="monster">
-		<img alt="skeleton" src="/images/monsters/skeleton.png" />
-	</div>
-	<div class="actions">
-		<button>Battle!</button>
-	</div>
+	{#if $gameView.memory.step == 0}
+		<div class="text">A skeleton jumped out from the corner of the room.</div>
+		<div class="monster">
+			<img alt="skeleton" src="/images/monsters/skeleton.png" />
+		</div>
+		<div class="actions">
+			<button on:click={() => memory.next()}>Battle!</button>
+		</div>
+	{:else}
+		<div class="text">Chose your cards wisely!</div>
+		<div class="monster">
+			<img alt="skeleton" src="/images/monsters/skeleton.png" />
+		</div>
+		<div class="actions">
+			<button>card 1</button>
+		</div>
+	{/if}
 </div>
 
 <style>
