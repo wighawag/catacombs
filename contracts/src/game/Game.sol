@@ -72,7 +72,7 @@ abstract contract Game {
     /// @notice Move struct that define the action, type and position
     struct Action {
         uint64 position;
-        uint192 action; // TODO define: none, open, attack cards, etc...
+        uint192 action; // TODO define: none, open, attack cards, etc... // TODO make position an action and remove position, first byte define the type: move,
     }
 
     enum ControllerType {

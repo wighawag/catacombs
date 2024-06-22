@@ -1,16 +1,26 @@
 export type Monster = {
 	x: number;
 	y: number;
-	life: number;
+	hp: number;
+	kind: number;
 };
 
 export type MonsterList = readonly [Monster, Monster, Monster, Monster, Monster];
 
+export type Battle = {
+	monsterIndexPlus1: number; // 0 means no monster
+	cardsUsed1: number; // bitmap
+	cardsUsed2: number; // bitmap
+};
+
 export type StateChanges = {
 	characterID: bigint;
 	newPosition: bigint;
+	xp: number;
 	epoch: number;
+	hp: number;
 	monsters: MonsterList;
+	battle: Battle;
 };
 
 export type Action = {

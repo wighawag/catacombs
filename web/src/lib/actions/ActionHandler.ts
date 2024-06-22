@@ -42,7 +42,8 @@ export class ActionHandler {
 			console.log('no current character');
 			return;
 		}
-		const currentStateChanges = memory.$store.stateChanges[memory.$store.stateChanges.length - 1] || undefined;
+		const currentStateChanges =
+			memory.$store.stateChanges[memory.$store.stateChanges.length - 1] || (await initialiseStateChanges());
 		const origPosition = currentStateChanges?.newPosition
 			? bigIntIDToXY(currentStateChanges.newPosition)
 			: $gameView.characters[$gameView.currentCharacter].position;
@@ -85,28 +86,15 @@ export class ActionHandler {
 			position.x += 1;
 		}
 
-		const {x, y} = origPosition;
-		let monsters: MonsterList;
-		if (currentStateChanges?.monsters) {
-			monsters = currentStateChanges?.monsters;
-		} else {
-			const initialStateChanges = await initialiseStateChanges();
-			monsters = initialStateChanges.monsters;
-		}
-
-		const stateChanges = await evmGame.stepChanges(
-			{
-				characterID: 1n,
-				epoch: 0,
-				monsters,
-				newPosition: xyToBigIntID(origPosition.x, origPosition.y),
-			},
-			{
-				position: xyToBigIntID(position.x, position.y),
-				action: 0n,
-			},
-		);
+		const stateChanges = await evmGame.stepChanges(currentStateChanges, {
+			position: xyToBigIntID(position.x, position.y),
+			action: 0n,
+		});
+		console.log(`-----------------------------`);
+		console.log(currentStateChanges);
+		console.log(`=>`);
 		console.log(stateChanges);
+		console.log(`-----------------------------`);
 		const pos = bigIntIDToXY(stateChanges.newPosition);
 		memory.addMove({position: pos, action: '0x00'}, stateChanges);
 

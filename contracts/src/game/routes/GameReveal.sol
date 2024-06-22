@@ -21,14 +21,24 @@ contract GameReveal is Game {
     struct Monster {
         int32 x;
         int32 y;
-        uint8 life;
+        uint8 hp;
+        uint8 kind;
+    }
+
+    struct Battle {
+        uint8 monsterIndexPlus1; // 0 means no monster
+        uint8 cardsUsed1; // bitmap
+        uint8 cardsUsed2; // bitmap
     }
 
     struct StateChanges {
         uint256 characterID;
         uint64 newPosition;
+        uint24 xp;
         uint24 epoch;
+        uint8 hp;
         Monster[5] monsters;
+        Battle battle;
     }
 
     function reveal(uint256 characterID, Game.Action[] calldata actions, bytes32 secret) external {
@@ -66,11 +76,11 @@ contract GameReveal is Game {
         // position can be represented as delta from player and can be store in few bits this way
         // life is tiny and monster type can do the rest
         // 256bits should be enough
-        monsters[0] = Monster({x: x - 2, y: y + 5, life: 3});
-        monsters[1] = Monster({x: x - 5, y: y - 3, life: 3});
-        monsters[2] = Monster({x: x + 5, y: y + 2, life: 3});
-        monsters[3] = Monster({x: x + 6, y: y - 5, life: 3});
-        monsters[4] = Monster({x: x + 4, y: y + 8, life: 3});
+        monsters[0] = Monster({x: x - 2, y: y + 5, hp: 3, kind: 1});
+        monsters[1] = Monster({x: x - 5, y: y - 3, hp: 3, kind: 1});
+        monsters[2] = Monster({x: x + 5, y: y + 2, hp: 3, kind: 1});
+        monsters[3] = Monster({x: x + 6, y: y - 5, hp: 3, kind: 1});
+        monsters[4] = Monster({x: x + 4, y: y + 8, hp: 3, kind: 1});
         stateChanges.monsters = monsters;
         stateChanges.newPosition = position;
     }
@@ -108,11 +118,10 @@ contract GameReveal is Game {
     ) internal pure {
         uint64 position = stateChanges.newPosition;
         (int32 x, int32 y) = PositionUtils.toXY(position);
-        uint256 monsterIndex = isTakenByOtherMonster(stateChanges.monsters, x, y);
-        if (monsterIndex != type(uint256).max) {
-            _battle(monsterIndex, stateChanges, action, revetOnInvalidMoves);
-        } else {
+        if (stateChanges.battle.monsterIndexPlus1 == 0) {
             _move(x, y, stateChanges, action, revetOnInvalidMoves);
+        } else {
+            _battle(stateChanges.battle.monsterIndexPlus1 - 1, stateChanges, action, revetOnInvalidMoves);
         }
     }
     function _move(
@@ -137,50 +146,50 @@ contract GameReveal is Game {
         (x, y) = PositionUtils.toXY(position);
         for (uint256 e = 0; e < 5; e++) {
             Monster memory monster = monsters[e];
-            if (monster.life > 0) {
+            if (monster.hp > 0) {
                 int32 m_nextX = monster.x;
                 int32 m_nextY = monster.y;
                 int32 xDiff = x - monster.x;
                 int32 yDiff = y - monster.y;
 
-                if (xDiff == 0 && yDiff == 0) {
-                    continue;
-                }
-
-                if (Math.abs(xDiff) > Math.abs(yDiff)) {
-                    m_nextX += (xDiff > int32(0) ? int32(1) : int32(-1));
-                    if (
-                        GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
-                        isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max
-                    ) {
-                        m_nextY += (yDiff > int32(0) ? int32(1) : int32(-1));
-                        m_nextX = monster.x;
-                        if (
-                            GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
-                            isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max
-                        ) {
-                            m_nextY = monster.y;
-                        }
-                    }
-                } else {
-                    m_nextY += (yDiff > int32(0) ? int32(1) : int32(-1));
-                    if (
-                        GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
-                        isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max
-                    ) {
+                if (!(xDiff == 0 && yDiff == 0)) {
+                    if (Math.abs(xDiff) > Math.abs(yDiff)) {
                         m_nextX += (xDiff > int32(0) ? int32(1) : int32(-1));
-                        m_nextY = monster.y;
                         if (
                             GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
                             isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max
                         ) {
+                            m_nextY += (yDiff > int32(0) ? int32(1) : int32(-1));
                             m_nextX = monster.x;
+                            if (
+                                GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
+                                isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max
+                            ) {
+                                m_nextY = monster.y;
+                            }
+                        }
+                    } else {
+                        m_nextY += (yDiff > int32(0) ? int32(1) : int32(-1));
+                        if (
+                            GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
+                            isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max
+                        ) {
+                            m_nextX += (xDiff > int32(0) ? int32(1) : int32(-1));
+                            m_nextY = monster.y;
+                            if (
+                                GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
+                                isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max
+                            ) {
+                                m_nextX = monster.x;
+                            }
                         }
                     }
+                    monster.x = m_nextX;
+                    monster.y = m_nextY;
                 }
-                // TODO walls
-                monster.x = m_nextX;
-                monster.y = m_nextY;
+                if (monster.x == x && monster.y == y) {
+                    stateChanges.battle.monsterIndexPlus1 = uint8(e + 1); // TODO make e uint8 ?
+                }
             }
         }
         stateChanges.newPosition = position;
@@ -199,7 +208,7 @@ contract GameReveal is Game {
         int32 y
     ) internal pure returns (uint256 monsterIndex) {
         for (uint256 i = 0; i < 5; i++) {
-            if (monsters[i].x == x && monsters[i].y == y && monsters[i].life > 0) {
+            if (monsters[i].x == x && monsters[i].y == y && monsters[i].hp > 0) {
                 return i;
             }
         }
