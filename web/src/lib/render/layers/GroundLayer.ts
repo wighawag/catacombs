@@ -76,9 +76,9 @@ export class GroundLayer extends Textured2DProgram {
 							this.attributes,
 							x * AREA_SIZE + ix - 3 / 22,
 							y * AREA_SIZE + iy + 19 / 22,
-							texPerSprites['wall_horiz_white.png'],
+							texPerSprites['new_wall_horiz.png'],
 							28 / 22,
-							6 / 22,
+							11 / 22,
 							1,
 						);
 					}
@@ -87,7 +87,7 @@ export class GroundLayer extends Textured2DProgram {
 							this.attributes,
 							x * AREA_SIZE + ix + 19 / 22,
 							y * AREA_SIZE + iy - 3 / 22,
-							texPerSprites['wall_vert_white.png'],
+							texPerSprites['new_wall_vert.png'],
 							6 / 22,
 							28 / 22,
 							1,
@@ -157,13 +157,13 @@ export class GroundLayer extends Textured2DProgram {
 			const char = state.characters[state.currentCharacter];
 			const hx = char.position.x;
 			const hy = char.position.y;
-			drawTile(this.attributes, hx + 5 / 22, hy + 5 / 22, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
+			drawTile(this.attributes, hx + 5 / 22, hy + 22, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
 		}
 
 		for (const monster of state.monsters) {
 			const hx = monster.x;
 			const hy = monster.y;
-			if (monster.life <= 0) {
+			if (monster.hp <= 0) {
 				drawTile(this.attributes, hx + 5 / 22, hy + 5 / 22, texPerSprites['tomb.png'], 16 / 28, 16 / 28, 1);
 			} else {
 				drawTile(this.attributes, hx + 5 / 22, hy + 5 / 22, texPerSprites['spider_00.png'], 16 / 28, 16 / 28, 1);
