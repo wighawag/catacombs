@@ -157,7 +157,7 @@ export class GroundLayer extends Textured2DProgram {
 			const char = state.characters[state.currentCharacter];
 			const hx = char.position.x;
 			const hy = char.position.y;
-			drawTile(this.attributes, hx + 5 / 22, hy + 22, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
+			drawTile(this.attributes, hx + 5 / 22, hy + 3 / 22, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
 		}
 
 		for (const monster of state.monsters) {
@@ -166,7 +166,7 @@ export class GroundLayer extends Textured2DProgram {
 			if (monster.hp <= 0) {
 				drawTile(this.attributes, hx + 5 / 22, hy + 5 / 22, texPerSprites['tomb.png'], 16 / 28, 16 / 28, 1);
 			} else {
-				drawTile(this.attributes, hx + 5 / 22, hy + 5 / 22, texPerSprites['spider_00.png'], 16 / 28, 16 / 28, 1);
+				drawTile(this.attributes, hx + 5 / 22, hy + 5 / 22, texPerSprites['skeleton_sword.png'], 16 / 28, 16 / 28, 1);
 			}
 		}
 

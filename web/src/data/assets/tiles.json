@@ -42,13 +42,13 @@
 },
 "new_wall_vert.png":
 {
-	"frame": {"x":67,"y":1,"w":6,"h":28},
+	"frame": {"x":79,"y":1,"w":6,"h":28},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":6,"h":28},
 	"sourceSize": {"w":6,"h":28}
 },
-"spider_00.png":
+"skeleton_sword.png":
 {
 	"frame": {"x":31,"y":19,"w":16,"h":16},
 	"rotated": false,
@@ -56,7 +56,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
 	"sourceSize": {"w":16,"h":16}
 },
-"spider_01.png":
+"spider_00.png":
 {
 	"frame": {"x":43,"y":1,"w":16,"h":16},
 	"rotated": false,
@@ -64,7 +64,7 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
 	"sourceSize": {"w":16,"h":16}
 },
-"spider_02.png":
+"spider_01.png":
 {
 	"frame": {"x":37,"y":37,"w":16,"h":16},
 	"rotated": false,
@@ -72,9 +72,17 @@
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
 	"sourceSize": {"w":16,"h":16}
 },
-"tomb.png":
+"spider_02.png":
 {
 	"frame": {"x":49,"y":19,"w":16,"h":16},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
+	"sourceSize": {"w":16,"h":16}
+},
+"tomb.png":
+{
+	"frame": {"x":61,"y":1,"w":16,"h":16},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":16,"h":16},
@@ -98,7 +106,7 @@
 },
 "wall_vert.png":
 {
-	"frame": {"x":67,"y":31,"w":6,"h":28},
+	"frame": {"x":67,"y":19,"w":6,"h":28},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":6,"h":28},
@@ -106,7 +114,7 @@
 },
 "wall_vert_white.png":
 {
-	"frame": {"x":75,"y":1,"w":6,"h":28},
+	"frame": {"x":75,"y":31,"w":6,"h":28},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":6,"h":28},
@@ -117,8 +125,8 @@
 	"version": "1.0",
 	"image": "tiles.png",
 	"format": "RGBA8888",
-	"size": {"w":82,"h":63},
+	"size": {"w":86,"h":63},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:74ae5ad47fe4faa81494fa539e002c08:acdcecae022b19cd311a9e0d17604dd0:accbe1e7e294ded8391337fc1c446319$"
+	"smartupdate": "$TexturePacker:SmartUpdate:389f7ede479a531cee13768dcad25a4f:3104a4efbb6b9fbfad33cb94f521def4:accbe1e7e294ded8391337fc1c446319$"
 }
 }

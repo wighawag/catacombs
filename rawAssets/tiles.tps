@@ -177,6 +177,7 @@
             <key type="filename">tiles/hero_00.png</key>
             <key type="filename">tiles/hero_01.png</key>
             <key type="filename">tiles/hero_02.png</key>
+            <key type="filename">tiles/skeleton_sword.png</key>
             <key type="filename">tiles/spider_00.png</key>
             <key type="filename">tiles/spider_01.png</key>
             <key type="filename">tiles/spider_02.png</key>
