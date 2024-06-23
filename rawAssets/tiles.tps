@@ -195,8 +195,7 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
-            <key type="filename">tiles/wall_horiz.png</key>
-            <key type="filename">tiles/wall_horiz_white.png</key>
+            <key type="filename">tiles/new_wall_horiz.png</key>
             <struct type="IndividualSpriteSettings">
                 <key>pivotPoint</key>
                 <point_f>0.5,0.5</point_f>
@@ -205,12 +204,13 @@
                 <key>scale9Enabled</key>
                 <false/>
                 <key>scale9Borders</key>
-                <rect>7,2,14,3</rect>
+                <rect>7,3,14,5</rect>
                 <key>scale9Paddings</key>
-                <rect>7,2,14,3</rect>
+                <rect>7,3,14,5</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">tiles/new_wall_vert.png</key>
             <key type="filename">tiles/wall_vert.png</key>
             <key type="filename">tiles/wall_vert_white.png</key>
             <struct type="IndividualSpriteSettings">
@@ -224,6 +224,22 @@
                 <rect>2,7,3,14</rect>
                 <key>scale9Paddings</key>
                 <rect>2,7,3,14</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
+            <key type="filename">tiles/wall_horiz.png</key>
+            <key type="filename">tiles/wall_horiz_white.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>7,2,14,3</rect>
+                <key>scale9Paddings</key>
+                <rect>7,2,14,3</rect>
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
