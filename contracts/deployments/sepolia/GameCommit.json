@@ -1,0 +1,373 @@
+{
+  "address": "0x0c17f61b532b4a7f42d1e82a4fd483fdfab3b29c",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "GameNotStarted",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum Game.Reason",
+          "name": "reason",
+          "type": "uint8"
+        }
+      ],
+      "name": "InvalidMove",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "NotAuthorizedController",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "OnlyCharactersAreAccepted",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "position",
+          "type": "uint64"
+        }
+      ],
+      "name": "UnableToExitFromThisPosition",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "characterID",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "controller",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint24",
+          "name": "epoch",
+          "type": "uint24"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes24",
+          "name": "commitmentHash",
+          "type": "bytes24"
+        }
+      ],
+      "name": "CommitmentMade",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "characterID",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "controller",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "newPosition",
+          "type": "uint64"
+        }
+      ],
+      "name": "EnteredTheGame",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "characterID",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "controller",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "positionWhenLeaving",
+          "type": "uint64"
+        }
+      ],
+      "name": "LeftTheGame",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "characterID",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "controller",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint24",
+          "name": "epoch",
+          "type": "uint24"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "position",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint192",
+              "name": "action",
+              "type": "uint192"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct Game.Action[]",
+          "name": "actions",
+          "type": "tuple[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "newPosition",
+          "type": "uint64"
+        }
+      ],
+      "name": "MoveRevealed",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "characterID",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes24",
+          "name": "commitmentHash",
+          "type": "bytes24"
+        },
+        {
+          "internalType": "address payable",
+          "name": "payee",
+          "type": "address"
+        }
+      ],
+      "name": "commit",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "characterID",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "controller",
+              "type": "address"
+            },
+            {
+              "internalType": "uint24",
+              "name": "epoch",
+              "type": "uint24"
+            },
+            {
+              "internalType": "bytes24",
+              "name": "commitmentHash",
+              "type": "bytes24"
+            }
+          ],
+          "internalType": "struct GameCommit.Context",
+          "name": "context",
+          "type": "tuple"
+        }
+      ],
+      "name": "computeStateChanges",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "characterID",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint24",
+              "name": "epoch",
+              "type": "uint24"
+            },
+            {
+              "internalType": "bytes24",
+              "name": "commitmentHash",
+              "type": "bytes24"
+            }
+          ],
+          "internalType": "struct GameCommit.StateChanges",
+          "name": "stateChanges",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "contractName": "GameCommit",
+  "sourceName": "src/game/routes/GameCommit.sol",
+  "bytecode": "0x6080806040523460155761066d908161001a8239f35b5f80fdfe60406080815260049081361015610014575f80fd5b5f3560e01c806394e434ec146101065763c77987fb14610032575f80fd5b346101025760807ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc36011261010257610069610523565b9135825260243573ffffffffffffffffffffffffffffffffffffffff8116810361010257602083015262ffffff9060443582811681036101025781840152606435927fffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000908185168503610102576100e7816060968786940152610570565b81519481518652602082015116602086015201511690820152f35b5f80fd5b5060607ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc360112610102578135916024928335907fffffffffffffffffffffffffffffffffffffffffffffffff000000000000000090818316809303610102576044359373ffffffffffffffffffffffffffffffffffffffff92838616809603610102576101926105dd565b61019a6105dd565b507ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe948536013560f01c360391868301943686116101025760806002858036038101030112610102576101eb610523565b9535865260209586810197601e8601358952605e8d830196603e810135885201358581168103610102576060830152805f52600188528c5f20335f52885260ff8d5f20541660038110156104f857156104ca57835286830197338952519451850180951161049f5780514210610477576102669051426105fd565b93801561044c5780850494600286018096116103f65762ffffff809616998a018681116104215786168281029281840414901517156103f6578c92916102ab916105fd565b5081830198895260608301998a526102c283610570565b8683820151168689830151169284519485019085821067ffffffffffffffff8311176103c657508e9f507fbd4730246898b57f6fcfe9db7a2a952d96136ed5d4808b19d6aa9ed5e762259b9a9b9c9d9e528352878301918252515f525f87528c5f2091518d1c7fffffffffff0000000000000000000000000000000000000000000000000000007affffff0000000000000000000000000000000000000000000000008454935160c01b16921617179055519551169551169551168751908152a4801515806103bd575b61039257005b5f80808093819034156103b3575b3491f1156103aa57005b513d5f823e3d90fd5b6108fc91506103a0565b5034151561038c565b90508f9250604191507f4e487b71000000000000000000000000000000000000000000000000000000005f52525ffd5b8d6011847f4e487b71000000000000000000000000000000000000000000000000000000005f52525ffd5b8e6011857f4e487b71000000000000000000000000000000000000000000000000000000005f52525ffd5b8c6012837f4e487b71000000000000000000000000000000000000000000000000000000005f52525ffd5b508a517f3a5f7b57000000000000000000000000000000000000000000000000000000008152fd5b8c6011837f4e487b71000000000000000000000000000000000000000000000000000000005f52525ffd5b8c517fee027da400000000000000000000000000000000000000000000000000000000815233818501528e90fd5b8e6021857f4e487b71000000000000000000000000000000000000000000000000000000005f52525ffd5b604051906080820182811067ffffffffffffffff82111761054357604052565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52604160045260245ffd5b90604051916060830183811067ffffffffffffffff821117610543576040525f83527fffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000606060208501925f845260408601935f8552868251905262ffffff60408301511690520151169052565b6105e5610523565b905f82525f60208301525f60408301525f6060830152565b9190820391821161060a57565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601160045260245ffdfea264697066735822122063fe9b02bcfe06d69ef260afcf9f91b2aa4aa82d5daac42d2e38f69d569416a164736f6c63430008190033",
+  "deployedBytecode": "0x60406080815260049081361015610014575f80fd5b5f3560e01c806394e434ec146101065763c77987fb14610032575f80fd5b346101025760807ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc36011261010257610069610523565b9135825260243573ffffffffffffffffffffffffffffffffffffffff8116810361010257602083015262ffffff9060443582811681036101025781840152606435927fffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000908185168503610102576100e7816060968786940152610570565b81519481518652602082015116602086015201511690820152f35b5f80fd5b5060607ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc360112610102578135916024928335907fffffffffffffffffffffffffffffffffffffffffffffffff000000000000000090818316809303610102576044359373ffffffffffffffffffffffffffffffffffffffff92838616809603610102576101926105dd565b61019a6105dd565b507ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe948536013560f01c360391868301943686116101025760806002858036038101030112610102576101eb610523565b9535865260209586810197601e8601358952605e8d830196603e810135885201358581168103610102576060830152805f52600188528c5f20335f52885260ff8d5f20541660038110156104f857156104ca57835286830197338952519451850180951161049f5780514210610477576102669051426105fd565b93801561044c5780850494600286018096116103f65762ffffff809616998a018681116104215786168281029281840414901517156103f6578c92916102ab916105fd565b5081830198895260608301998a526102c283610570565b8683820151168689830151169284519485019085821067ffffffffffffffff8311176103c657508e9f507fbd4730246898b57f6fcfe9db7a2a952d96136ed5d4808b19d6aa9ed5e762259b9a9b9c9d9e528352878301918252515f525f87528c5f2091518d1c7fffffffffff0000000000000000000000000000000000000000000000000000007affffff0000000000000000000000000000000000000000000000008454935160c01b16921617179055519551169551169551168751908152a4801515806103bd575b61039257005b5f80808093819034156103b3575b3491f1156103aa57005b513d5f823e3d90fd5b6108fc91506103a0565b5034151561038c565b90508f9250604191507f4e487b71000000000000000000000000000000000000000000000000000000005f52525ffd5b8d6011847f4e487b71000000000000000000000000000000000000000000000000000000005f52525ffd5b8e6011857f4e487b71000000000000000000000000000000000000000000000000000000005f52525ffd5b8c6012837f4e487b71000000000000000000000000000000000000000000000000000000005f52525ffd5b508a517f3a5f7b57000000000000000000000000000000000000000000000000000000008152fd5b8c6011837f4e487b71000000000000000000000000000000000000000000000000000000005f52525ffd5b8c517fee027da400000000000000000000000000000000000000000000000000000000815233818501528e90fd5b8e6021857f4e487b71000000000000000000000000000000000000000000000000000000005f52525ffd5b604051906080820182811067ffffffffffffffff82111761054357604052565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52604160045260245ffd5b90604051916060830183811067ffffffffffffffff821117610543576040525f83527fffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000606060208501925f845260408601935f8552868251905262ffffff60408301511690520151169052565b6105e5610523565b905f82525f60208301525f60408301525f6060830152565b9190820391821161060a57565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601160045260245ffdfea264697066735822122063fe9b02bcfe06d69ef260afcf9f91b2aa4aa82d5daac42d2e38f69d569416a164736f6c63430008190033",
+  "linkReferences": {},
+  "deployedLinkReferences": {},
+  "devdoc": {
+    "events": {
+      "CommitmentMade(uint256,address,uint24,bytes24)": {
+        "params": {
+          "characterID": "the id of the NFT being played",
+          "commitmentHash": "the hash of moves",
+          "controller": "account handling the character moves",
+          "epoch": "epoch number on which this commit belongs to"
+        }
+      },
+      "EnteredTheGame(uint256,address,uint64)": {
+        "params": {
+          "characterID": "the id of the NFT being played",
+          "controller": "account handling the character moves",
+          "newPosition": "the resulting new character's position"
+        }
+      },
+      "LeftTheGame(uint256,address,uint64)": {
+        "params": {
+          "characterID": "the id of the NFT being played",
+          "controller": "account handling the character moves",
+          "positionWhenLeaving": "the character's position when leaving"
+        }
+      },
+      "MoveRevealed(uint256,address,uint24,(uint64,uint192)[],uint64)": {
+        "params": {
+          "actions": "the list of moves made",
+          "characterID": "the id of the NFT being played",
+          "controller": "account handling the character moves",
+          "epoch": "epoch number on which this commit belongs to",
+          "newPosition": "the resulting new character's position"
+        }
+      }
+    },
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "evm": {
+    "gasEstimates": {
+      "creation": {
+        "codeDepositCost": "329000",
+        "executionCost": "375",
+        "totalCost": "329375"
+      },
+      "external": {
+        "commit(uint256,bytes24,address)": "infinite",
+        "computeStateChanges((uint256,address,uint24,bytes24))": "701"
+      },
+      "internal": {
+        "_apply(struct Game.Store storage pointer,struct GameCommit.StateChanges memory)": "infinite",
+        "_context(struct Game.Store storage pointer,uint256,bytes24)": "infinite"
+      }
+    }
+  },
+  "metadata": "{\"compiler\":{\"version\":\"0.8.25+commit.b61c2a91\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"GameNotStarted\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"enum Game.Reason\",\"name\":\"reason\",\"type\":\"uint8\"}],\"name\":\"InvalidMove\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"NotAuthorizedController\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"OnlyCharactersAreAccepted\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"position\",\"type\":\"uint64\"}],\"name\":\"UnableToExitFromThisPosition\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"controller\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint24\",\"name\":\"epoch\",\"type\":\"uint24\"},{\"indexed\":false,\"internalType\":\"bytes24\",\"name\":\"commitmentHash\",\"type\":\"bytes24\"}],\"name\":\"CommitmentMade\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"controller\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"newPosition\",\"type\":\"uint64\"}],\"name\":\"EnteredTheGame\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"controller\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"positionWhenLeaving\",\"type\":\"uint64\"}],\"name\":\"LeftTheGame\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"controller\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint24\",\"name\":\"epoch\",\"type\":\"uint24\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"position\",\"type\":\"uint64\"},{\"internalType\":\"uint192\",\"name\":\"action\",\"type\":\"uint192\"}],\"indexed\":false,\"internalType\":\"struct Game.Action[]\",\"name\":\"actions\",\"type\":\"tuple[]\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"newPosition\",\"type\":\"uint64\"}],\"name\":\"MoveRevealed\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"internalType\":\"bytes24\",\"name\":\"commitmentHash\",\"type\":\"bytes24\"},{\"internalType\":\"address payable\",\"name\":\"payee\",\"type\":\"address\"}],\"name\":\"commit\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"controller\",\"type\":\"address\"},{\"internalType\":\"uint24\",\"name\":\"epoch\",\"type\":\"uint24\"},{\"internalType\":\"bytes24\",\"name\":\"commitmentHash\",\"type\":\"bytes24\"}],\"internalType\":\"struct GameCommit.Context\",\"name\":\"context\",\"type\":\"tuple\"}],\"name\":\"computeStateChanges\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"internalType\":\"uint24\",\"name\":\"epoch\",\"type\":\"uint24\"},{\"internalType\":\"bytes24\",\"name\":\"commitmentHash\",\"type\":\"bytes24\"}],\"internalType\":\"struct GameCommit.StateChanges\",\"name\":\"stateChanges\",\"type\":\"tuple\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"events\":{\"CommitmentMade(uint256,address,uint24,bytes24)\":{\"params\":{\"characterID\":\"the id of the NFT being played\",\"commitmentHash\":\"the hash of moves\",\"controller\":\"account handling the character moves\",\"epoch\":\"epoch number on which this commit belongs to\"}},\"EnteredTheGame(uint256,address,uint64)\":{\"params\":{\"characterID\":\"the id of the NFT being played\",\"controller\":\"account handling the character moves\",\"newPosition\":\"the resulting new character's position\"}},\"LeftTheGame(uint256,address,uint64)\":{\"params\":{\"characterID\":\"the id of the NFT being played\",\"controller\":\"account handling the character moves\",\"positionWhenLeaving\":\"the character's position when leaving\"}},\"MoveRevealed(uint256,address,uint24,(uint64,uint192)[],uint64)\":{\"params\":{\"actions\":\"the list of moves made\",\"characterID\":\"the id of the NFT being played\",\"controller\":\"account handling the character moves\",\"epoch\":\"epoch number on which this commit belongs to\",\"newPosition\":\"the resulting new character's position\"}}},\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"errors\":{\"GameNotStarted()\":[{\"notice\":\"happen when attempting to do something on a game that did not start yet\"}],\"NotAuthorizedController(address)\":[{\"notice\":\"happen when an unauthorized account attempt to control a character\"}],\"UnableToExitFromThisPosition(uint64)\":[{\"notice\":\"happen when attempting to leave the game from a non-exit position\"}]},\"events\":{\"CommitmentMade(uint256,address,uint24,bytes24)\":{\"notice\":\"A character has commited to make a move and reveal it on the reveal phase\"},\"EnteredTheGame(uint256,address,uint64)\":{\"notice\":\"A character has commited to make a move and reveal it on the reveal phase\"},\"LeftTheGame(uint256,address,uint64)\":{\"notice\":\"A character has commited to make a move and reveal it on the reveal phase\"},\"MoveRevealed(uint256,address,uint24,(uint64,uint192)[],uint64)\":{\"notice\":\"A character has its moves revealed and executed\"}},\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/game/routes/GameCommit.sol\":\"GameCommit\"},\"evmVersion\":\"cancun\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":999999},\"remappings\":[],\"viaIR\":true},\"sources\":{\"src/game/Game.sol\":{\"content\":\"// SPDX-License-Identifier: AGPL-3.0-or-later\\npragma solidity ^0.8.0;\\n\\nimport \\\"./Game.sol\\\";\\nimport \\\"../solidity-kit/solc_0_8/ERC721/interfaces/IERC721.sol\\\";\\n\\nabstract contract Game {\\n    // we use constant to bound gas and allow solidity to calulate worst case scenario\\n    uint256 constant MAX_PATH_LENGTH = 256;\\n\\n    /// @notice happen when an unauthorized account attempt to control a character\\n    error NotAuthorizedController(address sender);\\n\\n    /// @notice happen when attempting to leave the game from a non-exit position\\n    error UnableToExitFromThisPosition(uint64 position);\\n\\n    /// @notice happen when attempting to do something on a game that did not start yet\\n    error GameNotStarted();\\n\\n    error OnlyCharactersAreAccepted();\\n\\n    enum Reason {\\n        None,\\n        Wall,\\n        NonAdjacent\\n    }\\n    error InvalidMove(Reason reason);\\n\\n    /// @notice A character has commited to make a move and reveal it on the reveal phase\\n    /// @param characterID the id of the NFT being played\\n    /// @param controller account handling the character moves\\n    /// @param epoch epoch number on which this commit belongs to\\n    /// @param commitmentHash the hash of moves\\n    event CommitmentMade(\\n        uint256 indexed characterID,\\n        address indexed controller,\\n        uint24 indexed epoch,\\n        bytes24 commitmentHash\\n    );\\n\\n    /// @notice A character has its moves revealed and executed\\n    /// @param characterID the id of the NFT being played\\n    /// @param controller account handling the character moves\\n    /// @param epoch epoch number on which this commit belongs to\\n    /// @param actions the list of moves made\\n    /// @param newPosition the resulting new character's position\\n    event MoveRevealed(\\n        uint256 indexed characterID,\\n        address indexed controller,\\n        uint24 indexed epoch,\\n        Action[] actions,\\n        uint64 newPosition\\n    );\\n\\n    /// @notice A character has commited to make a move and reveal it on the reveal phase\\n    /// @param characterID the id of the NFT being played\\n    /// @param controller account handling the character moves\\n    /// @param newPosition the resulting new character's position\\n    event EnteredTheGame(uint256 indexed characterID, address indexed controller, uint64 newPosition);\\n\\n    /// @notice A character has commited to make a move and reveal it on the reveal phase\\n    /// @param characterID the id of the NFT being played\\n    /// @param controller account handling the character moves\\n    /// @param positionWhenLeaving the character's position when leaving\\n    event LeftTheGame(uint256 indexed characterID, address indexed controller, uint64 positionWhenLeaving);\\n\\n    struct Commitment {\\n        bytes24 hash;\\n        uint24 epoch;\\n    }\\n\\n    /// @notice Move struct that define the action, type and position\\n    struct Action {\\n        uint64 position;\\n        uint192 action; // TODO define: none, open, attack cards, etc... // TODO make position an action and remove position, first byte define the type: move,\\n    }\\n\\n    enum ControllerType {\\n        None,\\n        Basic,\\n        Owner\\n    }\\n\\n    struct CharacterState {\\n        mapping(address => ControllerType) controllers;\\n        uint64 position;\\n        uint64 epoch;\\n    }\\n\\n    struct Store {\\n        mapping(uint256 => Commitment) commitments;\\n        mapping(uint256 => CharacterState) characterStates;\\n    }\\n\\n    /// @notice Config struct to configure the game instance\\n    struct Config {\\n        uint256 startTime;\\n        uint256 commitPhaseDuration;\\n        uint256 revealPhaseDuration;\\n        IERC721 characters;\\n    }\\n\\n    struct Area {\\n        uint128 eastWalls;\\n        uint128 southWalls;\\n    }\\n\\n    enum MonsterKind {\\n        Basic\\n    }\\n\\n    struct LocalMonster {\\n        MonsterKind kind; // TODO enum\\n        int32 x;\\n        int32 y;\\n        int8 life;\\n    }\\n\\n    function getStore() internal pure returns (Store storage store) {\\n        assembly {\\n            store.slot := 0\\n        }\\n    }\\n\\n    function getConfig() internal pure returns (Config memory config) {\\n        uint256 offset = _getImmutableArgsOffset();\\n        config = abi.decode(msg.data[offset:], (Config));\\n    }\\n\\n    /// @return offset The offset of the packed immutable args in calldata\\n    function _getImmutableArgsOffset() internal pure returns (uint256 offset) {\\n        // solhint-disable-next-line no-inline-assembly\\n        assembly {\\n            offset := sub(calldatasize(), add(shr(240, calldataload(sub(calldatasize(), 2))), 2))\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x55b2a039c7de3b6811641d994e35fa6c99dbe3ff5f2beac655666889761a0acd\",\"license\":\"AGPL-3.0-or-later\"},\"src/game/GameUtils.sol\":{\"content\":\"// SPDX-License-Identifier: AGPL-3.0-or-later\\npragma solidity ^0.8.0;\\n\\nimport \\\"./Game.sol\\\";\\nimport \\\"../utils/PositionUtils.sol\\\";\\nimport \\\"./data/Areas.sol\\\";\\n\\nlibrary GameUtils {\\n    function getEpoch(Game.Config memory config) internal view returns (uint24 epoch, bool commiting) {\\n        uint256 epochDuration = config.commitPhaseDuration + config.revealPhaseDuration;\\n        uint256 time = block.timestamp; // TODO_timestamp();\\n        if (time < config.startTime) {\\n            revert Game.GameNotStarted();\\n        }\\n        uint256 timePassed = time - config.startTime;\\n        epoch = uint24(timePassed / epochDuration + 2); // epoch start at 2, this make the hypothetical previous reveal phase's epoch to be 1\\n        commiting = timePassed - ((epoch - 2) * epochDuration) < config.commitPhaseDuration;\\n    }\\n\\n    function computeArea(bytes32 areaHash) public pure returns (Game.Area memory) {\\n        // \\\"made only for 11x11\\\"\\n        assert(PositionUtils.AREA_SIZE == 11);\\n        return Areas.getArea(uint256(areaHash) % 5);\\n    }\\n\\n    function areaAt(int32 x, int32 y) public pure returns (Game.Area memory area) {\\n        // TODO\\n        (int32 areaX, int32 areaY) = PositionUtils.area(x, y);\\n        area = computeArea(keccak256(abi.encodePacked(areaX, areaY)));\\n    }\\n\\n    function wallAt(uint128 walls, int32 x, int32 y) internal pure returns (bool) {\\n        uint8 xx = PositionUtils.areaLocalCoord(x);\\n        uint8 yy = PositionUtils.areaLocalCoord(y);\\n        uint8 i = yy * uint8(int8(PositionUtils.AREA_SIZE)) + xx;\\n        return ((walls >> (127 - i)) & 0x1) == 1;\\n    }\\n\\n    function isValidMove(int32 x, int32 y, int32 nextX, int32 nextY) internal pure returns (Game.Reason reason) {\\n        if (nextX == x) {\\n            if ((nextY == y + 1)) {\\n                // TODO cache area, detect area change and update accordingly\\n                Game.Area memory area = areaAt(x, y);\\n                if (wallAt(area.southWalls, x, y)) {\\n                    return Game.Reason.Wall;\\n                } else {\\n                    return Game.Reason.None;\\n                }\\n            } else if (nextY == y - 1) {\\n                Game.Area memory area = areaAt(nextX, nextY);\\n                if (wallAt(area.southWalls, nextX, nextY)) {\\n                    return Game.Reason.Wall;\\n                } else {\\n                    return Game.Reason.None;\\n                }\\n            } else {\\n                return Game.Reason.NonAdjacent;\\n            }\\n        } else if (nextY == y) {\\n            if ((nextX == x + 1)) {\\n                Game.Area memory area = areaAt(x, y);\\n                if (wallAt(area.eastWalls, x, y)) {\\n                    return Game.Reason.Wall;\\n                } else {\\n                    return Game.Reason.None;\\n                }\\n            } else if (nextX == x - 1) {\\n                Game.Area memory area = areaAt(nextX, nextY);\\n                if (wallAt(area.eastWalls, nextX, nextY)) {\\n                    return Game.Reason.Wall;\\n                } else {\\n                    return Game.Reason.None;\\n                }\\n            } else {\\n                return Game.Reason.NonAdjacent;\\n            }\\n        }\\n        return Game.Reason.NonAdjacent;\\n    }\\n}\\n\",\"keccak256\":\"0xb0d5a865c33836b93095558f4b81bfce8f760ae2c308e036b8ed63d39a5f9972\",\"license\":\"AGPL-3.0-or-later\"},\"src/game/data/Areas.sol\":{\"content\":\"// SPDX-License-Identifier: AGPL-3.0-or-later\\npragma solidity ^0.8.0;\\n\\nimport \\\"../Game.sol\\\";\\n\\nlibrary Areas {\\n    function getArea(uint256 i) internal pure returns (Game.Area memory area) {\\n        if (false) {} else if (i == 0) {\\n            /*\\n .   .   .   . | . | .   .   .   .   .   . |\\n                                            \\n .   .   .   . | . | .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   . | . | .   .   .   .   .   . |\\n                    ___ ___ ___     ___ ___ \\n .   .   .   . | .   .   . | .   .   .   . |\\n___ ___ ___ ___                             \\n .   .   .   .   .   .   . | .   .   .   . |\\n    ___ ___     ___                         \\n . | .   .   .   . | .   . | .   .   .   .  \\n                                            \\n . | .   .   .   . | .   . | .   .   .   . |\\n                            ___ ___ ___ ___ \\n . | .   .   .   . | .   .   .   .   .   . |\\n___                                         \\n .   .   .   .   . | .   .   .   .   .   . |\\n                                            \\n .   .   .   .   . | .   .   .   .   .   . |\\n___ ___ ___ ___ ___ ___ ___     ___ ___ ___ \\n\\n*/\\n            area = Game.Area({\\n                southWalls: 1159363697933213752560450432,\\n                eastWalls: 32083283461873728278639673345225007232\\n            });\\n        } else if (i == 1) {\\n            /*\\n .   .   .   .   . | .   .   .   .   . | . |\\n                                            \\n .   .   .   .   . | .   .   .   .   . | .  \\n___     ___ ___ ___                         \\n .   .   .   . | .   .   .   .   .   . | . |\\n                                            \\n .   .   .   . | . | .   .   .   .   . | . |\\n                                            \\n .   .   .   . | . | .   .   .   .   . | . |\\n                    ___ ___ ___ ___ ___     \\n .   .   .   . | .   .   .   . | .   .   . |\\n___ ___     ___ ___ ___ ___                 \\n .   . | . | .   .   .   . | .   .   .   . |\\n            ___ ___ ___ ___                 \\n .   . | .   .   .   .   .   . | .   .   . |\\n        ___ ___     ___ ___ ___ ___     ___ \\n .   .   .   .   .   . | .   .   .   .   . |\\n                                            \\n .   .   .   .   .   . | .   .   .   .   . |\\n                                            \\n .   .   .   .   .   . | .   .   .   .   . |\\n___     ___ ___ ___ ___ ___ ___ ___ ___ ___ \\n\\n*/\\n            area = Game.Area({\\n                southWalls: 119422827746894799795367216578494336,\\n                eastWalls: 11137644214052370074570601009611280512\\n            });\\n        } else if (i == 2) {\\n            /*\\n .   .   .   .   .   .   .   .   .   .   . |\\n    ___ ___ ___ ___ ___ ___ ___ ___ ___     \\n .   . | .   .   .   .   . | .   .   .   . |\\n___                             ___ ___ ___ \\n . | . | .   .   .   .   .   .   .   .   . |\\n                            ___ ___     ___ \\n . | . | .   .   .   .   . | .   .   .   . |\\n___     ___ ___     ___ ___                 \\n .   .   .   . | .   .   . | .   .   .   . |\\n                                            \\n .   .   .   . | .   .   . | .   .   .   . |\\n                            ___ ___ ___ ___ \\n .   .   .   . | .   .   .   .   .   .   . |\\n                            ___ ___ ___     \\n .   .   .   . | .   .   . | .   .   . | . |\\n                                ___ ___     \\n .   .   .   . | .   .   . | . | .   .   . |\\n                                    ___ ___ \\n .   .   .   . | .   .   . | . | .   .   .  \\n                                ___ ___ ___ \\n .   .   .   . | .   .   .   .   .   .   . |\\n___ ___ ___     ___ ___ ___ ___ ___ ___ ___ \\n\\n*/\\n            area = Game.Area({\\n                southWalls: 169892521661874654557957128099593174912,\\n                eastWalls: 209131995078092551922943393320157312\\n            });\\n        } else if (i == 3) {\\n            /*\\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n___     ___ ___ ___     ___     ___ ___ ___ \\n .   .   .   .   .   .   .   .   .   .   .  \\n___ ___ ___     ___     ___ ___ ___     ___ \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n___ ___ ___ ___ ___     ___ ___ ___ ___ ___ \\n\\n*/\\n            area = Game.Area({\\n                southWalls: 14128568811924974815408000,\\n                eastWalls: 16124762868261372760261637903252467840\\n            });\\n        } else if (i == 4) {\\n            /*\\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   .  \\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n___ ___ ___ ___ ___     ___ ___ ___ ___ ___ \\n\\n*/\\n            area = Game.Area({southWalls: 257920, eastWalls: 166234668744962605775893174260334720});\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x24fbdb2a973acc9f2b1f954c6ff6763d28efe1b49a8fa5409f0c4cb9589adbb7\",\"license\":\"AGPL-3.0-or-later\"},\"src/game/routes/GameCommit.sol\":{\"content\":\"// SPDX-License-Identifier: AGPL-3.0-or-later\\npragma solidity ^0.8.0;\\n\\nimport \\\"../Game.sol\\\";\\nimport \\\"../GameUtils.sol\\\";\\n\\ncontract GameCommit is Game {\\n    using GameUtils for Config;\\n\\n    struct Context {\\n        uint256 characterID;\\n        address controller;\\n        uint24 epoch;\\n        bytes24 commitmentHash;\\n    }\\n\\n    struct StateChanges {\\n        uint256 characterID;\\n        uint24 epoch;\\n        bytes24 commitmentHash;\\n    }\\n\\n    function commit(uint256 characterID, bytes24 commitmentHash, address payable payee) external payable {\\n        Game.Store storage store = getStore();\\n\\n        Context memory context = _context(store, characterID, commitmentHash);\\n        StateChanges memory stateChanges = computeStateChanges(context);\\n        _apply(store, stateChanges);\\n        emit Game.CommitmentMade(context.characterID, context.controller, context.epoch, context.commitmentHash);\\n\\n        // extra steps for which we do not intend to track via events\\n        if (payee != address(0) && msg.value != 0) {\\n            payee.transfer(msg.value);\\n        }\\n    }\\n\\n    function computeStateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {\\n        stateChanges.characterID = context.characterID;\\n        stateChanges.epoch = context.epoch;\\n        stateChanges.commitmentHash = context.commitmentHash;\\n    }\\n\\n    function _context(\\n        Game.Store storage store,\\n        uint256 characterID,\\n        bytes24 commitmentHash\\n    ) internal view returns (Context memory context) {\\n        Game.Config memory config = getConfig();\\n        mapping(address => Game.ControllerType) storage isController = store.characterStates[characterID].controllers;\\n        if (isController[msg.sender] == Game.ControllerType.None) {\\n            revert Game.NotAuthorizedController(msg.sender);\\n        }\\n        context.characterID = characterID;\\n        context.controller = msg.sender;\\n        (context.epoch, ) = config.getEpoch();\\n        context.commitmentHash = commitmentHash;\\n    }\\n\\n    function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {\\n        store.commitments[stateChanges.characterID] = Game.Commitment({\\n            hash: stateChanges.commitmentHash,\\n            epoch: stateChanges.epoch\\n        });\\n    }\\n}\\n\",\"keccak256\":\"0x3f7843d7bdea4fddee9a3e45159f76e21fd301660f0111040d4692ae3d4f764f\",\"license\":\"AGPL-3.0-or-later\"},\"src/solidity-kit/solc_0_8/ERC165/interfaces/IERC165.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\ninterface IERC165 {\\n    /// @notice Query if a contract implements an interface\\n    /// @param interfaceID The interface identifier, as specified in ERC-165\\n    /// @dev Interface identification is specified in ERC-165. This function\\n    ///  uses less than 30,000 gas.\\n    /// @return `true` if the contract implements `interfaceID` and\\n    ///  `interfaceID` is not 0xffffffff, `false` otherwise\\n    function supportsInterface(bytes4 interfaceID) external view returns (bool);\\n}\\n\",\"keccak256\":\"0x0bbdb7cf3d2c6acf95398c0ef54cb0e6ae8a3e6ce6f18fafeb0aa55cb74fb8fd\",\"license\":\"MIT\"},\"src/solidity-kit/solc_0_8/ERC721/interfaces/IERC721.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\nimport \\\"../../ERC165/interfaces/IERC165.sol\\\";\\nimport \\\"./UsingERC721Events.sol\\\";\\n\\ninterface IERC721Supply {\\n    /// @notice return the total number of token in existence\\n    function totalSupply() external view returns (uint256);\\n}\\n\\ninterface IERC721 is IERC165, UsingERC721Events {\\n    /// @notice Get the number of tokens owned by an address.\\n    /// @param owner The address to look for.\\n    /// @return balance The number of tokens owned by the address.\\n    function balanceOf(address owner) external view returns (uint256 balance);\\n\\n    /// @notice Get the owner of a token.\\n    /// @param tokenID The id of the token.\\n    /// @return owner The address of the token owner.\\n    function ownerOf(uint256 tokenID) external view returns (address owner);\\n\\n    /// @notice Transfer a token between 2 addresses letting the receiver knows of the transfer.\\n    /// @param from The sender of the token.\\n    /// @param to The recipient of the token.\\n    /// @param tokenID The id of the token.\\n    /// @param data Additional data.\\n    function safeTransferFrom(address from, address to, uint256 tokenID, bytes calldata data) external;\\n\\n    /// @notice Transfer a token between 2 addresses letting the receiver know of the transfer.\\n    /// @param from The send of the token.\\n    /// @param to The recipient of the token.\\n    /// @param tokenID The id of the token.\\n    function safeTransferFrom(address from, address to, uint256 tokenID) external;\\n\\n    /// @notice Transfer a token between 2 addresses.\\n    /// @param from The sender of the token.\\n    /// @param to The recipient of the token.\\n    /// @param tokenID The id of the token.\\n    function transferFrom(address from, address to, uint256 tokenID) external;\\n\\n    /// @notice Approve an operator to transfer a specific token on the senders behalf.\\n    /// @param operator The address receiving the approval.\\n    /// @param tokenID The id of the token.\\n    function approve(address operator, uint256 tokenID) external;\\n\\n    /// @notice Set the approval for an operator to manage all the tokens of the sender.\\n    /// @param operator The address receiving the approval.\\n    /// @param approved The determination of the approval.\\n    function setApprovalForAll(address operator, bool approved) external;\\n\\n    /// @notice Get the approved operator for a specific token.\\n    /// @param tokenID The id of the token.\\n    /// @return operator The address of the operator.\\n    function getApproved(uint256 tokenID) external view returns (address operator);\\n\\n    /// @notice Check if the sender approved the operator to transfer any of its tokens.\\n    /// @param owner The address of the owner.\\n    /// @param operator The address of the operator.\\n    /// @return isOperator The status of the approval.\\n    function isApprovedForAll(address owner, address operator) external view returns (bool);\\n}\\n\",\"keccak256\":\"0xa2a5afc2f4e761179de9c718ee807e2d682ed4ae39884906ac333c20282a95d1\",\"license\":\"MIT\"},\"src/solidity-kit/solc_0_8/ERC721/interfaces/UsingERC721Events.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\ninterface UsingERC721Events {\\n    /// @notice Triggered when a token is transferred\\n    /// @param from the account the token is sent from\\n    /// @param to the account the token is sent to\\n    /// @param tokenID id of the token being sent\\n    event Transfer(address indexed from, address indexed to, uint256 indexed tokenID);\\n\\n    /// @notice Triggered when a token is approved to be sent by another account\\n    ///  Note tat the approval get reset when a Transfer event for that same token is emitted.\\n    /// @param owner current owner of the token\\n    /// @param approved account who can know transfer on the owner's behalf\\n    /// @param tokenID id of the token being approved\\n    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenID);\\n\\n    /// @notice Triggered when an account approve or disaprove another to transfer on its behalf\\n    /// @param owner the account granting rights over all of its token\\n    /// @param operator account who can know transfer on the owner's behalf\\n    /// @param approved whether it is approved or not\\n    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);\\n}\\n\",\"keccak256\":\"0x1b0d4ae18443a686be830d3a6ce203d563fe2f42ac9cc3fdf722b702d18152a2\",\"license\":\"MIT\"},\"src/utils/PositionUtils.sol\":{\"content\":\"// SPDX-License-Identifier: AGPL-3.0\\npragma solidity ^0.8.0;\\n\\nlibrary PositionUtils {\\n    int32 constant AREA_SIZE = 11;\\n    int32 constant AREA_OFFSET = 5;\\n\\n    function areaCoord(int32 a) internal pure returns (int32 b) {\\n        if (a >= 0) {\\n            b = (a + AREA_OFFSET) / AREA_SIZE;\\n        } else {\\n            b = -((-a + AREA_OFFSET) / AREA_SIZE);\\n        }\\n    }\\n\\n    function areaWorldPoint(int32 areaC) internal pure returns (int32 worldCoord) {\\n        return areaC * AREA_SIZE - AREA_OFFSET;\\n    }\\n\\n    function areaLocalCoord(int32 x) internal pure returns (uint8 index) {\\n        return uint8(uint32(x - (areaCoord(x) * AREA_SIZE - AREA_OFFSET)));\\n    }\\n\\n    function area(int32 x, int32 y) internal pure returns (int32 areaX, int32 areaY) {\\n        areaX = areaCoord(x);\\n        areaY = areaCoord(y);\\n    }\\n\\n    function toXY(uint64 position) internal pure returns (int32 x, int32 y) {\\n        x = int32(uint32(position) & 0xFFFFFFFF);\\n        y = int32(uint32(position >> 32));\\n    }\\n\\n    function offset(uint64 position, int32 x, int32 y) internal pure returns (uint64 newPosition) {\\n        x = int32(uint32(position) & 0xFFFFFFFF) + x;\\n        y = int32(uint32(position >> 32)) + y;\\n        newPosition = toPosition(x, y);\\n    }\\n\\n    function toPosition(int32 x, int32 y) internal pure returns (uint64 position) {\\n        position = (uint64(uint32(y)) << 32) + uint64(uint32(x));\\n    }\\n}\\n\",\"keccak256\":\"0x8788bccb63c77458a0c10041a421b6bbac539070ba61902b5ebea6b3608a9bb8\",\"license\":\"AGPL-3.0\"}},\"version\":1}",
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  },
+  "userdoc": {
+    "errors": {
+      "GameNotStarted()": [
+        {
+          "notice": "happen when attempting to do something on a game that did not start yet"
+        }
+      ],
+      "NotAuthorizedController(address)": [
+        {
+          "notice": "happen when an unauthorized account attempt to control a character"
+        }
+      ],
+      "UnableToExitFromThisPosition(uint64)": [
+        {
+          "notice": "happen when attempting to leave the game from a non-exit position"
+        }
+      ]
+    },
+    "events": {
+      "CommitmentMade(uint256,address,uint24,bytes24)": {
+        "notice": "A character has commited to make a move and reveal it on the reveal phase"
+      },
+      "EnteredTheGame(uint256,address,uint64)": {
+        "notice": "A character has commited to make a move and reveal it on the reveal phase"
+      },
+      "LeftTheGame(uint256,address,uint64)": {
+        "notice": "A character has commited to make a move and reveal it on the reveal phase"
+      },
+      "MoveRevealed(uint256,address,uint24,(uint64,uint192)[],uint64)": {
+        "notice": "A character has its moves revealed and executed"
+      }
+    },
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "argsData": "0x",
+  "transaction": {
+    "hash": "0x4a058cd980e353d2dd84388e7ab1b48d59e14c6897a7cf8032e563a6376d5ba9",
+    "nonce": "0x1cd",
+    "origin": "0x61c461ecc993aadeb7e4b47e96d1b8cc37314b20"
+  },
+  "receipt": {
+    "confirmations": 0,
+    "blockHash": "0x31b6b807a10a521e0bf04530183276010a5105357c11a4dda3a069bcd20d4391",
+    "blockNumber": "0x5e42b0",
+    "transactionIndex": "0x29"
+  }
+}

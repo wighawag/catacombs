@@ -1,0 +1,813 @@
+{
+  "address": "0x4d1431aa2a3eb08c0784b8bf167043bd7e290593",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "GameNotStarted",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "enum Game.Reason",
+          "name": "reason",
+          "type": "uint8"
+        }
+      ],
+      "name": "InvalidMove",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "NotAuthorizedController",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "OnlyCharactersAreAccepted",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint64",
+          "name": "position",
+          "type": "uint64"
+        }
+      ],
+      "name": "UnableToExitFromThisPosition",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "characterID",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "controller",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint24",
+          "name": "epoch",
+          "type": "uint24"
+        },
+        {
+          "indexed": false,
+          "internalType": "bytes24",
+          "name": "commitmentHash",
+          "type": "bytes24"
+        }
+      ],
+      "name": "CommitmentMade",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "characterID",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "controller",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "newPosition",
+          "type": "uint64"
+        }
+      ],
+      "name": "EnteredTheGame",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "characterID",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "controller",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "positionWhenLeaving",
+          "type": "uint64"
+        }
+      ],
+      "name": "LeftTheGame",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "characterID",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "controller",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint24",
+          "name": "epoch",
+          "type": "uint24"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "position",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint192",
+              "name": "action",
+              "type": "uint192"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct Game.Action[]",
+          "name": "actions",
+          "type": "tuple[]"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint64",
+          "name": "newPosition",
+          "type": "uint64"
+        }
+      ],
+      "name": "MoveRevealed",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "characterID",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "priorPosition",
+              "type": "uint64"
+            },
+            {
+              "internalType": "address",
+              "name": "controller",
+              "type": "address"
+            },
+            {
+              "internalType": "uint24",
+              "name": "epoch",
+              "type": "uint24"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "position",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint192",
+                  "name": "action",
+                  "type": "uint192"
+                }
+              ],
+              "internalType": "struct Game.Action[]",
+              "name": "actions",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "secret",
+              "type": "bytes32"
+            }
+          ],
+          "internalType": "struct GameReveal.Context",
+          "name": "context",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bool",
+          "name": "revetOnInvalidMoves",
+          "type": "bool"
+        }
+      ],
+      "name": "computeStateChanges",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "characterID",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "newPosition",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint24",
+              "name": "xp",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "epoch",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint8",
+              "name": "hp",
+              "type": "uint8"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "int32",
+                  "name": "x",
+                  "type": "int32"
+                },
+                {
+                  "internalType": "int32",
+                  "name": "y",
+                  "type": "int32"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "hp",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "kind",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct GameReveal.Monster[5]",
+              "name": "monsters",
+              "type": "tuple[5]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint8",
+                  "name": "monsterIndexPlus1",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "cardsUsed1",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "cardsUsed2",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct GameReveal.Battle",
+              "name": "battle",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct GameReveal.StateChanges",
+          "name": "stateChanges",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "characterID",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "priorPosition",
+              "type": "uint64"
+            },
+            {
+              "internalType": "address",
+              "name": "controller",
+              "type": "address"
+            },
+            {
+              "internalType": "uint24",
+              "name": "epoch",
+              "type": "uint24"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint64",
+                  "name": "position",
+                  "type": "uint64"
+                },
+                {
+                  "internalType": "uint192",
+                  "name": "action",
+                  "type": "uint192"
+                }
+              ],
+              "internalType": "struct Game.Action[]",
+              "name": "actions",
+              "type": "tuple[]"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "secret",
+              "type": "bytes32"
+            }
+          ],
+          "internalType": "struct GameReveal.Context",
+          "name": "context",
+          "type": "tuple"
+        }
+      ],
+      "name": "initialStateChanges",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "characterID",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "newPosition",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint24",
+              "name": "xp",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "epoch",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint8",
+              "name": "hp",
+              "type": "uint8"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "int32",
+                  "name": "x",
+                  "type": "int32"
+                },
+                {
+                  "internalType": "int32",
+                  "name": "y",
+                  "type": "int32"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "hp",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "kind",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct GameReveal.Monster[5]",
+              "name": "monsters",
+              "type": "tuple[5]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint8",
+                  "name": "monsterIndexPlus1",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "cardsUsed1",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "cardsUsed2",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct GameReveal.Battle",
+              "name": "battle",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct GameReveal.StateChanges",
+          "name": "stateChanges",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "characterID",
+          "type": "uint256"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "position",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint192",
+              "name": "action",
+              "type": "uint192"
+            }
+          ],
+          "internalType": "struct Game.Action[]",
+          "name": "actions",
+          "type": "tuple[]"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "secret",
+          "type": "bytes32"
+        }
+      ],
+      "name": "reveal",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "characterID",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "newPosition",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint24",
+              "name": "xp",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "epoch",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint8",
+              "name": "hp",
+              "type": "uint8"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "int32",
+                  "name": "x",
+                  "type": "int32"
+                },
+                {
+                  "internalType": "int32",
+                  "name": "y",
+                  "type": "int32"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "hp",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "kind",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct GameReveal.Monster[5]",
+              "name": "monsters",
+              "type": "tuple[5]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint8",
+                  "name": "monsterIndexPlus1",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "cardsUsed1",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "cardsUsed2",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct GameReveal.Battle",
+              "name": "battle",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct GameReveal.StateChanges",
+          "name": "stateChanges",
+          "type": "tuple"
+        },
+        {
+          "components": [
+            {
+              "internalType": "uint64",
+              "name": "position",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint192",
+              "name": "action",
+              "type": "uint192"
+            }
+          ],
+          "internalType": "struct Game.Action",
+          "name": "action",
+          "type": "tuple"
+        },
+        {
+          "internalType": "bool",
+          "name": "revetOnInvalidMoves",
+          "type": "bool"
+        }
+      ],
+      "name": "stepChanges",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "characterID",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint64",
+              "name": "newPosition",
+              "type": "uint64"
+            },
+            {
+              "internalType": "uint24",
+              "name": "xp",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint24",
+              "name": "epoch",
+              "type": "uint24"
+            },
+            {
+              "internalType": "uint8",
+              "name": "hp",
+              "type": "uint8"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "int32",
+                  "name": "x",
+                  "type": "int32"
+                },
+                {
+                  "internalType": "int32",
+                  "name": "y",
+                  "type": "int32"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "hp",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "kind",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct GameReveal.Monster[5]",
+              "name": "monsters",
+              "type": "tuple[5]"
+            },
+            {
+              "components": [
+                {
+                  "internalType": "uint8",
+                  "name": "monsterIndexPlus1",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "cardsUsed1",
+                  "type": "uint8"
+                },
+                {
+                  "internalType": "uint8",
+                  "name": "cardsUsed2",
+                  "type": "uint8"
+                }
+              ],
+              "internalType": "struct GameReveal.Battle",
+              "name": "battle",
+              "type": "tuple"
+            }
+          ],
+          "internalType": "struct GameReveal.StateChanges",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "contractName": "GameReveal",
+  "sourceName": "src/game/routes/GameReveal.sol",
+  "bytecode": "0x60808060405234601557611de7908161001a8239f35b5f80fdfe60806040526004361015610011575f80fd5b5f3560e01c806359531f1214610c6d578063cd3af49714610a32578063e826d028146100b35763e9182f4914610045575f80fd5b346100af5760207ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100af5760043567ffffffffffffffff81116100af5761009f61009a6100ab923690600401610ed9565b6112fb565b60405191829182610f89565b0390f35b5f80fd5b346100af5760607ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100af5767ffffffffffffffff602435116100af573660236024350112156100af5767ffffffffffffffff60243560040135116100af5736602480356004013560061b81350101116100af5760405161013681610d9a565b5f81525f60208201525f60408201525f6060820152606060808201525f60a082015261016061107c565b507ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe36013560f01c36037ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe8101903682116100af57608060028280360381010301126100af57604051916101d383610d62565b358252601e8101356020830152603e8101356040830152605e81013573ffffffffffffffffffffffffffffffffffffffff811690036100af57605e0135606082015260043582526004355f52600160205267ffffffffffffffff600160405f200154166020830152602081015190604081015182018092116108325780514210610a0857610262905142611924565b81156109db578181049060028201809211610832577ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe62ffffff83160162ffffff81116108325762ffffff169081848102048414821517156108325762ffffff936102ce920290611924565b501660608201526102ea36602435600401356024803501610e03565b608082015260443560a08201526102ff6110d1565b50610309816112fb565b905f5b6080820151805182101561085f576020908260051b0101515f61034e67ffffffffffffffff6020870151169063ffffffff80831660030b9260201c1660030b90565b60c08701515160ff16806107fa57506103a567ffffffffffffffff6020890151169167ffffffffffffffff60a08a01519651169361039d859063ffffffff80831660030b9260201c1660030b90565b929091611931565b60038110156107cd576107c25750915b6103d0839063ffffffff80831660030b9260201c1660030b90565b839291925b600581106103fc5750505050509067ffffffffffffffff6001921660208501525b0161030c565b61040681846112bd565b5160ff60408201511661041d575b506001016103d5565b805160030b602082015160030b9061043581886111d7565b9088610448602086015160030b886111d7565b928060030b15806107b7575b156104da575b5050505050805160030b8560030b1490816104c6575b5061047c575b89610414565b6001810181116104995760c08901516001820160ff169052610476565b6024857f4e487b710000000000000000000000000000000000000000000000000000000081526011600452fd5b60209150015160030b8260030b148a610470565b6104e381611a86565b6104ec85611a86565b60030b9060030b135f146106a45790610512929160030b135f1461061c57600190611282565b9061052b8383865160030b602088015160030b90611931565b60038110156106775790899115801590610643575b61055f575b50505b60030b825260030b60208201528a8080888161045a565b61057693925060030b131561061c57600190611282565b815160030b61058e8282602086015160030b81611931565b60038110156105ef57158015906105bb575b6105ac575b878d610545565b602083015160030b91506105a5565b507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6105e8838389611aa0565b14156105a0565b6024897f4e487b710000000000000000000000000000000000000000000000000000000081526021600452fd5b7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff90611282565b507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff61067085858b611aa0565b1415610540565b60248a7f4e487b710000000000000000000000000000000000000000000000000000000081526021600452fd5b93906106bd929360030b135f1461061c57600190611282565b916106d68383865160030b602088015160030b90611931565b60038110156106775790899115801590610783575b6106f7575b5050610548565b61070d935060030b131561061c57600190611282565b602082015160030b90610726828281865160030b611931565b60038110156105ef571580159061074f575b610744575b878d6106f0565b50815160030b61073d565b507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff61077c838389611aa0565b1415610738565b507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6107b085858b611aa0565b14156106eb565b508360030b15610454565b929150505f906103b5565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52602160045260245ffd5b91505060ff92507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff91500111610832576001906103f6565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601160045260245ffd5b828467ffffffffffffffff60208201511681515f526001602052600160405f2001907fffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000825416179055606081015181515f525f60205260405f20907fffffffffff000000ffffffffffffffffffffffffffffffffffffffffffffffff7affffff00000000000000000000000000000000000000000000000083549260c01b169116179055815173ffffffffffffffffffffffffffffffffffffffff6040840151169167ffffffffffffffff6020608062ffffff606088015116960151920151169060405191604083016040845282518091526020606085019301905f5b818110610995575050509180917f3f97aa441db5a7ee5d7c6e4508df05e74e18934d842c83e55ef3fdd6f9ef05d69360208301520390a4005b8251805167ffffffffffffffff16865260209081015177ffffffffffffffffffffffffffffffffffffffffffffffff16818701526040909501949092019160010161095c565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601260045260245ffd5b60046040517f3a5f7b57000000000000000000000000000000000000000000000000000000008152fd5b346100af577ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc36016103e081126100af57610380136100af57604051610a7781610d19565b600435815267ffffffffffffffff9060243582811681036100af576020908183015260443562ffffff9081811681036100af57604084015260643590811681036100af57606090606084015260843560ff811681036100af5760809060808501523660c312156100af5760405190610aee82610dd2565b61032492823685116100af5760a4905b858210610c10575050505060a084015260607ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcdc3601126100af5760405190610b4582610d7e565b3560ff811681036100af5781526103443560ff811681036100af57828201526103643560ff811681036100af57604082015260c083015260407ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc7c3601126100af5760405192610bb384610db6565b6103843590811681036100af5783526103a4359077ffffffffffffffffffffffffffffffffffffffffffffffff821682036100af578301526103c4359182151583036100af576100ab9261009f91610c096110d1565b50836114f0565b83823603126100af57868491604051610c2881610d62565b610c318561106e565b8152610c3e83860161106e565b83820152610c4e60408601611060565b6040820152610c5e868601611060565b86820152815201910190610afe565b346100af5760407ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100af5760043567ffffffffffffffff81116100af57610cbc903690600401610ed9565b6024359081151582036100af57610cd16110d1565b50610cdb816112fb565b9160805f9201915b82518051821015610d0b5790610d058360206001948460051b010151876114f0565b01610ce3565b604051806100ab8782610f89565b60e0810190811067ffffffffffffffff821117610d3557604052565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52604160045260245ffd5b6080810190811067ffffffffffffffff821117610d3557604052565b6060810190811067ffffffffffffffff821117610d3557604052565b60c0810190811067ffffffffffffffff821117610d3557604052565b6040810190811067ffffffffffffffff821117610d3557604052565b60a0810190811067ffffffffffffffff821117610d3557604052565b359067ffffffffffffffff821682036100af57565b92919267ffffffffffffffff808311610d3557604092604051917fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0603f8360051b011683019083821090821117610d3557604052819581835260208093019160061b8401938185116100af57915b848310610e8057505050505050565b85838303126100af57855190610e9582610db6565b610e9e84610dee565b8252848401359077ffffffffffffffffffffffffffffffffffffffffffffffff821682036100af57828692838a950152815201920191610e71565b91909160c0818403126100af5760405190610ef382610d9a565b819381358352610f0560208301610dee565b6020840152604082013573ffffffffffffffffffffffffffffffffffffffff811681036100af576040840152606082013562ffffff811681036100af576060840152608082013567ffffffffffffffff81116100af5782019181601f840112156100af57610f7d60a093928360208695359101610e03565b60808501520135910152565b91909161038081019280518252602067ffffffffffffffff81830151168184015260409160408101519262ffffff8094166040860152606093606083015116606086015260809360808301519460ff809616608088015260a08401519160a0880192905f935b600585106110275750505050505082916103609360c06040930151918183511661032088015282015116610340860152015116910152565b87846001928b8587518051600390810b855286820151900b86850152828c820151168c8501520151168582015201930194019391610fef565b359060ff821682036100af57565b35908160030b82036100af57565b6040519061108982610d62565b5f6060838281528260208201528260408201520152565b604051906110ad82610dd2565b815f5b60a081106110bc575050565b6020906110c761107c565b81840152016110b0565b604051906110de82610d19565b815f81525f60208201525f60408201525f60608201525f60808201526111026110a0565b60a082015260c06040519161111683610d7e565b5f83525f60208401525f60408401520152565b60030b7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffb01907fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008212637fffffff83131761083257565b60030b7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff01907fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008212637fffffff83131761083257565b9060030b9060030b0390637fffffff82137fffffffffffffffffffffffffffffffffffffffffffffffffffffffff8000000083121761083257565b60030b60050190637fffffff82137fffffffffffffffffffffffffffffffffffffffffffffffffffffffff8000000083121761083257565b60030b60010190637fffffff82137fffffffffffffffffffffffffffffffffffffffffffffffffffffffff8000000083121761083257565b9060030b9060030b01907fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008212637fffffff83131761083257565b9060058110156112ce5760051b0190565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52603260045260245ffd5b906113046110d1565b9167ffffffffffffffff6020809201511690611331829063ffffffff80831660030b9260201c1660030b90565b9061133a6110a0565b91600382810b907ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe820191637fffffff7fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000009481851386861217610832576113a081611212565b926040938451966113b088610d62565b860b8752850b8a870152848487015260609560018782015289526113d388611129565b82860b987ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd8a01918583138a841217610832576114349287519161141683610d62565b890b8252880b8d82015287878201526001898201528c8c0152611212565b60028901888112858213176108325785519161144f83610d62565b870b8252860b8b8201528585820152600187820152848a0152600681018781128482131761083257611482600493611129565b85519161148e83610d62565b870b8252860b8b8201528585820152600187820152868a01520195858712828813176108325760080194851290851317610832576001938151956114d187610d62565b830b8652820b87860152840152820152608082015260a0850152830152565b909160208083019367ffffffffffffffff93611520858751169063ffffffff80831660030b9260201c1660030b90565b939060c083019260ff9560ff8551511680155f146118ec5750611566908960a0818d51169401519751169361039d859063ffffffff80831660030b9260201c1660030b90565b600397888210156107cd57816118ac57505050945b611596869063ffffffff80831660030b9260201c1660030b90565b905f5b600581106115ae575050505050505050169052565b6115b881886112bd565b51886040820151166115ce575b50600101611599565b8051850b90868101918251870b906115e681876111d7565b906115f485518a0b896111d7565b91808a0b908115806118a2575b1561164e575b505050505051850b83860b14908161163f575b50611626575b5f6115c5565b6001810190818111610832578651918916909152611620565b905051840b83850b145f61161a565b61165790611a86565b61166084611a86565b8b0b908b0b131561178e57905f61168092135f1461061c57600190611282565b90611694838386518c0b88518d0b90611931565b898110156107cd578c90158484821592611757575b505090506116c6575b505b870b8252860b82525f80808080611607565b6116de9291505f90890b131561061c57600190611282565b8151870b6116f1828286518b0b81611931565b888110156107cd578b90158383821592611720575b50509050611715575b5f6116b2565b8351880b915061170f565b61174c92507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff93611aa0565b14158b908383611706565b61178392507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff93611aa0565b14158c9084846116a9565b925f6117a692938b0b135f1461061c57600190611282565b916117ba838386518c0b88518d0b90611931565b898110156107cd578c9015848482159261186b575b505090506117de575b506116b4565b6117f292505f121561061c57600190611282565b8251870b9061180682828186518c0b611931565b888110156107cd578b90158383821592611834575b5050905061182a575b5f6117d8565b508151870b611824565b61186092507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff93611aa0565b14158b90838361181b565b61189792507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff93611aa0565b14158c9084846117cf565b50838b0b15611601565b90919792506118bb575061157b565b602490604051907fbc42e1a10000000000000000000000000000000000000000000000000000000082526004820152fd5b97505050505050505060ff92507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9150011161083257565b9190820391821161083257565b909192600384810b83820b81145f146119d2575061194e8461124a565b82820b9190810b82036119965750505061198892506fffffffffffffffffffffffffffffffff60206119808484611b41565b015116611ce5565b1561199257600190565b5f90565b91936119a3919350611180565b900b036119cb57816fffffffffffffffffffffffffffffffff60206119808461198896611b41565b5050600290565b9084810b83820b146119e957505050505050600290565b6119f28461124a565b810b8203611a245750505061198892506fffffffffffffffffffffffffffffffff611a1d8383611b41565b5116611ce5565b91935091611a3190611180565b900b036119cb57816fffffffffffffffffffffffffffffffff611a1d8361198895611b41565b60030b7fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008114610832575f0390565b5f600382900b12611a945790565b611a9d90611a57565b90565b91905f5b60058110611ad457505050507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff90565b611ade81856112bd565b5151600390810b83820b149081611b24575b5080611b0a575b611b0357600101611aa4565b9250505090565b5060ff6040611b1983876112bd565b510151161515611af7565b9050836020611b3384886112bd565b510151820b910b145f611af0565b6005604092611b6d611b67855194611b5886610db6565b5f86525f602080970152611d75565b91611d75565b8451908482019260e01b835260e01b602482015260088152611b8e81610db6565b5190205f838551611b9e81610db6565b828152015206918051611bb081610db6565b5f808252838201529280611bf257505191506b03bf00d000000f800003fb8090611bd983610db6565b6f182304008c1122046284518821042080835282015290565b60018103611c3157505191506e17000000007dbc0781bd000002ff8090611c1883610db6565b6f086108418c318622588a090420841080835282015290565b60028103611c7057505191506f7fd01c06db000003c0700600601fbf8090611c5883610db6565b6e284700e11122244408931322604080835282015290565b60038103611cab57505191506a0bafd7400000000003ef8090611c9283610db6565b6f0c2184308610c2000308610c21843080835282015290565b600414611cb8575b505090565b5191506203ef8090611cc983610db6565b6e20040080100200000801002004008083528201525f80611cb3565b9091600b611cf5611d0094611d42565b9160ff948591611d42565b16029083821691820361083257831601828111610832578216607f03828111610832576001926fffffffffffffffffffffffffffffffff84931691161c161490565b600b611d4d82611d75565b60030b028060030b9081036108325760ff91611d6b611d7192611129565b906111d7565b1690565b5f600382900b12611d9257611d8b600b91611212565b60030b0590565b600b611da8611da3611a9d93611a57565b611212565b60030b05611a5756fea2646970667358221220fffff8f0010359d9b1c788a75d0aced6f5c11dc6ce9010ce6175da230d84236064736f6c63430008190033",
+  "deployedBytecode": "0x60806040526004361015610011575f80fd5b5f3560e01c806359531f1214610c6d578063cd3af49714610a32578063e826d028146100b35763e9182f4914610045575f80fd5b346100af5760207ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100af5760043567ffffffffffffffff81116100af5761009f61009a6100ab923690600401610ed9565b6112fb565b60405191829182610f89565b0390f35b5f80fd5b346100af5760607ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100af5767ffffffffffffffff602435116100af573660236024350112156100af5767ffffffffffffffff60243560040135116100af5736602480356004013560061b81350101116100af5760405161013681610d9a565b5f81525f60208201525f60408201525f6060820152606060808201525f60a082015261016061107c565b507ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe36013560f01c36037ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe8101903682116100af57608060028280360381010301126100af57604051916101d383610d62565b358252601e8101356020830152603e8101356040830152605e81013573ffffffffffffffffffffffffffffffffffffffff811690036100af57605e0135606082015260043582526004355f52600160205267ffffffffffffffff600160405f200154166020830152602081015190604081015182018092116108325780514210610a0857610262905142611924565b81156109db578181049060028201809211610832577ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe62ffffff83160162ffffff81116108325762ffffff169081848102048414821517156108325762ffffff936102ce920290611924565b501660608201526102ea36602435600401356024803501610e03565b608082015260443560a08201526102ff6110d1565b50610309816112fb565b905f5b6080820151805182101561085f576020908260051b0101515f61034e67ffffffffffffffff6020870151169063ffffffff80831660030b9260201c1660030b90565b60c08701515160ff16806107fa57506103a567ffffffffffffffff6020890151169167ffffffffffffffff60a08a01519651169361039d859063ffffffff80831660030b9260201c1660030b90565b929091611931565b60038110156107cd576107c25750915b6103d0839063ffffffff80831660030b9260201c1660030b90565b839291925b600581106103fc5750505050509067ffffffffffffffff6001921660208501525b0161030c565b61040681846112bd565b5160ff60408201511661041d575b506001016103d5565b805160030b602082015160030b9061043581886111d7565b9088610448602086015160030b886111d7565b928060030b15806107b7575b156104da575b5050505050805160030b8560030b1490816104c6575b5061047c575b89610414565b6001810181116104995760c08901516001820160ff169052610476565b6024857f4e487b710000000000000000000000000000000000000000000000000000000081526011600452fd5b60209150015160030b8260030b148a610470565b6104e381611a86565b6104ec85611a86565b60030b9060030b135f146106a45790610512929160030b135f1461061c57600190611282565b9061052b8383865160030b602088015160030b90611931565b60038110156106775790899115801590610643575b61055f575b50505b60030b825260030b60208201528a8080888161045a565b61057693925060030b131561061c57600190611282565b815160030b61058e8282602086015160030b81611931565b60038110156105ef57158015906105bb575b6105ac575b878d610545565b602083015160030b91506105a5565b507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6105e8838389611aa0565b14156105a0565b6024897f4e487b710000000000000000000000000000000000000000000000000000000081526021600452fd5b7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff90611282565b507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff61067085858b611aa0565b1415610540565b60248a7f4e487b710000000000000000000000000000000000000000000000000000000081526021600452fd5b93906106bd929360030b135f1461061c57600190611282565b916106d68383865160030b602088015160030b90611931565b60038110156106775790899115801590610783575b6106f7575b5050610548565b61070d935060030b131561061c57600190611282565b602082015160030b90610726828281865160030b611931565b60038110156105ef571580159061074f575b610744575b878d6106f0565b50815160030b61073d565b507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff61077c838389611aa0565b1415610738565b507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff6107b085858b611aa0565b14156106eb565b508360030b15610454565b929150505f906103b5565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52602160045260245ffd5b91505060ff92507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff91500111610832576001906103f6565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601160045260245ffd5b828467ffffffffffffffff60208201511681515f526001602052600160405f2001907fffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000825416179055606081015181515f525f60205260405f20907fffffffffff000000ffffffffffffffffffffffffffffffffffffffffffffffff7affffff00000000000000000000000000000000000000000000000083549260c01b169116179055815173ffffffffffffffffffffffffffffffffffffffff6040840151169167ffffffffffffffff6020608062ffffff606088015116960151920151169060405191604083016040845282518091526020606085019301905f5b818110610995575050509180917f3f97aa441db5a7ee5d7c6e4508df05e74e18934d842c83e55ef3fdd6f9ef05d69360208301520390a4005b8251805167ffffffffffffffff16865260209081015177ffffffffffffffffffffffffffffffffffffffffffffffff16818701526040909501949092019160010161095c565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52601260045260245ffd5b60046040517f3a5f7b57000000000000000000000000000000000000000000000000000000008152fd5b346100af577ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc36016103e081126100af57610380136100af57604051610a7781610d19565b600435815267ffffffffffffffff9060243582811681036100af576020908183015260443562ffffff9081811681036100af57604084015260643590811681036100af57606090606084015260843560ff811681036100af5760809060808501523660c312156100af5760405190610aee82610dd2565b61032492823685116100af5760a4905b858210610c10575050505060a084015260607ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffcdc3601126100af5760405190610b4582610d7e565b3560ff811681036100af5781526103443560ff811681036100af57828201526103643560ff811681036100af57604082015260c083015260407ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc7c3601126100af5760405192610bb384610db6565b6103843590811681036100af5783526103a4359077ffffffffffffffffffffffffffffffffffffffffffffffff821682036100af578301526103c4359182151583036100af576100ab9261009f91610c096110d1565b50836114f0565b83823603126100af57868491604051610c2881610d62565b610c318561106e565b8152610c3e83860161106e565b83820152610c4e60408601611060565b6040820152610c5e868601611060565b86820152815201910190610afe565b346100af5760407ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffc3601126100af5760043567ffffffffffffffff81116100af57610cbc903690600401610ed9565b6024359081151582036100af57610cd16110d1565b50610cdb816112fb565b9160805f9201915b82518051821015610d0b5790610d058360206001948460051b010151876114f0565b01610ce3565b604051806100ab8782610f89565b60e0810190811067ffffffffffffffff821117610d3557604052565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52604160045260245ffd5b6080810190811067ffffffffffffffff821117610d3557604052565b6060810190811067ffffffffffffffff821117610d3557604052565b60c0810190811067ffffffffffffffff821117610d3557604052565b6040810190811067ffffffffffffffff821117610d3557604052565b60a0810190811067ffffffffffffffff821117610d3557604052565b359067ffffffffffffffff821682036100af57565b92919267ffffffffffffffff808311610d3557604092604051917fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe0603f8360051b011683019083821090821117610d3557604052819581835260208093019160061b8401938185116100af57915b848310610e8057505050505050565b85838303126100af57855190610e9582610db6565b610e9e84610dee565b8252848401359077ffffffffffffffffffffffffffffffffffffffffffffffff821682036100af57828692838a950152815201920191610e71565b91909160c0818403126100af5760405190610ef382610d9a565b819381358352610f0560208301610dee565b6020840152604082013573ffffffffffffffffffffffffffffffffffffffff811681036100af576040840152606082013562ffffff811681036100af576060840152608082013567ffffffffffffffff81116100af5782019181601f840112156100af57610f7d60a093928360208695359101610e03565b60808501520135910152565b91909161038081019280518252602067ffffffffffffffff81830151168184015260409160408101519262ffffff8094166040860152606093606083015116606086015260809360808301519460ff809616608088015260a08401519160a0880192905f935b600585106110275750505050505082916103609360c06040930151918183511661032088015282015116610340860152015116910152565b87846001928b8587518051600390810b855286820151900b86850152828c820151168c8501520151168582015201930194019391610fef565b359060ff821682036100af57565b35908160030b82036100af57565b6040519061108982610d62565b5f6060838281528260208201528260408201520152565b604051906110ad82610dd2565b815f5b60a081106110bc575050565b6020906110c761107c565b81840152016110b0565b604051906110de82610d19565b815f81525f60208201525f60408201525f60608201525f60808201526111026110a0565b60a082015260c06040519161111683610d7e565b5f83525f60208401525f60408401520152565b60030b7ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffb01907fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008212637fffffff83131761083257565b60030b7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff01907fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008212637fffffff83131761083257565b9060030b9060030b0390637fffffff82137fffffffffffffffffffffffffffffffffffffffffffffffffffffffff8000000083121761083257565b60030b60050190637fffffff82137fffffffffffffffffffffffffffffffffffffffffffffffffffffffff8000000083121761083257565b60030b60010190637fffffff82137fffffffffffffffffffffffffffffffffffffffffffffffffffffffff8000000083121761083257565b9060030b9060030b01907fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008212637fffffff83131761083257565b9060058110156112ce5760051b0190565b7f4e487b71000000000000000000000000000000000000000000000000000000005f52603260045260245ffd5b906113046110d1565b9167ffffffffffffffff6020809201511690611331829063ffffffff80831660030b9260201c1660030b90565b9061133a6110a0565b91600382810b907ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffe820191637fffffff7fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000009481851386861217610832576113a081611212565b926040938451966113b088610d62565b860b8752850b8a870152848487015260609560018782015289526113d388611129565b82860b987ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffd8a01918583138a841217610832576114349287519161141683610d62565b890b8252880b8d82015287878201526001898201528c8c0152611212565b60028901888112858213176108325785519161144f83610d62565b870b8252860b8b8201528585820152600187820152848a0152600681018781128482131761083257611482600493611129565b85519161148e83610d62565b870b8252860b8b8201528585820152600187820152868a01520195858712828813176108325760080194851290851317610832576001938151956114d187610d62565b830b8652820b87860152840152820152608082015260a0850152830152565b909160208083019367ffffffffffffffff93611520858751169063ffffffff80831660030b9260201c1660030b90565b939060c083019260ff9560ff8551511680155f146118ec5750611566908960a0818d51169401519751169361039d859063ffffffff80831660030b9260201c1660030b90565b600397888210156107cd57816118ac57505050945b611596869063ffffffff80831660030b9260201c1660030b90565b905f5b600581106115ae575050505050505050169052565b6115b881886112bd565b51886040820151166115ce575b50600101611599565b8051850b90868101918251870b906115e681876111d7565b906115f485518a0b896111d7565b91808a0b908115806118a2575b1561164e575b505050505051850b83860b14908161163f575b50611626575b5f6115c5565b6001810190818111610832578651918916909152611620565b905051840b83850b145f61161a565b61165790611a86565b61166084611a86565b8b0b908b0b131561178e57905f61168092135f1461061c57600190611282565b90611694838386518c0b88518d0b90611931565b898110156107cd578c90158484821592611757575b505090506116c6575b505b870b8252860b82525f80808080611607565b6116de9291505f90890b131561061c57600190611282565b8151870b6116f1828286518b0b81611931565b888110156107cd578b90158383821592611720575b50509050611715575b5f6116b2565b8351880b915061170f565b61174c92507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff93611aa0565b14158b908383611706565b61178392507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff93611aa0565b14158c9084846116a9565b925f6117a692938b0b135f1461061c57600190611282565b916117ba838386518c0b88518d0b90611931565b898110156107cd578c9015848482159261186b575b505090506117de575b506116b4565b6117f292505f121561061c57600190611282565b8251870b9061180682828186518c0b611931565b888110156107cd578b90158383821592611834575b5050905061182a575b5f6117d8565b508151870b611824565b61186092507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff93611aa0565b14158b90838361181b565b61189792507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff93611aa0565b14158c9084846117cf565b50838b0b15611601565b90919792506118bb575061157b565b602490604051907fbc42e1a10000000000000000000000000000000000000000000000000000000082526004820152fd5b97505050505050505060ff92507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff9150011161083257565b9190820391821161083257565b909192600384810b83820b81145f146119d2575061194e8461124a565b82820b9190810b82036119965750505061198892506fffffffffffffffffffffffffffffffff60206119808484611b41565b015116611ce5565b1561199257600190565b5f90565b91936119a3919350611180565b900b036119cb57816fffffffffffffffffffffffffffffffff60206119808461198896611b41565b5050600290565b9084810b83820b146119e957505050505050600290565b6119f28461124a565b810b8203611a245750505061198892506fffffffffffffffffffffffffffffffff611a1d8383611b41565b5116611ce5565b91935091611a3190611180565b900b036119cb57816fffffffffffffffffffffffffffffffff611a1d8361198895611b41565b60030b7fffffffffffffffffffffffffffffffffffffffffffffffffffffffff800000008114610832575f0390565b5f600382900b12611a945790565b611a9d90611a57565b90565b91905f5b60058110611ad457505050507fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff90565b611ade81856112bd565b5151600390810b83820b149081611b24575b5080611b0a575b611b0357600101611aa4565b9250505090565b5060ff6040611b1983876112bd565b510151161515611af7565b9050836020611b3384886112bd565b510151820b910b145f611af0565b6005604092611b6d611b67855194611b5886610db6565b5f86525f602080970152611d75565b91611d75565b8451908482019260e01b835260e01b602482015260088152611b8e81610db6565b5190205f838551611b9e81610db6565b828152015206918051611bb081610db6565b5f808252838201529280611bf257505191506b03bf00d000000f800003fb8090611bd983610db6565b6f182304008c1122046284518821042080835282015290565b60018103611c3157505191506e17000000007dbc0781bd000002ff8090611c1883610db6565b6f086108418c318622588a090420841080835282015290565b60028103611c7057505191506f7fd01c06db000003c0700600601fbf8090611c5883610db6565b6e284700e11122244408931322604080835282015290565b60038103611cab57505191506a0bafd7400000000003ef8090611c9283610db6565b6f0c2184308610c2000308610c21843080835282015290565b600414611cb8575b505090565b5191506203ef8090611cc983610db6565b6e20040080100200000801002004008083528201525f80611cb3565b9091600b611cf5611d0094611d42565b9160ff948591611d42565b16029083821691820361083257831601828111610832578216607f03828111610832576001926fffffffffffffffffffffffffffffffff84931691161c161490565b600b611d4d82611d75565b60030b028060030b9081036108325760ff91611d6b611d7192611129565b906111d7565b1690565b5f600382900b12611d9257611d8b600b91611212565b60030b0590565b600b611da8611da3611a9d93611a57565b611212565b60030b05611a5756fea2646970667358221220fffff8f0010359d9b1c788a75d0aced6f5c11dc6ce9010ce6175da230d84236064736f6c63430008190033",
+  "linkReferences": {},
+  "deployedLinkReferences": {},
+  "devdoc": {
+    "events": {
+      "CommitmentMade(uint256,address,uint24,bytes24)": {
+        "params": {
+          "characterID": "the id of the NFT being played",
+          "commitmentHash": "the hash of moves",
+          "controller": "account handling the character moves",
+          "epoch": "epoch number on which this commit belongs to"
+        }
+      },
+      "EnteredTheGame(uint256,address,uint64)": {
+        "params": {
+          "characterID": "the id of the NFT being played",
+          "controller": "account handling the character moves",
+          "newPosition": "the resulting new character's position"
+        }
+      },
+      "LeftTheGame(uint256,address,uint64)": {
+        "params": {
+          "characterID": "the id of the NFT being played",
+          "controller": "account handling the character moves",
+          "positionWhenLeaving": "the character's position when leaving"
+        }
+      },
+      "MoveRevealed(uint256,address,uint24,(uint64,uint192)[],uint64)": {
+        "params": {
+          "actions": "the list of moves made",
+          "characterID": "the id of the NFT being played",
+          "controller": "account handling the character moves",
+          "epoch": "epoch number on which this commit belongs to",
+          "newPosition": "the resulting new character's position"
+        }
+      }
+    },
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "evm": {
+    "gasEstimates": {
+      "creation": {
+        "codeDepositCost": "1531000",
+        "executionCost": "1613",
+        "totalCost": "1532613"
+      },
+      "external": {
+        "computeStateChanges((uint256,uint64,address,uint24,(uint64,uint192)[],bytes32),bool)": "infinite",
+        "initialStateChanges((uint256,uint64,address,uint24,(uint64,uint192)[],bytes32))": "infinite",
+        "reveal(uint256,(uint64,uint192)[],bytes32)": "infinite",
+        "stepChanges((uint256,uint64,uint24,uint24,uint8,(int32,int32,uint8,uint8)[5],(uint8,uint8,uint8)),(uint64,uint192),bool)": "infinite"
+      },
+      "internal": {
+        "_apply(struct Game.Store storage pointer,struct GameReveal.StateChanges memory)": "infinite",
+        "_battle(uint256,struct GameReveal.StateChanges memory,struct Game.Action memory,bool)": "infinite",
+        "_context(struct Game.Store storage pointer,uint256,struct Game.Action calldata[] calldata,bytes32)": "infinite",
+        "_move(int32,int32,struct GameReveal.StateChanges memory,struct Game.Action memory,bool)": "infinite",
+        "_step(struct GameReveal.StateChanges memory,struct Game.Action memory,bool)": "infinite",
+        "isTakenByOtherMonster(struct GameReveal.Monster memory[5] memory,int32,int32)": "infinite"
+      }
+    }
+  },
+  "metadata": "{\"compiler\":{\"version\":\"0.8.25+commit.b61c2a91\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"GameNotStarted\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"enum Game.Reason\",\"name\":\"reason\",\"type\":\"uint8\"}],\"name\":\"InvalidMove\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"NotAuthorizedController\",\"type\":\"error\"},{\"inputs\":[],\"name\":\"OnlyCharactersAreAccepted\",\"type\":\"error\"},{\"inputs\":[{\"internalType\":\"uint64\",\"name\":\"position\",\"type\":\"uint64\"}],\"name\":\"UnableToExitFromThisPosition\",\"type\":\"error\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"controller\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint24\",\"name\":\"epoch\",\"type\":\"uint24\"},{\"indexed\":false,\"internalType\":\"bytes24\",\"name\":\"commitmentHash\",\"type\":\"bytes24\"}],\"name\":\"CommitmentMade\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"controller\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"newPosition\",\"type\":\"uint64\"}],\"name\":\"EnteredTheGame\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"controller\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"positionWhenLeaving\",\"type\":\"uint64\"}],\"name\":\"LeftTheGame\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"controller\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint24\",\"name\":\"epoch\",\"type\":\"uint24\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"position\",\"type\":\"uint64\"},{\"internalType\":\"uint192\",\"name\":\"action\",\"type\":\"uint192\"}],\"indexed\":false,\"internalType\":\"struct Game.Action[]\",\"name\":\"actions\",\"type\":\"tuple[]\"},{\"indexed\":false,\"internalType\":\"uint64\",\"name\":\"newPosition\",\"type\":\"uint64\"}],\"name\":\"MoveRevealed\",\"type\":\"event\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"internalType\":\"uint64\",\"name\":\"priorPosition\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"controller\",\"type\":\"address\"},{\"internalType\":\"uint24\",\"name\":\"epoch\",\"type\":\"uint24\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"position\",\"type\":\"uint64\"},{\"internalType\":\"uint192\",\"name\":\"action\",\"type\":\"uint192\"}],\"internalType\":\"struct Game.Action[]\",\"name\":\"actions\",\"type\":\"tuple[]\"},{\"internalType\":\"bytes32\",\"name\":\"secret\",\"type\":\"bytes32\"}],\"internalType\":\"struct GameReveal.Context\",\"name\":\"context\",\"type\":\"tuple\"},{\"internalType\":\"bool\",\"name\":\"revetOnInvalidMoves\",\"type\":\"bool\"}],\"name\":\"computeStateChanges\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"internalType\":\"uint64\",\"name\":\"newPosition\",\"type\":\"uint64\"},{\"internalType\":\"uint24\",\"name\":\"xp\",\"type\":\"uint24\"},{\"internalType\":\"uint24\",\"name\":\"epoch\",\"type\":\"uint24\"},{\"internalType\":\"uint8\",\"name\":\"hp\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"int32\",\"name\":\"x\",\"type\":\"int32\"},{\"internalType\":\"int32\",\"name\":\"y\",\"type\":\"int32\"},{\"internalType\":\"uint8\",\"name\":\"hp\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"kind\",\"type\":\"uint8\"}],\"internalType\":\"struct GameReveal.Monster[5]\",\"name\":\"monsters\",\"type\":\"tuple[5]\"},{\"components\":[{\"internalType\":\"uint8\",\"name\":\"monsterIndexPlus1\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"cardsUsed1\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"cardsUsed2\",\"type\":\"uint8\"}],\"internalType\":\"struct GameReveal.Battle\",\"name\":\"battle\",\"type\":\"tuple\"}],\"internalType\":\"struct GameReveal.StateChanges\",\"name\":\"stateChanges\",\"type\":\"tuple\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"internalType\":\"uint64\",\"name\":\"priorPosition\",\"type\":\"uint64\"},{\"internalType\":\"address\",\"name\":\"controller\",\"type\":\"address\"},{\"internalType\":\"uint24\",\"name\":\"epoch\",\"type\":\"uint24\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"position\",\"type\":\"uint64\"},{\"internalType\":\"uint192\",\"name\":\"action\",\"type\":\"uint192\"}],\"internalType\":\"struct Game.Action[]\",\"name\":\"actions\",\"type\":\"tuple[]\"},{\"internalType\":\"bytes32\",\"name\":\"secret\",\"type\":\"bytes32\"}],\"internalType\":\"struct GameReveal.Context\",\"name\":\"context\",\"type\":\"tuple\"}],\"name\":\"initialStateChanges\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"internalType\":\"uint64\",\"name\":\"newPosition\",\"type\":\"uint64\"},{\"internalType\":\"uint24\",\"name\":\"xp\",\"type\":\"uint24\"},{\"internalType\":\"uint24\",\"name\":\"epoch\",\"type\":\"uint24\"},{\"internalType\":\"uint8\",\"name\":\"hp\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"int32\",\"name\":\"x\",\"type\":\"int32\"},{\"internalType\":\"int32\",\"name\":\"y\",\"type\":\"int32\"},{\"internalType\":\"uint8\",\"name\":\"hp\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"kind\",\"type\":\"uint8\"}],\"internalType\":\"struct GameReveal.Monster[5]\",\"name\":\"monsters\",\"type\":\"tuple[5]\"},{\"components\":[{\"internalType\":\"uint8\",\"name\":\"monsterIndexPlus1\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"cardsUsed1\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"cardsUsed2\",\"type\":\"uint8\"}],\"internalType\":\"struct GameReveal.Battle\",\"name\":\"battle\",\"type\":\"tuple\"}],\"internalType\":\"struct GameReveal.StateChanges\",\"name\":\"stateChanges\",\"type\":\"tuple\"}],\"stateMutability\":\"pure\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"position\",\"type\":\"uint64\"},{\"internalType\":\"uint192\",\"name\":\"action\",\"type\":\"uint192\"}],\"internalType\":\"struct Game.Action[]\",\"name\":\"actions\",\"type\":\"tuple[]\"},{\"internalType\":\"bytes32\",\"name\":\"secret\",\"type\":\"bytes32\"}],\"name\":\"reveal\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"internalType\":\"uint64\",\"name\":\"newPosition\",\"type\":\"uint64\"},{\"internalType\":\"uint24\",\"name\":\"xp\",\"type\":\"uint24\"},{\"internalType\":\"uint24\",\"name\":\"epoch\",\"type\":\"uint24\"},{\"internalType\":\"uint8\",\"name\":\"hp\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"int32\",\"name\":\"x\",\"type\":\"int32\"},{\"internalType\":\"int32\",\"name\":\"y\",\"type\":\"int32\"},{\"internalType\":\"uint8\",\"name\":\"hp\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"kind\",\"type\":\"uint8\"}],\"internalType\":\"struct GameReveal.Monster[5]\",\"name\":\"monsters\",\"type\":\"tuple[5]\"},{\"components\":[{\"internalType\":\"uint8\",\"name\":\"monsterIndexPlus1\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"cardsUsed1\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"cardsUsed2\",\"type\":\"uint8\"}],\"internalType\":\"struct GameReveal.Battle\",\"name\":\"battle\",\"type\":\"tuple\"}],\"internalType\":\"struct GameReveal.StateChanges\",\"name\":\"stateChanges\",\"type\":\"tuple\"},{\"components\":[{\"internalType\":\"uint64\",\"name\":\"position\",\"type\":\"uint64\"},{\"internalType\":\"uint192\",\"name\":\"action\",\"type\":\"uint192\"}],\"internalType\":\"struct Game.Action\",\"name\":\"action\",\"type\":\"tuple\"},{\"internalType\":\"bool\",\"name\":\"revetOnInvalidMoves\",\"type\":\"bool\"}],\"name\":\"stepChanges\",\"outputs\":[{\"components\":[{\"internalType\":\"uint256\",\"name\":\"characterID\",\"type\":\"uint256\"},{\"internalType\":\"uint64\",\"name\":\"newPosition\",\"type\":\"uint64\"},{\"internalType\":\"uint24\",\"name\":\"xp\",\"type\":\"uint24\"},{\"internalType\":\"uint24\",\"name\":\"epoch\",\"type\":\"uint24\"},{\"internalType\":\"uint8\",\"name\":\"hp\",\"type\":\"uint8\"},{\"components\":[{\"internalType\":\"int32\",\"name\":\"x\",\"type\":\"int32\"},{\"internalType\":\"int32\",\"name\":\"y\",\"type\":\"int32\"},{\"internalType\":\"uint8\",\"name\":\"hp\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"kind\",\"type\":\"uint8\"}],\"internalType\":\"struct GameReveal.Monster[5]\",\"name\":\"monsters\",\"type\":\"tuple[5]\"},{\"components\":[{\"internalType\":\"uint8\",\"name\":\"monsterIndexPlus1\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"cardsUsed1\",\"type\":\"uint8\"},{\"internalType\":\"uint8\",\"name\":\"cardsUsed2\",\"type\":\"uint8\"}],\"internalType\":\"struct GameReveal.Battle\",\"name\":\"battle\",\"type\":\"tuple\"}],\"internalType\":\"struct GameReveal.StateChanges\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"events\":{\"CommitmentMade(uint256,address,uint24,bytes24)\":{\"params\":{\"characterID\":\"the id of the NFT being played\",\"commitmentHash\":\"the hash of moves\",\"controller\":\"account handling the character moves\",\"epoch\":\"epoch number on which this commit belongs to\"}},\"EnteredTheGame(uint256,address,uint64)\":{\"params\":{\"characterID\":\"the id of the NFT being played\",\"controller\":\"account handling the character moves\",\"newPosition\":\"the resulting new character's position\"}},\"LeftTheGame(uint256,address,uint64)\":{\"params\":{\"characterID\":\"the id of the NFT being played\",\"controller\":\"account handling the character moves\",\"positionWhenLeaving\":\"the character's position when leaving\"}},\"MoveRevealed(uint256,address,uint24,(uint64,uint192)[],uint64)\":{\"params\":{\"actions\":\"the list of moves made\",\"characterID\":\"the id of the NFT being played\",\"controller\":\"account handling the character moves\",\"epoch\":\"epoch number on which this commit belongs to\",\"newPosition\":\"the resulting new character's position\"}}},\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"errors\":{\"GameNotStarted()\":[{\"notice\":\"happen when attempting to do something on a game that did not start yet\"}],\"NotAuthorizedController(address)\":[{\"notice\":\"happen when an unauthorized account attempt to control a character\"}],\"UnableToExitFromThisPosition(uint64)\":[{\"notice\":\"happen when attempting to leave the game from a non-exit position\"}]},\"events\":{\"CommitmentMade(uint256,address,uint24,bytes24)\":{\"notice\":\"A character has commited to make a move and reveal it on the reveal phase\"},\"EnteredTheGame(uint256,address,uint64)\":{\"notice\":\"A character has commited to make a move and reveal it on the reveal phase\"},\"LeftTheGame(uint256,address,uint64)\":{\"notice\":\"A character has commited to make a move and reveal it on the reveal phase\"},\"MoveRevealed(uint256,address,uint24,(uint64,uint192)[],uint64)\":{\"notice\":\"A character has its moves revealed and executed\"}},\"kind\":\"user\",\"methods\":{\"stepChanges((uint256,uint64,uint24,uint24,uint8,(int32,int32,uint8,uint8)[5],(uint8,uint8,uint8)),(uint64,uint192),bool)\":{\"notice\":\"allow to step through each action and predict the outcome in turnn\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"src/game/routes/GameReveal.sol\":\"GameReveal\"},\"evmVersion\":\"cancun\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":true,\"runs\":999999},\"remappings\":[],\"viaIR\":true},\"sources\":{\"src/game/Game.sol\":{\"content\":\"// SPDX-License-Identifier: AGPL-3.0-or-later\\npragma solidity ^0.8.0;\\n\\nimport \\\"./Game.sol\\\";\\nimport \\\"../solidity-kit/solc_0_8/ERC721/interfaces/IERC721.sol\\\";\\n\\nabstract contract Game {\\n    // we use constant to bound gas and allow solidity to calulate worst case scenario\\n    uint256 constant MAX_PATH_LENGTH = 256;\\n\\n    /// @notice happen when an unauthorized account attempt to control a character\\n    error NotAuthorizedController(address sender);\\n\\n    /// @notice happen when attempting to leave the game from a non-exit position\\n    error UnableToExitFromThisPosition(uint64 position);\\n\\n    /// @notice happen when attempting to do something on a game that did not start yet\\n    error GameNotStarted();\\n\\n    error OnlyCharactersAreAccepted();\\n\\n    enum Reason {\\n        None,\\n        Wall,\\n        NonAdjacent\\n    }\\n    error InvalidMove(Reason reason);\\n\\n    /// @notice A character has commited to make a move and reveal it on the reveal phase\\n    /// @param characterID the id of the NFT being played\\n    /// @param controller account handling the character moves\\n    /// @param epoch epoch number on which this commit belongs to\\n    /// @param commitmentHash the hash of moves\\n    event CommitmentMade(\\n        uint256 indexed characterID,\\n        address indexed controller,\\n        uint24 indexed epoch,\\n        bytes24 commitmentHash\\n    );\\n\\n    /// @notice A character has its moves revealed and executed\\n    /// @param characterID the id of the NFT being played\\n    /// @param controller account handling the character moves\\n    /// @param epoch epoch number on which this commit belongs to\\n    /// @param actions the list of moves made\\n    /// @param newPosition the resulting new character's position\\n    event MoveRevealed(\\n        uint256 indexed characterID,\\n        address indexed controller,\\n        uint24 indexed epoch,\\n        Action[] actions,\\n        uint64 newPosition\\n    );\\n\\n    /// @notice A character has commited to make a move and reveal it on the reveal phase\\n    /// @param characterID the id of the NFT being played\\n    /// @param controller account handling the character moves\\n    /// @param newPosition the resulting new character's position\\n    event EnteredTheGame(uint256 indexed characterID, address indexed controller, uint64 newPosition);\\n\\n    /// @notice A character has commited to make a move and reveal it on the reveal phase\\n    /// @param characterID the id of the NFT being played\\n    /// @param controller account handling the character moves\\n    /// @param positionWhenLeaving the character's position when leaving\\n    event LeftTheGame(uint256 indexed characterID, address indexed controller, uint64 positionWhenLeaving);\\n\\n    struct Commitment {\\n        bytes24 hash;\\n        uint24 epoch;\\n    }\\n\\n    /// @notice Move struct that define the action, type and position\\n    struct Action {\\n        uint64 position;\\n        uint192 action; // TODO define: none, open, attack cards, etc... // TODO make position an action and remove position, first byte define the type: move,\\n    }\\n\\n    enum ControllerType {\\n        None,\\n        Basic,\\n        Owner\\n    }\\n\\n    struct CharacterState {\\n        mapping(address => ControllerType) controllers;\\n        uint64 position;\\n        uint64 epoch;\\n    }\\n\\n    struct Store {\\n        mapping(uint256 => Commitment) commitments;\\n        mapping(uint256 => CharacterState) characterStates;\\n    }\\n\\n    /// @notice Config struct to configure the game instance\\n    struct Config {\\n        uint256 startTime;\\n        uint256 commitPhaseDuration;\\n        uint256 revealPhaseDuration;\\n        IERC721 characters;\\n    }\\n\\n    struct Area {\\n        uint128 eastWalls;\\n        uint128 southWalls;\\n    }\\n\\n    enum MonsterKind {\\n        Basic\\n    }\\n\\n    struct LocalMonster {\\n        MonsterKind kind; // TODO enum\\n        int32 x;\\n        int32 y;\\n        int8 life;\\n    }\\n\\n    function getStore() internal pure returns (Store storage store) {\\n        assembly {\\n            store.slot := 0\\n        }\\n    }\\n\\n    function getConfig() internal pure returns (Config memory config) {\\n        uint256 offset = _getImmutableArgsOffset();\\n        config = abi.decode(msg.data[offset:], (Config));\\n    }\\n\\n    /// @return offset The offset of the packed immutable args in calldata\\n    function _getImmutableArgsOffset() internal pure returns (uint256 offset) {\\n        // solhint-disable-next-line no-inline-assembly\\n        assembly {\\n            offset := sub(calldatasize(), add(shr(240, calldataload(sub(calldatasize(), 2))), 2))\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x55b2a039c7de3b6811641d994e35fa6c99dbe3ff5f2beac655666889761a0acd\",\"license\":\"AGPL-3.0-or-later\"},\"src/game/GameUtils.sol\":{\"content\":\"// SPDX-License-Identifier: AGPL-3.0-or-later\\npragma solidity ^0.8.0;\\n\\nimport \\\"./Game.sol\\\";\\nimport \\\"../utils/PositionUtils.sol\\\";\\nimport \\\"./data/Areas.sol\\\";\\n\\nlibrary GameUtils {\\n    function getEpoch(Game.Config memory config) internal view returns (uint24 epoch, bool commiting) {\\n        uint256 epochDuration = config.commitPhaseDuration + config.revealPhaseDuration;\\n        uint256 time = block.timestamp; // TODO_timestamp();\\n        if (time < config.startTime) {\\n            revert Game.GameNotStarted();\\n        }\\n        uint256 timePassed = time - config.startTime;\\n        epoch = uint24(timePassed / epochDuration + 2); // epoch start at 2, this make the hypothetical previous reveal phase's epoch to be 1\\n        commiting = timePassed - ((epoch - 2) * epochDuration) < config.commitPhaseDuration;\\n    }\\n\\n    function computeArea(bytes32 areaHash) public pure returns (Game.Area memory) {\\n        // \\\"made only for 11x11\\\"\\n        assert(PositionUtils.AREA_SIZE == 11);\\n        return Areas.getArea(uint256(areaHash) % 5);\\n    }\\n\\n    function areaAt(int32 x, int32 y) public pure returns (Game.Area memory area) {\\n        // TODO\\n        (int32 areaX, int32 areaY) = PositionUtils.area(x, y);\\n        area = computeArea(keccak256(abi.encodePacked(areaX, areaY)));\\n    }\\n\\n    function wallAt(uint128 walls, int32 x, int32 y) internal pure returns (bool) {\\n        uint8 xx = PositionUtils.areaLocalCoord(x);\\n        uint8 yy = PositionUtils.areaLocalCoord(y);\\n        uint8 i = yy * uint8(int8(PositionUtils.AREA_SIZE)) + xx;\\n        return ((walls >> (127 - i)) & 0x1) == 1;\\n    }\\n\\n    function isValidMove(int32 x, int32 y, int32 nextX, int32 nextY) internal pure returns (Game.Reason reason) {\\n        if (nextX == x) {\\n            if ((nextY == y + 1)) {\\n                // TODO cache area, detect area change and update accordingly\\n                Game.Area memory area = areaAt(x, y);\\n                if (wallAt(area.southWalls, x, y)) {\\n                    return Game.Reason.Wall;\\n                } else {\\n                    return Game.Reason.None;\\n                }\\n            } else if (nextY == y - 1) {\\n                Game.Area memory area = areaAt(nextX, nextY);\\n                if (wallAt(area.southWalls, nextX, nextY)) {\\n                    return Game.Reason.Wall;\\n                } else {\\n                    return Game.Reason.None;\\n                }\\n            } else {\\n                return Game.Reason.NonAdjacent;\\n            }\\n        } else if (nextY == y) {\\n            if ((nextX == x + 1)) {\\n                Game.Area memory area = areaAt(x, y);\\n                if (wallAt(area.eastWalls, x, y)) {\\n                    return Game.Reason.Wall;\\n                } else {\\n                    return Game.Reason.None;\\n                }\\n            } else if (nextX == x - 1) {\\n                Game.Area memory area = areaAt(nextX, nextY);\\n                if (wallAt(area.eastWalls, nextX, nextY)) {\\n                    return Game.Reason.Wall;\\n                } else {\\n                    return Game.Reason.None;\\n                }\\n            } else {\\n                return Game.Reason.NonAdjacent;\\n            }\\n        }\\n        return Game.Reason.NonAdjacent;\\n    }\\n}\\n\",\"keccak256\":\"0xb0d5a865c33836b93095558f4b81bfce8f760ae2c308e036b8ed63d39a5f9972\",\"license\":\"AGPL-3.0-or-later\"},\"src/game/data/Areas.sol\":{\"content\":\"// SPDX-License-Identifier: AGPL-3.0-or-later\\npragma solidity ^0.8.0;\\n\\nimport \\\"../Game.sol\\\";\\n\\nlibrary Areas {\\n    function getArea(uint256 i) internal pure returns (Game.Area memory area) {\\n        if (false) {} else if (i == 0) {\\n            /*\\n .   .   .   . | . | .   .   .   .   .   . |\\n                                            \\n .   .   .   . | . | .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   . | . | .   .   .   .   .   . |\\n                    ___ ___ ___     ___ ___ \\n .   .   .   . | .   .   . | .   .   .   . |\\n___ ___ ___ ___                             \\n .   .   .   .   .   .   . | .   .   .   . |\\n    ___ ___     ___                         \\n . | .   .   .   . | .   . | .   .   .   .  \\n                                            \\n . | .   .   .   . | .   . | .   .   .   . |\\n                            ___ ___ ___ ___ \\n . | .   .   .   . | .   .   .   .   .   . |\\n___                                         \\n .   .   .   .   . | .   .   .   .   .   . |\\n                                            \\n .   .   .   .   . | .   .   .   .   .   . |\\n___ ___ ___ ___ ___ ___ ___     ___ ___ ___ \\n\\n*/\\n            area = Game.Area({\\n                southWalls: 1159363697933213752560450432,\\n                eastWalls: 32083283461873728278639673345225007232\\n            });\\n        } else if (i == 1) {\\n            /*\\n .   .   .   .   . | .   .   .   .   . | . |\\n                                            \\n .   .   .   .   . | .   .   .   .   . | .  \\n___     ___ ___ ___                         \\n .   .   .   . | .   .   .   .   .   . | . |\\n                                            \\n .   .   .   . | . | .   .   .   .   . | . |\\n                                            \\n .   .   .   . | . | .   .   .   .   . | . |\\n                    ___ ___ ___ ___ ___     \\n .   .   .   . | .   .   .   . | .   .   . |\\n___ ___     ___ ___ ___ ___                 \\n .   . | . | .   .   .   . | .   .   .   . |\\n            ___ ___ ___ ___                 \\n .   . | .   .   .   .   .   . | .   .   . |\\n        ___ ___     ___ ___ ___ ___     ___ \\n .   .   .   .   .   . | .   .   .   .   . |\\n                                            \\n .   .   .   .   .   . | .   .   .   .   . |\\n                                            \\n .   .   .   .   .   . | .   .   .   .   . |\\n___     ___ ___ ___ ___ ___ ___ ___ ___ ___ \\n\\n*/\\n            area = Game.Area({\\n                southWalls: 119422827746894799795367216578494336,\\n                eastWalls: 11137644214052370074570601009611280512\\n            });\\n        } else if (i == 2) {\\n            /*\\n .   .   .   .   .   .   .   .   .   .   . |\\n    ___ ___ ___ ___ ___ ___ ___ ___ ___     \\n .   . | .   .   .   .   . | .   .   .   . |\\n___                             ___ ___ ___ \\n . | . | .   .   .   .   .   .   .   .   . |\\n                            ___ ___     ___ \\n . | . | .   .   .   .   . | .   .   .   . |\\n___     ___ ___     ___ ___                 \\n .   .   .   . | .   .   . | .   .   .   . |\\n                                            \\n .   .   .   . | .   .   . | .   .   .   . |\\n                            ___ ___ ___ ___ \\n .   .   .   . | .   .   .   .   .   .   . |\\n                            ___ ___ ___     \\n .   .   .   . | .   .   . | .   .   . | . |\\n                                ___ ___     \\n .   .   .   . | .   .   . | . | .   .   . |\\n                                    ___ ___ \\n .   .   .   . | .   .   . | . | .   .   .  \\n                                ___ ___ ___ \\n .   .   .   . | .   .   .   .   .   .   . |\\n___ ___ ___     ___ ___ ___ ___ ___ ___ ___ \\n\\n*/\\n            area = Game.Area({\\n                southWalls: 169892521661874654557957128099593174912,\\n                eastWalls: 209131995078092551922943393320157312\\n            });\\n        } else if (i == 3) {\\n            /*\\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n___     ___ ___ ___     ___     ___ ___ ___ \\n .   .   .   .   .   .   .   .   .   .   .  \\n___ ___ ___     ___     ___ ___ ___     ___ \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n                                            \\n .   .   .   .   . | . | .   .   .   .   . |\\n___ ___ ___ ___ ___     ___ ___ ___ ___ ___ \\n\\n*/\\n            area = Game.Area({\\n                southWalls: 14128568811924974815408000,\\n                eastWalls: 16124762868261372760261637903252467840\\n            });\\n        } else if (i == 4) {\\n            /*\\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   .  \\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n                                            \\n .   .   .   .   .   .   .   .   .   .   . |\\n___ ___ ___ ___ ___     ___ ___ ___ ___ ___ \\n\\n*/\\n            area = Game.Area({southWalls: 257920, eastWalls: 166234668744962605775893174260334720});\\n        }\\n    }\\n}\\n\",\"keccak256\":\"0x24fbdb2a973acc9f2b1f954c6ff6763d28efe1b49a8fa5409f0c4cb9589adbb7\",\"license\":\"AGPL-3.0-or-later\"},\"src/game/routes/GameReveal.sol\":{\"content\":\"// SPDX-License-Identifier: AGPL-3.0-or-later\\npragma solidity ^0.8.0;\\n\\nimport \\\"../Game.sol\\\";\\nimport \\\"../GameUtils.sol\\\";\\nimport \\\"../../utils/PositionUtils.sol\\\";\\nimport \\\"../../solidity-kit/solc_0_8/utils/Math.sol\\\";\\n\\ncontract GameReveal is Game {\\n    using GameUtils for Config;\\n\\n    struct Context {\\n        uint256 characterID;\\n        uint64 priorPosition;\\n        address controller;\\n        uint24 epoch;\\n        Game.Action[] actions;\\n        bytes32 secret;\\n    }\\n\\n    struct Monster {\\n        int32 x;\\n        int32 y;\\n        uint8 hp;\\n        uint8 kind;\\n    }\\n\\n    struct Battle {\\n        uint8 monsterIndexPlus1; // 0 means no monster\\n        uint8 cardsUsed1; // bitmap\\n        uint8 cardsUsed2; // bitmap\\n    }\\n\\n    struct StateChanges {\\n        uint256 characterID;\\n        uint64 newPosition;\\n        uint24 xp;\\n        uint24 epoch;\\n        uint8 hp;\\n        Monster[5] monsters;\\n        Battle battle;\\n    }\\n\\n    function reveal(uint256 characterID, Game.Action[] calldata actions, bytes32 secret) external {\\n        Game.Store storage store = getStore();\\n        Context memory context = _context(store, characterID, actions, secret);\\n        StateChanges memory stateChanges = computeStateChanges(context, false);\\n        _apply(store, stateChanges);\\n        emit MoveRevealed(\\n            context.characterID,\\n            context.controller,\\n            context.epoch,\\n            context.actions,\\n            stateChanges.newPosition\\n        );\\n    }\\n\\n    function computeStateChanges(\\n        Context memory context,\\n        bool revetOnInvalidMoves\\n    ) public pure returns (StateChanges memory stateChanges) {\\n        stateChanges = initialStateChanges(context);\\n        for (uint256 i = 0; i < context.actions.length; i++) {\\n            _step(stateChanges, context.actions[i], revetOnInvalidMoves);\\n        }\\n    }\\n\\n    function initialStateChanges(Context memory context) public pure returns (StateChanges memory stateChanges) {\\n        uint64 position = context.priorPosition;\\n        (int32 x, int32 y) = PositionUtils.toXY(position);\\n        Monster[5] memory monsters;\\n        // TODO randomize\\n        // TODO explore the idea of persistent local monsters\\n        // they get replaced by new one if out of bound\\n        // we can easily store Monster info in 256 bits?\\n        // position can be represented as delta from player and can be store in few bits this way\\n        // life is tiny and monster type can do the rest\\n        // 256bits should be enough\\n        monsters[0] = Monster({x: x - 2, y: y + 5, hp: 3, kind: 1});\\n        monsters[1] = Monster({x: x - 5, y: y - 3, hp: 3, kind: 1});\\n        monsters[2] = Monster({x: x + 5, y: y + 2, hp: 3, kind: 1});\\n        monsters[3] = Monster({x: x + 6, y: y - 5, hp: 3, kind: 1});\\n        monsters[4] = Monster({x: x + 4, y: y + 8, hp: 3, kind: 1});\\n        stateChanges.monsters = monsters;\\n        stateChanges.newPosition = position;\\n    }\\n\\n    /// @notice allow to step through each action and predict the outcome in turnn\\n    function stepChanges(\\n        StateChanges memory stateChanges,\\n        Game.Action memory action,\\n        bool revetOnInvalidMoves\\n    ) external pure returns (StateChanges memory) {\\n        _step(stateChanges, action, revetOnInvalidMoves);\\n        // as external function, it will always return a copy\\n        return stateChanges;\\n    }\\n\\n    function _context(\\n        Game.Store storage store,\\n        uint256 characterID,\\n        Game.Action[] calldata actions,\\n        bytes32 secret\\n    ) internal view returns (Context memory context) {\\n        Config memory config = getConfig();\\n        // TODO check secret\\n        context.characterID = characterID;\\n        context.priorPosition = store.characterStates[characterID].position;\\n        (context.epoch, ) = config.getEpoch();\\n        context.actions = actions;\\n        context.secret = secret;\\n    }\\n\\n    function _step(\\n        StateChanges memory stateChanges,\\n        Game.Action memory action,\\n        bool revetOnInvalidMoves\\n    ) internal pure {\\n        uint64 position = stateChanges.newPosition;\\n        (int32 x, int32 y) = PositionUtils.toXY(position);\\n        if (stateChanges.battle.monsterIndexPlus1 == 0) {\\n            _move(x, y, stateChanges, action, revetOnInvalidMoves);\\n        } else {\\n            _battle(stateChanges.battle.monsterIndexPlus1 - 1, stateChanges, action, revetOnInvalidMoves);\\n        }\\n    }\\n    function _move(\\n        int32 x,\\n        int32 y,\\n        StateChanges memory stateChanges,\\n        Game.Action memory action,\\n        bool revetOnInvalidMoves\\n    ) internal pure {\\n        uint64 position = stateChanges.newPosition;\\n        Monster[5] memory monsters = stateChanges.monsters;\\n        uint64 next = action.position;\\n        (int32 nextX, int32 nextY) = PositionUtils.toXY(next);\\n        Reason invalidMove = GameUtils.isValidMove(x, y, nextX, nextY);\\n        if (invalidMove == Reason.None) {\\n            position = next;\\n        } else {\\n            if (revetOnInvalidMoves) {\\n                revert InvalidMove(invalidMove);\\n            }\\n        }\\n        (x, y) = PositionUtils.toXY(position);\\n        for (uint256 e = 0; e < 5; e++) {\\n            Monster memory monster = monsters[e];\\n            if (monster.hp > 0) {\\n                int32 m_nextX = monster.x;\\n                int32 m_nextY = monster.y;\\n                int32 xDiff = x - monster.x;\\n                int32 yDiff = y - monster.y;\\n\\n                if (!(xDiff == 0 && yDiff == 0)) {\\n                    if (Math.abs(xDiff) > Math.abs(yDiff)) {\\n                        m_nextX += (xDiff > int32(0) ? int32(1) : int32(-1));\\n                        if (\\n                            GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||\\n                            isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max\\n                        ) {\\n                            m_nextY += (yDiff > int32(0) ? int32(1) : int32(-1));\\n                            m_nextX = monster.x;\\n                            if (\\n                                GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||\\n                                isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max\\n                            ) {\\n                                m_nextY = monster.y;\\n                            }\\n                        }\\n                    } else {\\n                        m_nextY += (yDiff > int32(0) ? int32(1) : int32(-1));\\n                        if (\\n                            GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||\\n                            isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max\\n                        ) {\\n                            m_nextX += (xDiff > int32(0) ? int32(1) : int32(-1));\\n                            m_nextY = monster.y;\\n                            if (\\n                                GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||\\n                                isTakenByOtherMonster(monsters, m_nextX, m_nextY) != type(uint256).max\\n                            ) {\\n                                m_nextX = monster.x;\\n                            }\\n                        }\\n                    }\\n                    monster.x = m_nextX;\\n                    monster.y = m_nextY;\\n                }\\n                if (monster.x == x && monster.y == y) {\\n                    stateChanges.battle.monsterIndexPlus1 = uint8(e + 1); // TODO make e uint8 ?\\n                }\\n            }\\n        }\\n        stateChanges.newPosition = position;\\n    }\\n\\n    function _battle(\\n        uint256 monsterIndex,\\n        StateChanges memory stateChanges,\\n        Game.Action memory action,\\n        bool revetOnInvalidMoves\\n    ) internal pure {}\\n\\n    function isTakenByOtherMonster(\\n        Monster[5] memory monsters,\\n        int32 x,\\n        int32 y\\n    ) internal pure returns (uint256 monsterIndex) {\\n        for (uint256 i = 0; i < 5; i++) {\\n            if (monsters[i].x == x && monsters[i].y == y && monsters[i].hp > 0) {\\n                return i;\\n            }\\n        }\\n        return type(uint256).max;\\n    }\\n\\n    function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {\\n        store.characterStates[stateChanges.characterID].position = stateChanges.newPosition;\\n        store.commitments[stateChanges.characterID].epoch = stateChanges.epoch;\\n    }\\n}\\n\",\"keccak256\":\"0x046208458f2966329942c888690a286dffb2087fc927a6a5ee7476ef3f24d8eb\",\"license\":\"AGPL-3.0-or-later\"},\"src/solidity-kit/solc_0_8/ERC165/interfaces/IERC165.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\ninterface IERC165 {\\n    /// @notice Query if a contract implements an interface\\n    /// @param interfaceID The interface identifier, as specified in ERC-165\\n    /// @dev Interface identification is specified in ERC-165. This function\\n    ///  uses less than 30,000 gas.\\n    /// @return `true` if the contract implements `interfaceID` and\\n    ///  `interfaceID` is not 0xffffffff, `false` otherwise\\n    function supportsInterface(bytes4 interfaceID) external view returns (bool);\\n}\\n\",\"keccak256\":\"0x0bbdb7cf3d2c6acf95398c0ef54cb0e6ae8a3e6ce6f18fafeb0aa55cb74fb8fd\",\"license\":\"MIT\"},\"src/solidity-kit/solc_0_8/ERC721/interfaces/IERC721.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\nimport \\\"../../ERC165/interfaces/IERC165.sol\\\";\\nimport \\\"./UsingERC721Events.sol\\\";\\n\\ninterface IERC721Supply {\\n    /// @notice return the total number of token in existence\\n    function totalSupply() external view returns (uint256);\\n}\\n\\ninterface IERC721 is IERC165, UsingERC721Events {\\n    /// @notice Get the number of tokens owned by an address.\\n    /// @param owner The address to look for.\\n    /// @return balance The number of tokens owned by the address.\\n    function balanceOf(address owner) external view returns (uint256 balance);\\n\\n    /// @notice Get the owner of a token.\\n    /// @param tokenID The id of the token.\\n    /// @return owner The address of the token owner.\\n    function ownerOf(uint256 tokenID) external view returns (address owner);\\n\\n    /// @notice Transfer a token between 2 addresses letting the receiver knows of the transfer.\\n    /// @param from The sender of the token.\\n    /// @param to The recipient of the token.\\n    /// @param tokenID The id of the token.\\n    /// @param data Additional data.\\n    function safeTransferFrom(address from, address to, uint256 tokenID, bytes calldata data) external;\\n\\n    /// @notice Transfer a token between 2 addresses letting the receiver know of the transfer.\\n    /// @param from The send of the token.\\n    /// @param to The recipient of the token.\\n    /// @param tokenID The id of the token.\\n    function safeTransferFrom(address from, address to, uint256 tokenID) external;\\n\\n    /// @notice Transfer a token between 2 addresses.\\n    /// @param from The sender of the token.\\n    /// @param to The recipient of the token.\\n    /// @param tokenID The id of the token.\\n    function transferFrom(address from, address to, uint256 tokenID) external;\\n\\n    /// @notice Approve an operator to transfer a specific token on the senders behalf.\\n    /// @param operator The address receiving the approval.\\n    /// @param tokenID The id of the token.\\n    function approve(address operator, uint256 tokenID) external;\\n\\n    /// @notice Set the approval for an operator to manage all the tokens of the sender.\\n    /// @param operator The address receiving the approval.\\n    /// @param approved The determination of the approval.\\n    function setApprovalForAll(address operator, bool approved) external;\\n\\n    /// @notice Get the approved operator for a specific token.\\n    /// @param tokenID The id of the token.\\n    /// @return operator The address of the operator.\\n    function getApproved(uint256 tokenID) external view returns (address operator);\\n\\n    /// @notice Check if the sender approved the operator to transfer any of its tokens.\\n    /// @param owner The address of the owner.\\n    /// @param operator The address of the operator.\\n    /// @return isOperator The status of the approval.\\n    function isApprovedForAll(address owner, address operator) external view returns (bool);\\n}\\n\",\"keccak256\":\"0xa2a5afc2f4e761179de9c718ee807e2d682ed4ae39884906ac333c20282a95d1\",\"license\":\"MIT\"},\"src/solidity-kit/solc_0_8/ERC721/interfaces/UsingERC721Events.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\npragma solidity ^0.8.0;\\n\\ninterface UsingERC721Events {\\n    /// @notice Triggered when a token is transferred\\n    /// @param from the account the token is sent from\\n    /// @param to the account the token is sent to\\n    /// @param tokenID id of the token being sent\\n    event Transfer(address indexed from, address indexed to, uint256 indexed tokenID);\\n\\n    /// @notice Triggered when a token is approved to be sent by another account\\n    ///  Note tat the approval get reset when a Transfer event for that same token is emitted.\\n    /// @param owner current owner of the token\\n    /// @param approved account who can know transfer on the owner's behalf\\n    /// @param tokenID id of the token being approved\\n    event Approval(address indexed owner, address indexed approved, uint256 indexed tokenID);\\n\\n    /// @notice Triggered when an account approve or disaprove another to transfer on its behalf\\n    /// @param owner the account granting rights over all of its token\\n    /// @param operator account who can know transfer on the owner's behalf\\n    /// @param approved whether it is approved or not\\n    event ApprovalForAll(address indexed owner, address indexed operator, bool approved);\\n}\\n\",\"keccak256\":\"0x1b0d4ae18443a686be830d3a6ce203d563fe2f42ac9cc3fdf722b702d18152a2\",\"license\":\"MIT\"},\"src/solidity-kit/solc_0_8/utils/Math.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity ^0.8.0;\\n\\nlibrary Math {\\n    function abs(int32 x) internal pure returns (int32) {\\n        return x >= 0 ? x : -x;\\n    }\\n}\\n\",\"keccak256\":\"0xa0ac00aea6c81b4aeb57f5c60330d8744f1f0f4846b045c22a1825fc55fd34a4\",\"license\":\"MIT\"},\"src/utils/PositionUtils.sol\":{\"content\":\"// SPDX-License-Identifier: AGPL-3.0\\npragma solidity ^0.8.0;\\n\\nlibrary PositionUtils {\\n    int32 constant AREA_SIZE = 11;\\n    int32 constant AREA_OFFSET = 5;\\n\\n    function areaCoord(int32 a) internal pure returns (int32 b) {\\n        if (a >= 0) {\\n            b = (a + AREA_OFFSET) / AREA_SIZE;\\n        } else {\\n            b = -((-a + AREA_OFFSET) / AREA_SIZE);\\n        }\\n    }\\n\\n    function areaWorldPoint(int32 areaC) internal pure returns (int32 worldCoord) {\\n        return areaC * AREA_SIZE - AREA_OFFSET;\\n    }\\n\\n    function areaLocalCoord(int32 x) internal pure returns (uint8 index) {\\n        return uint8(uint32(x - (areaCoord(x) * AREA_SIZE - AREA_OFFSET)));\\n    }\\n\\n    function area(int32 x, int32 y) internal pure returns (int32 areaX, int32 areaY) {\\n        areaX = areaCoord(x);\\n        areaY = areaCoord(y);\\n    }\\n\\n    function toXY(uint64 position) internal pure returns (int32 x, int32 y) {\\n        x = int32(uint32(position) & 0xFFFFFFFF);\\n        y = int32(uint32(position >> 32));\\n    }\\n\\n    function offset(uint64 position, int32 x, int32 y) internal pure returns (uint64 newPosition) {\\n        x = int32(uint32(position) & 0xFFFFFFFF) + x;\\n        y = int32(uint32(position >> 32)) + y;\\n        newPosition = toPosition(x, y);\\n    }\\n\\n    function toPosition(int32 x, int32 y) internal pure returns (uint64 position) {\\n        position = (uint64(uint32(y)) << 32) + uint64(uint32(x));\\n    }\\n}\\n\",\"keccak256\":\"0x8788bccb63c77458a0c10041a421b6bbac539070ba61902b5ebea6b3608a9bb8\",\"license\":\"AGPL-3.0\"}},\"version\":1}",
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  },
+  "userdoc": {
+    "errors": {
+      "GameNotStarted()": [
+        {
+          "notice": "happen when attempting to do something on a game that did not start yet"
+        }
+      ],
+      "NotAuthorizedController(address)": [
+        {
+          "notice": "happen when an unauthorized account attempt to control a character"
+        }
+      ],
+      "UnableToExitFromThisPosition(uint64)": [
+        {
+          "notice": "happen when attempting to leave the game from a non-exit position"
+        }
+      ]
+    },
+    "events": {
+      "CommitmentMade(uint256,address,uint24,bytes24)": {
+        "notice": "A character has commited to make a move and reveal it on the reveal phase"
+      },
+      "EnteredTheGame(uint256,address,uint64)": {
+        "notice": "A character has commited to make a move and reveal it on the reveal phase"
+      },
+      "LeftTheGame(uint256,address,uint64)": {
+        "notice": "A character has commited to make a move and reveal it on the reveal phase"
+      },
+      "MoveRevealed(uint256,address,uint24,(uint64,uint192)[],uint64)": {
+        "notice": "A character has its moves revealed and executed"
+      }
+    },
+    "kind": "user",
+    "methods": {
+      "stepChanges((uint256,uint64,uint24,uint24,uint8,(int32,int32,uint8,uint8)[5],(uint8,uint8,uint8)),(uint64,uint192),bool)": {
+        "notice": "allow to step through each action and predict the outcome in turnn"
+      }
+    },
+    "version": 1
+  },
+  "argsData": "0x",
+  "transaction": {
+    "hash": "0x13184184c8209e4d2d9766b940ee2de9d4304eedce5870717b8451350f712c1e",
+    "nonce": "0x1ce",
+    "origin": "0x61c461ecc993aadeb7e4b47e96d1b8cc37314b20"
+  },
+  "receipt": {
+    "confirmations": 0,
+    "blockHash": "0xa24b723203b1ac70fdc07a6af9d6c853dbce6a8b4cf548e40283957aa7594257",
+    "blockNumber": "0x5e42b1",
+    "transactionIndex": "0x32"
+  }
+}
