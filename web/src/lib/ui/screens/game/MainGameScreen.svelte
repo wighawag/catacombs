@@ -1,6 +1,7 @@
 <script lang="ts">
 	import WebGlCanvas from '$lib/render/WebGLCanvas.svelte';
 	import {type GameView} from '$lib/state/ViewState';
+	import {memory} from '$lib/state/memory';
 	import WelcomeProfile from '../headers/WelcomeProfile.svelte';
 	import Overlay from './Overlay.svelte';
 	export let gameView: GameView;
@@ -30,6 +31,12 @@
 		<a href="https://twitter.com/etherplay" target="_blank" rel="noopener noreferrer">@Etherplay</a>
 		for updates
 	</p> -->
+	<div class="actions">
+		<div class="rewind">
+			<button on:click={() => memory.reset()}>&lt;&lt;</button>
+			<button on:click={() => memory.rewind()}>&lt;</button>
+		</div>
+	</div>
 </footer>
 
 <style>
@@ -40,5 +47,16 @@
 		left: 0; */
 		height: 100%;
 		width: 100%;
+	}
+
+	.actions {
+		width: 100%;
+		display: flex;
+	}
+	.rewind {
+		display: flex;
+		width: 100%;
+		gap: 1rem;
+		justify-content: end;
 	}
 </style>
