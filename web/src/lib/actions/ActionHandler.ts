@@ -8,6 +8,75 @@ import {bigIntIDToXY, xyToBigIntID, type Monster, type MonsterList} from 'templa
 import {evmGame} from '$lib/state/computed';
 import {connection} from '$lib/state';
 
+export async function performAction(gameView: GameView, direction: {dx: number; dy: number}) {
+	const $gameView = get(gameView);
+	if (!$gameView.currentCharacter) {
+		console.log('no current character');
+		return;
+	}
+	const currentStateChanges = gameView.$state.currentStateChanges;
+	if (!currentStateChanges) {
+		return;
+	}
+
+	const origPosition = currentStateChanges?.newPosition
+		? bigIntIDToXY(currentStateChanges.newPosition)
+		: $gameView.characters[$gameView.currentCharacter].position;
+	const newPosition = {x: origPosition.x + direction.dx, y: origPosition.y + direction.dy};
+
+	const stateChanges = await evmGame.stepChanges(currentStateChanges, {
+		position: xyToBigIntID(newPosition.x, newPosition.y),
+		action: 0n,
+	});
+	console.log(`-----------------------------`);
+	console.log(currentStateChanges);
+	console.log(`=>`);
+	console.log(stateChanges);
+	console.log(`-----------------------------`);
+	const pos = bigIntIDToXY(stateChanges.newPosition);
+	memory.addMove({position: pos, action: '0x00'}, stateChanges);
+
+	camera.navigate(pos.x, pos.y, camera.$store.zoom);
+}
+
+export function reset(gameView: GameView) {
+	const $gameView = get(gameView);
+	if (!$gameView.currentCharacter) {
+		console.log('no current character');
+		return;
+	}
+	console.log('reseting...');
+	memory.reset();
+
+	// TODO DRY
+	const currentStateChanges = gameView.$state.currentStateChanges;
+	const origPosition = currentStateChanges?.newPosition
+		? bigIntIDToXY(currentStateChanges.newPosition)
+		: $gameView.characters[$gameView.currentCharacter].position;
+	const position = {x: origPosition.x, y: origPosition.y};
+	console.log({position});
+	camera.navigate(position.x, position.y, camera.$store.zoom);
+}
+
+export function rewind(gameView: GameView) {
+	const $gameView = get(gameView);
+	if (!$gameView.currentCharacter) {
+		console.log('no current character');
+		return;
+	}
+	console.log('rewinding...');
+	memory.rewind();
+
+	// TODO DRY
+	const currentStateChanges = gameView.$state.currentStateChanges;
+	const origPosition = currentStateChanges?.newPosition
+		? bigIntIDToXY(currentStateChanges.newPosition)
+		: $gameView.characters[$gameView.currentCharacter].position;
+	const position = {x: origPosition.x, y: origPosition.y};
+	console.log({position});
+	camera.navigate(position.x, position.y, camera.$store.zoom);
+}
+
 export class ActionHandler {
 	camera!: Camera;
 	canvas!: HTMLCanvasElement;
@@ -36,70 +105,24 @@ export class ActionHandler {
 	}
 
 	async onKeyDown(ev: KeyboardEvent) {
-		const $gameView = get(this.gameView);
-		if (!$gameView.currentCharacter) {
-			console.log('no current character');
-			return;
-		}
-		const currentStateChanges = this.gameView.$state.currentStateChanges;
-		if (!currentStateChanges) {
-			return;
-		}
-		const origPosition = currentStateChanges?.newPosition
-			? bigIntIDToXY(currentStateChanges.newPosition)
-			: $gameView.characters[$gameView.currentCharacter].position;
-		const position = {x: origPosition.x, y: origPosition.y};
 		if (ev.code === 'Space') {
-			console.log('reseting...');
-			memory.reset();
-
-			// TODO DRY
-			const currentStateChanges = this.gameView.$state.currentStateChanges;
-			const origPosition = currentStateChanges?.newPosition
-				? bigIntIDToXY(currentStateChanges.newPosition)
-				: $gameView.characters[$gameView.currentCharacter].position;
-			const position = {x: origPosition.x, y: origPosition.y};
-			console.log({position});
-			camera.navigate(position.x, position.y, camera.$store.zoom);
+			reset(this.gameView);
 			return;
 		}
 		if (ev.code === 'Backspace') {
-			console.log('rewinding...');
-			memory.rewind();
-
-			// TODO DRY
-			const currentStateChanges = this.gameView.$state.currentStateChanges;
-			const origPosition = currentStateChanges?.newPosition
-				? bigIntIDToXY(currentStateChanges.newPosition)
-				: $gameView.characters[$gameView.currentCharacter].position;
-			const position = {x: origPosition.x, y: origPosition.y};
-			console.log({position});
-			camera.navigate(position.x, position.y, camera.$store.zoom);
+			rewind(this.gameView);
 			return;
 		}
+
 		if (ev.code === 'ArrowUp') {
-			position.y -= 1;
+			performAction(this.gameView, {dx: 0, dy: -1});
 		} else if (ev.code === 'ArrowDown') {
-			position.y += 1;
+			performAction(this.gameView, {dx: 0, dy: +1});
 		} else if (ev.code === 'ArrowLeft') {
-			position.x -= 1;
+			performAction(this.gameView, {dx: -1, dy: 0});
 		} else if (ev.code === 'ArrowRight') {
-			position.x += 1;
+			performAction(this.gameView, {dx: 1, dy: 0});
 		}
-
-		const stateChanges = await evmGame.stepChanges(currentStateChanges, {
-			position: xyToBigIntID(position.x, position.y),
-			action: 0n,
-		});
-		console.log(`-----------------------------`);
-		console.log(currentStateChanges);
-		console.log(`=>`);
-		console.log(stateChanges);
-		console.log(`-----------------------------`);
-		const pos = bigIntIDToXY(stateChanges.newPosition);
-		memory.addMove({position: pos, action: '0x00'}, stateChanges);
-
-		camera.navigate(pos.x, pos.y, camera.$store.zoom);
 	}
 
 	onKeyUp(ev: KeyboardEvent) {}
