@@ -1,0 +1,6 @@
+.vitepress/*
+!.vitepress/theme
+!.vitepress/config.mts
+/node_modules
+/public/*
+!/public/docs/
