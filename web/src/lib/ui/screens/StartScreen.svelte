@@ -1,5 +1,6 @@
 <script>
-	import {introductionState, playerStatus} from '$lib/state';
+	import {welcomeBack} from '$lib/data/texts';
+	import {connection, introductionState, playerStatus} from '$lib/state';
 	import DefaultScreen from './DefaultScreen.svelte';
 	export function startIntroduction() {
 		introductionState.next();
@@ -23,7 +24,7 @@
 		header="logo"
 		footer="social"
 		btn={[{text: 'Continue', func: startIntroduction}]}
-		text="Welcome back!"
+		text={welcomeBack($connection)}
 		subtext="You are already in the Catacombs. Come explore more..."
 		signOut={true}
 	></DefaultScreen>
@@ -32,7 +33,7 @@
 		header="logo"
 		footer="social"
 		btn={[{text: 'Start A New Adventure', func: startIntroduction}]}
-		text="Welcome back!"
+		text={welcomeBack($connection)}
 		subtext="You have yet to create a character and discover the Catacombs!"
 		signOut={true}
 	></DefaultScreen>

@@ -12,16 +12,19 @@ export type Connection =
 			providerWithoutSigner: undefined;
 			providerWithSigner: undefined;
 			address: undefined;
+			email: undefined;
 	  }
 	| {
 			providerWithoutSigner: EIP1193ProviderWithoutEvents;
 			providerWithSigner: undefined;
 			address: undefined;
+			email: undefined;
 	  }
 	| {
 			providerWithoutSigner: EIP1193ProviderWithoutEvents;
 			providerWithSigner: EIP1193SignerProvider;
 			address: `0x${string}`;
+			email?: string;
 	  };
 
 function createSignerProvider(provider: EIP1193ProviderWithoutEvents, key: string) {
@@ -39,6 +42,7 @@ export function initConnection() {
 		providerWithoutSigner: undefined,
 		providerWithSigner: undefined,
 		address: undefined,
+		email: undefined,
 	});
 
 	async function loginWithEmail() {

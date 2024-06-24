@@ -6,6 +6,7 @@
 	import LoadingScreen from '../loading/LoadingScreen.svelte';
 	import IntroductionGameScreen from '../game/IntroductionGameScreen.svelte';
 	import {text} from '@sveltejs/kit';
+	import {welcomeBack} from '$lib/data/texts';
 
 	async function next() {
 		introductionState.next();
@@ -67,7 +68,7 @@
 		<DefaultScreen
 			header="profile"
 			btn={[{text: 'continue', func: gotoGameScreen}]}
-			text="Welcome back"
+			text={welcomeBack($connection)}
 			subtext={continueText}
 			signOut={true}
 		/>
@@ -83,7 +84,7 @@
 		<DefaultScreen
 			header="profile"
 			btn={[{text: 'continue', func: gotoGameScreen}]}
-			text="Welcome back"
+			text={welcomeBack($connection)}
 			subtext={continueText}
 			signOut={true}
 		/>
@@ -103,7 +104,7 @@
 		<DefaultScreen
 			header="profile"
 			btn={[{text: 'continue', func: gotoGameScreen}]}
-			text="Welcome back"
+			text={welcomeBack($connection)}
 			subtext={continueText}
 			signOut={true}
 		/>
@@ -119,7 +120,7 @@
 		<DefaultScreen
 			header="profile"
 			btn={[{text: 'continue', func: gotoGameScreen}]}
-			text="Welcome back"
+			text={welcomeBack($connection)}
 			subtext={continueText}
 			signOut={true}
 		/>
