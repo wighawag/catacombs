@@ -6,7 +6,6 @@ import {camera, type Camera} from '$lib/render/camera';
 import {memory} from '$lib/state/memory';
 import {bigIntIDToXY, xyToBigIntID, type Monster, type MonsterList} from 'template-game-common';
 import {evmGame} from '$lib/state/computed';
-import {initialiseStateChanges} from '$lib/state/initialState';
 import {connection} from '$lib/state';
 
 export class ActionHandler {
@@ -42,8 +41,10 @@ export class ActionHandler {
 			console.log('no current character');
 			return;
 		}
-		const currentStateChanges =
-			memory.$store.stateChanges[memory.$store.stateChanges.length - 1] || (await initialiseStateChanges());
+		const currentStateChanges = this.gameView.$state.currentStateChanges;
+		if (!currentStateChanges) {
+			return;
+		}
 		const origPosition = currentStateChanges?.newPosition
 			? bigIntIDToXY(currentStateChanges.newPosition)
 			: $gameView.characters[$gameView.currentCharacter].position;
@@ -53,7 +54,7 @@ export class ActionHandler {
 			memory.reset();
 
 			// TODO DRY
-			const currentStateChanges = memory.$store.stateChanges[memory.$store.stateChanges.length - 1] || undefined;
+			const currentStateChanges = this.gameView.$state.currentStateChanges;
 			const origPosition = currentStateChanges?.newPosition
 				? bigIntIDToXY(currentStateChanges.newPosition)
 				: $gameView.characters[$gameView.currentCharacter].position;
@@ -67,7 +68,7 @@ export class ActionHandler {
 			memory.rewind();
 
 			// TODO DRY
-			const currentStateChanges = memory.$store.stateChanges[memory.$store.stateChanges.length - 1] || undefined;
+			const currentStateChanges = this.gameView.$state.currentStateChanges;
 			const origPosition = currentStateChanges?.newPosition
 				? bigIntIDToXY(currentStateChanges.newPosition)
 				: $gameView.characters[$gameView.currentCharacter].position;

@@ -1,5 +1,5 @@
 <script>
-	import {playerStatus} from '$lib/state';
+	import {context, introductionState, playerStatus} from '$lib/state';
 	import {gameView} from '$lib/state/ViewState';
 	import DefaultScreen from '../DefaultScreen.svelte';
 	import LoadingScreen from '../loading/LoadingScreen.svelte';
@@ -7,7 +7,10 @@
 
 	function signIn() {}
 
-	function goToIntro() {}
+	function goToIntro() {
+		context.gotoIntro();
+		introductionState.next();
+	}
 </script>
 
 {#if $playerStatus == 'loading'}
@@ -19,8 +22,9 @@
 {:else if $playerStatus == 'in-game-already'}
 	<MainGameScreen {gameView} />
 {:else if $playerStatus == 'first-time'}
+	<!-- TODO remove and use Welcome -->
 	<MainGameScreen {gameView} />
-	<!-- TODO deal with this case. for now use GameScreen-->
+
 	<!-- <DefaultScreen header="logo" btn={[{text: 'ok', func: goToIntro}]} text="Welcome" /> -->
 {:else}
 	Invalid playerStatus: {$playerStatus}

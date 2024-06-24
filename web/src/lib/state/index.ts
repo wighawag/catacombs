@@ -65,6 +65,11 @@ const context = {
 			context: 'game',
 		});
 	},
+	gotoIntro() {
+		setContext({
+			context: 'start',
+		});
+	},
 };
 
 const playerStatus = derived(
