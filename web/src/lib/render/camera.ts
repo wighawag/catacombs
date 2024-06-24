@@ -28,6 +28,20 @@ export class Camera extends BasicObjectStore<CameraState> {
 	private lastDist = 0;
 	private zoomPoint = {x: 0, y: 0};
 
+	private target:
+		| {
+				startX: number;
+				startY: number;
+				startZoom: number;
+				x: number;
+				y: number;
+				zoom: number;
+				start: number;
+				duration: number;
+				animationFrameID: number;
+		  }
+		| undefined;
+
 	public onClick: ((x: number, y: number) => void) | undefined;
 
 	protected renderView: RenderViewReadable | undefined;
@@ -52,6 +66,41 @@ export class Camera extends BasicObjectStore<CameraState> {
 
 	get zoom(): number {
 		return this.$store.zoom;
+	}
+
+	setTarget(x: number, y: number, zoom: number, duration: number) {
+		if (this.target) {
+			cancelAnimationFrame(this.target.animationFrameID);
+		}
+		this.target = {
+			startX: this.value.x,
+			startY: this.value.y,
+			startZoom: this.value.zoom,
+			x,
+			y,
+			zoom,
+			duration,
+			start: performance.now(),
+			animationFrameID: requestAnimationFrame(this.onAnimationFrame.bind(this)),
+		};
+	}
+
+	onAnimationFrame(time: number) {
+		if (this.target) {
+			const tt = Math.min(Math.max((time - this.target.start) / this.target.duration, 0), 1);
+
+			const t = 1 - Math.pow(1 - tt, 4);
+
+			this._setXYZoom(
+				this.target.startX + (this.target.x - this.target.startX) * t,
+				this.target.startY + (this.target.y - this.target.startY) * t,
+				this.target.startZoom + (this.target.zoom - this.target.startZoom) * t,
+			);
+
+			if (!(this.target.x == this.value.x && this.target.y == this.value.y && this.target.zoom == this.value.zoom)) {
+				this.target.animationFrameID = requestAnimationFrame(this.onAnimationFrame.bind(this));
+			}
+		}
 	}
 
 	start(surface: HTMLElement, renderView: RenderViewReadable): void {

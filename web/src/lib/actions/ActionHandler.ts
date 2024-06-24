@@ -36,7 +36,7 @@ export async function performAction(gameView: GameView, direction: {dx: number; 
 	const pos = bigIntIDToXY(stateChanges.newPosition);
 	memory.addMove({position: pos, action: '0x00'}, stateChanges);
 
-	camera.navigate(pos.x, pos.y, camera.$store.zoom);
+	camera.setTarget(pos.x, pos.y, camera.$store.zoom, 400);
 }
 
 export function reset(gameView: GameView) {
@@ -55,7 +55,7 @@ export function reset(gameView: GameView) {
 		: $gameView.characters[$gameView.currentCharacter].position;
 	const position = {x: origPosition.x, y: origPosition.y};
 	console.log({position});
-	camera.navigate(position.x, position.y, camera.$store.zoom);
+	camera.setTarget(position.x, position.y, camera.$store.zoom, 400);
 }
 
 export function rewind(gameView: GameView) {
@@ -74,7 +74,7 @@ export function rewind(gameView: GameView) {
 		: $gameView.characters[$gameView.currentCharacter].position;
 	const position = {x: origPosition.x, y: origPosition.y};
 	console.log({position});
-	camera.navigate(position.x, position.y, camera.$store.zoom);
+	camera.setTarget(position.x, position.y, camera.$store.zoom, 400);
 }
 
 export class ActionHandler {

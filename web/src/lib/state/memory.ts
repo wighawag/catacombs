@@ -10,9 +10,10 @@ export type MemoryState = {
 	moves: Move[];
 	stateChanges: StateChanges[];
 	step: number;
+	tutorialStep: number;
 };
 
-const $store: MemoryState = {moves: [], stateChanges: [], step: 0};
+const $store: MemoryState = {moves: [], stateChanges: [], step: 0, tutorialStep: 0};
 const store = writable<MemoryState>($store);
 
 function addMove(move: Move, stateChanges: StateChanges) {
@@ -40,6 +41,11 @@ function next() {
 	store.set($store);
 }
 
+function tutorialNext() {
+	$store.tutorialStep++;
+	store.set($store);
+}
+
 export const memory = {
 	$store,
 	subscribe: store.subscribe,
@@ -47,6 +53,7 @@ export const memory = {
 	rewind,
 	reset,
 	next,
+	tutorialNext,
 };
 
 if (typeof window != 'undefined') {

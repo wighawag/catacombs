@@ -30,7 +30,7 @@ export type GameViewState = {
 const $state: GameViewState = {
 	characters: {},
 	monsters: [],
-	memory: {moves: [], stateChanges: [], step: 0},
+	memory: {moves: [], stateChanges: [], step: 0, tutorialStep: 0},
 	type: 'game',
 };
 function merge(

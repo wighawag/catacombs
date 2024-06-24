@@ -2,6 +2,7 @@
 	import {performAction} from '$lib/actions/ActionHandler';
 	import {type GameView} from '$lib/state/ViewState';
 	import BattleOverlay from './BattleOverlay.svelte';
+	import DialogOverlay from './DialogOverlay.svelte';
 	export let gameView: GameView;
 
 	function move(direction: {dx: number; dy: number}) {
@@ -9,7 +10,9 @@
 	}
 </script>
 
-{#if $gameView.inBattle}
+{#if $gameView.memory.tutorialStep == 0}
+	<DialogOverlay {gameView} />
+{:else if $gameView.inBattle}
 	<BattleOverlay {gameView} />
 {:else}
 	<div class="navigation">

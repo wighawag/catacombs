@@ -32,7 +32,7 @@ const initialState = writable<InitialState>({
 const $state: GameViewState = {
 	characters: {},
 	monsters: [],
-	memory: {moves: [], stateChanges: [], step: 0},
+	memory: {moves: [], stateChanges: [], step: 0, tutorialStep: 0},
 	type: 'intro',
 };
 function merge(

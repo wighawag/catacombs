@@ -17,8 +17,8 @@ function _recurseSet(target: any, obj: any) {
 export class BasicObjectStore<T extends Record<string, number | string>> implements Readable<T> {
 	protected store: Writable<T>;
 	protected __set: ((newValue: T) => void) | undefined;
-	private value: T;
-	private oldValue: T;
+	protected value: T;
+	protected oldValue: T;
 	constructor(initialValue?: T) {
 		this.value = initialValue as any;
 		this.oldValue = {...initialValue} as any;
