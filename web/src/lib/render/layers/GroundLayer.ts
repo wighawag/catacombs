@@ -65,7 +65,69 @@ export class GroundLayer extends Textured2DProgram {
 		});
 	}
 
-	drawArea(x: number, y: number) {
+	drawArea(state: GameViewState, x: number, y: number) {
+		if (state.type === 'intro') {
+			if (x >= 3 || x <= -3 || y >= 3 || y <= -3) {
+				return;
+			}
+
+			if (y == 2) {
+				for (let ix = -AREA_OFFSET; ix < AREA_SIZE - AREA_OFFSET; ix++) {
+					drawTile(
+						this.attributes,
+						x * AREA_SIZE + ix - 3 / 22,
+						y * AREA_SIZE + AREA_SIZE - AREA_OFFSET - 1 + 19 / 22,
+						texPerSprites['new_wall_horiz.png'],
+						28 / 22,
+						11 / 22,
+						1,
+					);
+				}
+			}
+
+			if (y == -2) {
+				for (let ix = -AREA_OFFSET; ix < AREA_SIZE - AREA_OFFSET; ix++) {
+					drawTile(
+						this.attributes,
+						x * AREA_SIZE + ix - 3 / 22,
+						y * AREA_SIZE - AREA_SIZE + AREA_OFFSET + 19 / 22,
+						texPerSprites['new_wall_horiz.png'],
+						28 / 22,
+						11 / 22,
+						1,
+					);
+				}
+			}
+
+			if (x == 2) {
+				for (let iy = -AREA_OFFSET; iy < AREA_SIZE - AREA_OFFSET; iy++) {
+					drawTile(
+						this.attributes,
+						x * AREA_SIZE + AREA_SIZE - AREA_OFFSET - 1 + 19 / 22,
+						y * AREA_SIZE + iy - 3 / 22,
+						texPerSprites['new_wall_vert.png'],
+						6 / 22,
+						28 / 22,
+						1,
+					);
+				}
+			}
+
+			if (x == -2) {
+				for (let iy = -AREA_OFFSET; iy < AREA_SIZE - AREA_OFFSET; iy++) {
+					drawTile(
+						this.attributes,
+						x * AREA_SIZE - AREA_SIZE + AREA_OFFSET + 19 / 22,
+						y * AREA_SIZE + iy - 3 / 22,
+						texPerSprites['new_wall_vert.png'],
+						6 / 22,
+						28 / 22,
+						1,
+					);
+				}
+			}
+		}
+
 		const area = areas.get(x)?.get(y);
 		if (area) {
 			let c = 0;
@@ -154,7 +216,7 @@ export class GroundLayer extends Textured2DProgram {
 				x < Math.ceil(cameraState.x + cameraState.width / 2 + AREA_SIZE);
 				x += AREA_SIZE
 			) {
-				this.drawArea(areaCoord(x), areaCoord(y));
+				this.drawArea(state, areaCoord(x), areaCoord(y));
 			}
 		}
 		// for (let y = -100; y < 100; y += 11) {

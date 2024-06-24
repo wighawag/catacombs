@@ -26,6 +26,7 @@ function reset() {
 	$store.moves.splice(0, $store.moves.length);
 	$store.stateChanges.splice(0, $store.stateChanges.length);
 	$store.step = 0;
+	$store.tutorialStep = 0;
 	store.set($store);
 }
 
@@ -33,6 +34,9 @@ function rewind() {
 	$store.moves.pop();
 	$store.stateChanges.pop();
 	$store.step = 0;
+	if ($store.stateChanges.length == 0) {
+		$store.tutorialStep = 0;
+	}
 	store.set($store);
 }
 
