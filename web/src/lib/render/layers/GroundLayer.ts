@@ -71,6 +71,18 @@ export class GroundLayer extends Textured2DProgram {
 			let c = 0;
 			for (let iy = -AREA_OFFSET; iy < AREA_SIZE - AREA_OFFSET; iy++) {
 				for (let ix = -AREA_OFFSET; ix < AREA_SIZE - AREA_OFFSET; ix++) {
+					if (x * AREA_SIZE + ix == 0 && y * AREA_SIZE + iy == 0) {
+						drawTile(
+							this.attributes,
+							x * AREA_SIZE + ix,
+							y * AREA_SIZE + iy - 3 / 22,
+							texPerSprites['gates.png'],
+							1,
+							1,
+							1,
+						);
+					}
+
 					if (area.southWalls[c]) {
 						drawTile(
 							this.attributes,
