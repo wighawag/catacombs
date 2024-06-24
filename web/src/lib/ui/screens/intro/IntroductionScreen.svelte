@@ -41,7 +41,7 @@
 	}
 
 	const texts = [
-		'The campfire crackles softly as you pore over the ancient map one last time. Your fingers trace the faded lines leading to a crudely drawn mountain, behind which lies your ultimate goal: Ethernal, the fabled underground city.',
+		'The campfire crackles softly as you pore over the ancient map one last time. Your fingers trace the faded lines leading to a crudely drawn mountain, below which lies your ultimate goal: Ethernal, the fabled underground city.',
 		'Dawn breaks, and you think, "It\'s time." Rising, you stride towards the mountain\'s gaping maw, steeling yourself for the descent into the narrow, winding passage that beckons.',
 		'So close now. Images of shimmering relics and reality-bending magic fill your mind, countered by visions of lethal traps and unspeakable monstrosities. You clutch your weapon tighter.',
 	];
@@ -91,7 +91,7 @@
 	{:else if $playerStatus == 'first-time'}
 		<TypingTextScreen
 			buttonText="continue"
-			text={"The claustrophobic tunnel suddenly opens into an enormous cavern. Your flickering torch barely pierces the thick darkness. Ahead, an unearthly radiance outlines what must be Ethernal's gates!"}
+			text={"The claustrophobic tunnel suddenly opens into an enormous cavern. Your flickering torch barely pierces the thick darkness. Ahead, an unearthly radiance outlines what must be Ethernal's gate!"}
 			{next}
 		/>
 	{:else}
@@ -128,7 +128,7 @@
 		<TypingTextScreen
 			buttonText="Pay for food"
 			waitText="The merchant counts your money while you check the food...."
-			text="As you approach the imposing gates of Ethernal, an unexpected sight catches your eye. A lone merchant has set up shop in this unlikely place, their stall laden with various foodstuffs. The rumbling in your stomach suddenly reminds you that it's been days since your last proper meal. A wave of relief washes over you – this is your final opportunity to stock up before venturing into the unknown depths of the ancient city."
+			text="As you approach the imposing gate of Ethernal, an unexpected sight catches your eye. A lone merchant has set up shop in this unlikely place, their stall laden with various foodstuffs. The rumbling in your stomach suddenly reminds you that it's been days since your last proper meal. A wave of relief washes over you – this is your final opportunity to stock up before venturing into the unknown depths of the ancient city."
 			next={mint}
 		/>
 	{:else}

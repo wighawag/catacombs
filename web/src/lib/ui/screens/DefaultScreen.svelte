@@ -2,6 +2,7 @@
 	import IconSkull from '$data/assets/skull-key-white.png'; // TODO remove ?
 	import {connection} from '$lib/state';
 	import WelcomeProfile from '$lib/ui/screens/headers/WelcomeProfile.svelte';
+	import {shortAddress} from '$utils/ethereum/format';
 	import BorderedContainer from '../components/BorderedContainer.svelte';
 
 	type ButtonData = {text: string; func: () => Promise<void> | void; disabled?: boolean};
@@ -84,7 +85,15 @@
 
 				{#if signOut}
 					<p class="sign-in">
-						Want to switch account? <button role="link" on:click={async () => connection.logout()}>Sign out</button>
+						{#if $connection.email}Signed as {$connection.email}{:else if $connection.mainAccount}
+							signed from <a
+								target="_blank"
+								rel="noreferrer noopener"
+								href={`https://etherscan.io/address/${$connection.mainAccount}`}
+								>{shortAddress($connection.mainAccount)}</a
+							>{:else}Want to switch account?
+						{/if}
+						<button role="link" on:click={async () => connection.logout()}>Sign out</button>
 					</p>
 				{/if}
 			</div>
