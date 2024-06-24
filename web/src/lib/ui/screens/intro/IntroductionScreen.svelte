@@ -2,9 +2,10 @@
 	import TypingTextScreen from '$lib/ui/utils/TypingTextScreen.svelte';
 	import DefaultScreen from '../DefaultScreen.svelte';
 	import CharacterSelectionScreen from './CharacterSelectionScreen.svelte';
-	import {connection, introductionState, playerStatus} from '$lib/state';
+	import {connection, context, introductionState, playerStatus} from '$lib/state';
 	import LoadingScreen from '../loading/LoadingScreen.svelte';
 	import IntroductionGameScreen from '../game/IntroductionGameScreen.svelte';
+	import {text} from '@sveltejs/kit';
 
 	async function next() {
 		introductionState.next();
@@ -18,6 +19,9 @@
 		console.log('minting...');
 		return new Promise<void>((resolve) => {
 			setTimeout(resolve, 500);
+		}).then(() => {
+			introductionState.clear();
+			context.gotoGameScreen();
 		});
 	}
 
@@ -30,7 +34,20 @@
 		}
 	}
 
-	async function gotoGameScreen(): Promise<void> {}
+	async function gotoGameScreen(): Promise<void> {
+		introductionState.clear();
+		context.gotoGameScreen();
+	}
+
+	const texts = [
+		'The campfire crackles softly as you pore over the ancient map one last time. Your fingers trace the faded lines leading to a crudely drawn mountain, behind which lies your ultimate goal: Ethernal, the fabled underground city.',
+		'Dawn breaks, and you think, "It\'s time." Rising, you stride towards the mountain\'s gaping maw, steeling yourself for the descent into the narrow, winding passage that beckons.',
+		'So close now. Images of shimmering relics and reality-bending magic fill your mind, countered by visions of lethal traps and unspeakable monstrosities. You clutch your weapon tighter.',
+	];
+
+	const continueText = 'Continue where you left';
+	const prepareText =
+		"Now's the moment to take inventory. What gear did you pack for this perilous expedition? Carefully check your supplies and equipment. Is there anything crucial you might have overlooked?";
 </script>
 
 {#if $playerStatus == 'loading'}
@@ -39,55 +56,27 @@
 	<LoadingScreen />
 {:else if $introductionState.step == 1}
 	<CharacterSelectionScreen {next}></CharacterSelectionScreen>
-{:else if $introductionState.step == 2}
-	<!-- TODO title THE ARRIVAL-->
-	<TypingTextScreen
-		buttonText="Continue"
-		text="You are carefully pacing down a darkened path. Gloom had set in hours before. You knew the stories about this
-		place you are heading: there is untold wealth in that labyrinth, leftover from a forgotten civilization. There is
-		also damnation..."
-		{next}
-	/>
-{:else if $introductionState.step == 3}
-	<TypingTextScreen
-		buttonText="Continue"
-		text="Well, sounds like a bunch of scary stories to keep people away."
-		{next}
-	/>
-{:else if $introductionState.step == 4}
-	<!-- TODO title THE ENTRANCE-->
-	<TypingTextScreen
-		buttonText="Continue"
-		text="There’s a reason they have stayed away, but the reason you’ve come is stronger still. Get as much loot as you
-		can, and then get out. And if you encounter others like yourself, earn some cash by selling them your loot. Or, they
-		will even fight with you. Your anticipation grows..."
-		{next}
-	/>
-{:else if $introductionState.step == 5}
+{:else if $introductionState.step >= 2 && $introductionState.step < texts.length + 2}
+	{#key $introductionState.step}
+		<TypingTextScreen buttonText="Continue" text={texts[$introductionState.step - 2]} {next} />
+	{/key}
+{:else if $introductionState.step == 2 + texts.length + 0}
 	{#if $playerStatus == 'unconnected'}
-		<TypingTextScreen
-			buttonText="Sign-in"
-			text="But before, let's make sure you are prepared. Get your gears and coins before setting off for the unknown..."
-			next={signin}
-		/>
+		<TypingTextScreen waitText="Checking your equipments..." buttonText="Sign-in" text={prepareText} next={signin} />
 	{:else if $playerStatus == 'in-game-already'}
 		<DefaultScreen
 			header="profile"
 			btn={[{text: 'continue', func: gotoGameScreen}]}
 			text="Welcome back"
-			subtext="Continue where you left"
+			subtext={continueText}
 			signOut={true}
 		/>
 	{:else if $playerStatus == 'first-time'}
-		<TypingTextScreen
-			buttonText="continue"
-			text={`I see that you already start prepared ${$connection.address}`}
-			{next}
-		/>
+		<TypingTextScreen buttonText="continue" text={`You check your gears one last time. All in order.`} {next} />
 	{:else}
 		Invalid playerStatus: {$playerStatus}
 	{/if}
-{:else if $introductionState.step == 6}
+{:else if $introductionState.step == 2 + texts.length + 1}
 	{#if $playerStatus == 'unconnected'}
 		<TypingTextScreen buttonText="go back" text="Wait, you need to be logged-in to continue" next={() => back(5)} />
 	{:else if $playerStatus == 'in-game-already'}
@@ -95,19 +84,19 @@
 			header="profile"
 			btn={[{text: 'continue', func: gotoGameScreen}]}
 			text="Welcome back"
-			subtext="Continue where you left"
+			subtext={continueText}
 			signOut={true}
 		/>
 	{:else if $playerStatus == 'first-time'}
 		<TypingTextScreen
 			buttonText="continue"
-			text={`You see the Catacombs in the mist of the morning, you descend into what they call the hall, the first level, where the main entrance lies beneath`}
+			text={"The claustrophobic tunnel suddenly opens into an enormous cavern. Your flickering torch barely pierces the thick darkness. Ahead, an unearthly radiance outlines what must be Ethernal's gates!"}
 			{next}
 		/>
 	{:else}
 		Invalid playerStatus: {$playerStatus}
 	{/if}
-{:else if $introductionState.step == 7}
+{:else if $introductionState.step == 2 + texts.length + 2}
 	{#if $playerStatus == 'unconnected'}
 		<TypingTextScreen buttonText="go back" text="Wait, you need to be logged-in to continue" next={() => back(5)} />
 	{:else if $playerStatus == 'in-game-already'}
@@ -115,7 +104,7 @@
 			header="profile"
 			btn={[{text: 'continue', func: gotoGameScreen}]}
 			text="Welcome back"
-			subtext="Continue where you left"
+			subtext={continueText}
 			signOut={true}
 		/>
 	{:else if $playerStatus == 'first-time'}
@@ -123,7 +112,7 @@
 	{:else}
 		Invalid playerStatus: {$playerStatus}
 	{/if}
-{:else if $introductionState.step == 8}
+{:else if $introductionState.step == 2 + texts.length + 3}
 	{#if $playerStatus == 'unconnected'}
 		<TypingTextScreen buttonText="go back" text="Wait, you need to be logged-in to continue" next={() => back(5)} />
 	{:else if $playerStatus == 'in-game-already'}
@@ -131,15 +120,14 @@
 			header="profile"
 			btn={[{text: 'continue', func: gotoGameScreen}]}
 			text="Welcome back"
-			subtext="Continue where you left"
+			subtext={continueText}
 			signOut={true}
 		/>
 	{:else if $playerStatus == 'first-time'}
 		<TypingTextScreen
 			buttonText="Pay for food"
-			waitText="The elemental counts your money while you check the food...."
-			text="An elemental appears: “You need food to survive in the dungeon. Remember, in the Ethernal every day
-  will cost you food.”"
+			waitText="The merchant counts your money while you check the food...."
+			text="As you approach the imposing gates of Ethernal, an unexpected sight catches your eye. A lone merchant has set up shop in this unlikely place, their stall laden with various foodstuffs. The rumbling in your stomach suddenly reminds you that it's been days since your last proper meal. A wave of relief washes over you – this is your final opportunity to stock up before venturing into the unknown depths of the ancient city."
 			next={mint}
 		/>
 	{:else}

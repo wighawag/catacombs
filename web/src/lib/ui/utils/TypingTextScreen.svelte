@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type {SvelteComponent} from 'svelte';
 	import DefaultScreen from '../screens/DefaultScreen.svelte';
 	import TypeWriterSingleText from './TypeWriterSingleText.svelte';
 
@@ -20,13 +21,13 @@
 		waiting = false;
 	};
 
-	let skip: () => void;
+	let writer: SvelteComponent;
 	let progress: number;
 	let timeLeft: number;
 
 	function skipText() {
 		if (timeLeft > 400) {
-			skip();
+			writer.skip();
 		}
 	}
 </script>
@@ -47,7 +48,7 @@
 			on:done={() => {
 				writing = false;
 			}}
-			bind:skip
+			bind:this={writer}
 			bind:progress
 			bind:timeLeft
 		/>

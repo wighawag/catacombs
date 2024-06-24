@@ -47,11 +47,25 @@ const introductionState = {
 		console.log({back: url});
 		goto(url);
 	},
+	clear() {
+		const url = new URL(get(page).url);
+		url.hash = ``;
+		goto(url);
+	},
 };
 
 export type Context = {context: 'loading' | 'start' | 'game'};
 
-const {readable: context, $state: $context, set: setContext} = createStore<Context>({context: 'loading'});
+const {readable: readableContext, $state: $context, set: setContext} = createStore<Context>({context: 'loading'});
+
+const context = {
+	...readableContext,
+	gotoGameScreen() {
+		setContext({
+			context: 'game',
+		});
+	},
+};
 
 const playerStatus = derived(
 	[connection, contractState.status, contractState.state],
