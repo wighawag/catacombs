@@ -82,7 +82,7 @@
 		"remote": "ldenv pnpm run zellij-remote @@",
 		"---------------------- DEPLOY ----------------------": "",
 		"build:dependencies": "pnpm run --filter ./common build && pnpm run --filter ./contracts-js build && pnpm run --filter ./indexer build",
-		"build": "ldenv -d sepolia pnpm run indexer:index @@MODE ~~ pnpm run --filter ./contracts-js ~~ pnpm run --filter ./web build ~~ ls web/.vercel/output/static ~~ ls web/build ~~ @@",
+		"build": "ldenv -d sepolia pnpm run indexer:index @@MODE ~~ pnpm run --filter ./contracts-js build ~~ pnpm run --filter ./web build ~~ ls web/.vercel/output/static ~~ ls web/build ~~ @@",
 		"serve": "pnpm --filter ./web serve",
 		"contracts:deploy": "ldenv -d localhost pnpm _contracts:deploy @@",
 		"contracts:deploy:prepare": "ldenv -d localhost ask-env -f contracts/.env.local ETH_NODE_URI_@@MODE MNEMONIC_@@MODE ETHERSCAN_API_KEY:?:ETHERSCAN_API_KEY @@",
