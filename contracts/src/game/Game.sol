@@ -22,7 +22,11 @@ abstract contract Game {
     enum Reason {
         None,
         Wall,
-        NonAdjacent
+        NonAdjacent,
+        ActionIsNotMove,
+        ActionIsNotBattle,
+        InvalidCard,
+        CardAlreadyUsed
     }
     error InvalidMove(Reason reason);
 
@@ -48,8 +52,10 @@ abstract contract Game {
         uint256 indexed characterID,
         address indexed controller,
         uint24 indexed epoch,
-        Action[] actions,
-        uint64 newPosition
+        uint256[] actions,
+        uint64 newPosition,
+        uint8 newHP,
+        uint24 newXP
     );
 
     /// @notice A character has commited to make a move and reveal it on the reveal phase
@@ -67,12 +73,6 @@ abstract contract Game {
     struct Commitment {
         bytes24 hash;
         uint24 epoch;
-    }
-
-    /// @notice Move struct that define the action, type and position
-    struct Action {
-        uint64 position;
-        uint192 action; // TODO define: none, open, attack cards, etc... // TODO make position an action and remove position, first byte define the type: move,
     }
 
     enum ControllerType {

@@ -1,9 +1,33 @@
 <script lang="ts">
 	import type {GameView} from '$lib/state/ViewState';
+	import {evmGame} from '$lib/state/computed';
 	import {memory} from '$lib/state/memory';
 	import {fade} from 'svelte/transition';
 
 	export let gameView: GameView;
+
+	async function battleWith(attackCardIndex: number, defenseCardIndex: number) {
+		const currentStateChanges = gameView.$state.currentStateChanges;
+		if (!currentStateChanges) {
+			return;
+		}
+		const action = (1n << 248n) | BigInt(attackCardIndex << 8) | BigInt(defenseCardIndex);
+		console.log(action.toString(16));
+		console.log(`-----------------------------`);
+		console.log(currentStateChanges);
+		const stateChanges = await evmGame.stepChanges(currentStateChanges, action);
+		console.log(`=>`);
+		console.log(stateChanges);
+		console.log(`-----------------------------`);
+		memory.addMove(
+			{
+				type: 'battle',
+				attackCardIndex,
+				defenseCardIndex,
+			},
+			stateChanges,
+		);
+	}
 </script>
 
 <div class="content" transition:fade={{delay: 300}}>
@@ -21,7 +45,8 @@
 			<img alt="skeleton" src="/images/monsters/skeleton.png" />
 		</div>
 		<div class="actions">
-			<button>card 1</button>
+			<button on:click={() => battleWith(0, 0)}>card 1</button>
+			<button on:click={() => battleWith(1, 1)}>card 2</button>
 		</div>
 	{/if}
 </div>

@@ -16,43 +16,43 @@ contract RevealTest is Test {
     }
 
     function test_stepReveal() public view {
-        Game.Action memory action = Game.Action({position: PositionUtils.toPosition(1, 0), action: 0});
+        uint256 action = PositionUtils.toPosition(1, 0);
         GameReveal.StateChanges memory initialStateChanges;
         GameReveal.StateChanges memory newStateChanges = revealRoute.stepChanges(initialStateChanges, action, true);
         assertEq(newStateChanges.newPosition, PositionUtils.toPosition(1, 0));
     }
 
     function test_stepReveal2() public view {
-        Game.Action memory action = Game.Action({position: PositionUtils.toPosition(0, 0), action: 0});
+        uint256 action = PositionUtils.toPosition(0, 0);
         GameReveal.StateChanges memory initialStateChanges;
         initialStateChanges.newPosition = PositionUtils.toPosition(1, 0);
         GameReveal.StateChanges memory newStateChanges = revealRoute.stepChanges(initialStateChanges, action, true);
         assertEq(newStateChanges.newPosition, PositionUtils.toPosition(0, 0));
     }
 
-    function test_actions() public view {
+    function test_move_actions() public view {
         GameReveal.Context memory context;
-        Game.Action[] memory actions = new Game.Action[](20);
-        actions[0] = Game.Action({position: PositionUtils.toPosition(0, -1), action: 0});
-        actions[1] = Game.Action({position: PositionUtils.toPosition(-1, -1), action: 0});
-        actions[2] = Game.Action({position: PositionUtils.toPosition(-1, 0), action: 0});
-        actions[3] = Game.Action({position: PositionUtils.toPosition(-2, 0), action: 0});
-        actions[4] = Game.Action({position: PositionUtils.toPosition(-2, 1), action: 0});
-        actions[5] = Game.Action({position: PositionUtils.toPosition(-2, 2), action: 0});
-        actions[6] = Game.Action({position: PositionUtils.toPosition(-2, 3), action: 0});
-        actions[7] = Game.Action({position: PositionUtils.toPosition(-2, 4), action: 0});
-        actions[8] = Game.Action({position: PositionUtils.toPosition(-2, 5), action: 0});
-        actions[9] = Game.Action({position: PositionUtils.toPosition(-3, 5), action: 0});
-        actions[10] = Game.Action({position: PositionUtils.toPosition(-4, 5), action: 0});
-        actions[11] = Game.Action({position: PositionUtils.toPosition(-4, 4), action: 0});
-        actions[12] = Game.Action({position: PositionUtils.toPosition(-4, 3), action: 0});
-        actions[13] = Game.Action({position: PositionUtils.toPosition(-4, 2), action: 0});
-        actions[14] = Game.Action({position: PositionUtils.toPosition(-4, 1), action: 0});
-        actions[15] = Game.Action({position: PositionUtils.toPosition(-3, 1), action: 0});
-        actions[16] = Game.Action({position: PositionUtils.toPosition(-2, 1), action: 0});
-        actions[17] = Game.Action({position: PositionUtils.toPosition(-2, 2), action: 0});
-        actions[18] = Game.Action({position: PositionUtils.toPosition(-2, 3), action: 0});
-        actions[19] = Game.Action({position: PositionUtils.toPosition(-2, 4), action: 0});
+        uint256[] memory actions = new uint256[](20);
+        actions[0] = PositionUtils.toPosition(0, -1);
+        actions[1] = PositionUtils.toPosition(-1, -1);
+        actions[2] = PositionUtils.toPosition(-1, 0);
+        actions[3] = PositionUtils.toPosition(-2, 0);
+        actions[4] = PositionUtils.toPosition(-2, 1);
+        actions[5] = PositionUtils.toPosition(-2, 2);
+        actions[6] = PositionUtils.toPosition(-2, 3);
+        actions[7] = PositionUtils.toPosition(-2, 4);
+        actions[8] = PositionUtils.toPosition(-2, 5);
+        actions[9] = PositionUtils.toPosition(-3, 5);
+        actions[10] = PositionUtils.toPosition(-4, 5);
+        actions[11] = PositionUtils.toPosition(-4, 4);
+        actions[12] = PositionUtils.toPosition(-4, 3);
+        actions[13] = PositionUtils.toPosition(-4, 2);
+        actions[14] = PositionUtils.toPosition(-4, 1);
+        actions[15] = PositionUtils.toPosition(-3, 1);
+        actions[16] = PositionUtils.toPosition(-2, 1);
+        actions[17] = PositionUtils.toPosition(-2, 2);
+        actions[18] = PositionUtils.toPosition(-2, 3);
+        actions[19] = PositionUtils.toPosition(-2, 4);
 
         context.actions = actions;
         context.characterID = 1;
@@ -62,6 +62,55 @@ contract RevealTest is Test {
         // context.secret;
 
         GameReveal.StateChanges memory newStateChanges = revealRoute.computeStateChanges(context, false);
+    }
+
+    function test_battle_actions() public view {
+        GameReveal.StateChanges memory stateChanges;
+        int32 x = 2;
+        int32 y = -5;
+        uint64 position = PositionUtils.toPosition(x, y);
+        stateChanges.monsters[0] = GameReveal.Monster({x: x, y: y, hp: 3, kind: 1});
+        stateChanges.monsters[1] = GameReveal.Monster({x: x - 5, y: y - 3, hp: 3, kind: 1});
+        stateChanges.monsters[2] = GameReveal.Monster({x: x + 5, y: y + 2, hp: 3, kind: 1});
+        stateChanges.monsters[3] = GameReveal.Monster({x: x + 6, y: y - 5, hp: 3, kind: 1});
+        stateChanges.monsters[4] = GameReveal.Monster({x: x + 4, y: y + 8, hp: 3, kind: 1});
+        stateChanges.newPosition = position;
+        stateChanges.battle.monsterIndexPlus1 = 1;
+        revealRoute.stepChanges(stateChanges, 1 << 248, true);
+    }
+
+    function test_battle_actions_3_times() public view {
+        GameReveal.StateChanges memory stateChanges;
+        int32 x = 2;
+        int32 y = -5;
+        uint64 position = PositionUtils.toPosition(x, y);
+        stateChanges.monsters[0] = GameReveal.Monster({x: x, y: y, hp: 3, kind: 1});
+        stateChanges.monsters[1] = GameReveal.Monster({x: x - 5, y: y - 3, hp: 3, kind: 1});
+        stateChanges.monsters[2] = GameReveal.Monster({x: x + 5, y: y + 2, hp: 3, kind: 1});
+        stateChanges.monsters[3] = GameReveal.Monster({x: x + 6, y: y - 5, hp: 3, kind: 1});
+        stateChanges.monsters[4] = GameReveal.Monster({x: x + 4, y: y + 8, hp: 3, kind: 1});
+        stateChanges.newPosition = position;
+        stateChanges.battle.monsterIndexPlus1 = 1;
+        stateChanges = revealRoute.stepChanges(stateChanges, 1 << 248, true);
+        stateChanges = revealRoute.stepChanges(stateChanges, (1 << 248) | (1 << 8) | 1, true);
+        // revealRoute.stepChanges(stateChanges, (1 << 248) | (1 << 8) | 1, true);
+    }
+
+    function testFail_battle_actions_same_card_twice() public view {
+        GameReveal.StateChanges memory stateChanges;
+        int32 x = 2;
+        int32 y = -5;
+        uint64 position = PositionUtils.toPosition(x, y);
+        stateChanges.monsters[0] = GameReveal.Monster({x: x, y: y, hp: 3, kind: 1});
+        stateChanges.monsters[1] = GameReveal.Monster({x: x - 5, y: y - 3, hp: 3, kind: 1});
+        stateChanges.monsters[2] = GameReveal.Monster({x: x + 5, y: y + 2, hp: 3, kind: 1});
+        stateChanges.monsters[3] = GameReveal.Monster({x: x + 6, y: y - 5, hp: 3, kind: 1});
+        stateChanges.monsters[4] = GameReveal.Monster({x: x + 4, y: y + 8, hp: 3, kind: 1});
+        stateChanges.newPosition = position;
+        stateChanges.battle.monsterIndexPlus1 = 1;
+        stateChanges = revealRoute.stepChanges(stateChanges, 1 << 248, true);
+
+        revealRoute.stepChanges(stateChanges, 1 << 248, true);
     }
 
     function test_area() public view {
@@ -98,7 +147,7 @@ contract RevealTest is Test {
     }
 
     function testFail_stepReveal() public view {
-        Game.Action memory action = Game.Action({position: PositionUtils.toPosition(0, 0), action: 0});
+        uint256 action = PositionUtils.toPosition(0, 0);
         GameReveal.StateChanges memory initialStateChanges;
         GameReveal.StateChanges memory newStateChanges = revealRoute.stepChanges(initialStateChanges, action, true);
         assertEq(newStateChanges.newPosition, PositionUtils.toPosition(0, 0));

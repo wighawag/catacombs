@@ -2,10 +2,16 @@ import {setInitialCamera} from '$lib/tutorial';
 import {writable} from 'svelte/store';
 import type {StateChanges} from 'template-game-common';
 
-export type Move = {
-	position: {x: number; y: number};
-	action: `0x${string}`;
-};
+export type Move =
+	| {
+			position: {x: number; y: number};
+			type: `move`;
+	  }
+	| {
+			attackCardIndex: number;
+			defenseCardIndex: number;
+			type: `battle`;
+	  };
 
 export type MemoryState = {
 	moves: Move[];

@@ -74,7 +74,9 @@ function merge(
 		const currentCharacter = $state.characters[$state.currentCharacter];
 		let currentPosition = currentCharacter.position;
 		for (const move of memory.moves) {
-			currentPosition = move.position;
+			if (move.type === 'move') {
+				currentPosition = move.position;
+			}
 		}
 		currentCharacter.position = currentPosition;
 

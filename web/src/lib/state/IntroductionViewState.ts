@@ -23,8 +23,10 @@ const initialState = writable<InitialState>({
 		],
 		battle: {
 			monsterIndexPlus1: 0,
-			cardsUsed1: 0,
-			cardsUsed2: 0,
+			attackCardsUsed1: 0,
+			defenseCardsUsed1: 0,
+			attackCardsUsed2: 0,
+			defenseCardsUsed2: 0,
 		},
 	},
 });
@@ -95,7 +97,9 @@ function merge(
 	if (currentCharacter) {
 		let currentPosition = currentCharacter.position;
 		for (const move of memory.moves) {
-			currentPosition = move.position;
+			if (move.type == 'move') {
+				currentPosition = move.position;
+			}
 		}
 		currentCharacter.position = currentPosition;
 

@@ -28,17 +28,14 @@ export async function performAction(gameView: GameView, direction: {dx: number; 
 		: $gameView.characters[$gameView.currentCharacter].position;
 	const newPosition = {x: origPosition.x + direction.dx, y: origPosition.y + direction.dy};
 
-	const stateChanges = await evmGame.stepChanges(currentStateChanges, {
-		position: xyToBigIntID(newPosition.x, newPosition.y),
-		action: 0n,
-	});
+	const stateChanges = await evmGame.stepChanges(currentStateChanges, xyToBigIntID(newPosition.x, newPosition.y));
 	console.log(`-----------------------------`);
 	console.log(currentStateChanges);
 	console.log(`=>`);
 	console.log(stateChanges);
 	console.log(`-----------------------------`);
 	const pos = bigIntIDToXY(stateChanges.newPosition);
-	memory.addMove({position: pos, action: '0x00'}, stateChanges);
+	memory.addMove({position: pos, type: 'move'}, stateChanges);
 
 	camera.setTarget(pos.x, pos.y, camera.$store.zoom, 400);
 }

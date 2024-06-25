@@ -74,7 +74,7 @@ contract GameRouter is Game {
         _delegateTo(address(_route_commit));
     }
 
-    function reveal(uint256, Game.Action[] calldata, bytes32) external {
+    function reveal(uint256, uint256[] calldata, bytes32) external {
         _delegateTo(address(_route_reveal));
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
