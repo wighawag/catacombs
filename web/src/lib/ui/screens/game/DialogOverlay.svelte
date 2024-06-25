@@ -20,8 +20,10 @@
 
 <div class="content" transition:fly={{duration: 500, y: '100%'}}>
 	<p>
-		<img src="/images/ui/portraits/port_war_6x.png" alt="profile" />This is the gate! I need to reach to enter the
-		catacombs.
+		<img src="/images/ui/portraits/port_war_6x.png" alt="profile" />At last, I'm face-to-face with Ethernal's fabled
+		entrance. This magical portal whose light help us see is my doorway to the catacombs and all the secrets they hold.
+		I've come this far – now it's time to step into the unknown and unravel the mysteries of this ancient underground
+		realm.
 	</p>
 	<div class="actions">
 		<button on:click={nextTutorial}>Continue</button>
