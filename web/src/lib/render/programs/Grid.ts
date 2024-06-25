@@ -58,7 +58,7 @@ export class GridLayer {
 		this.gl.useProgram(this.programInfo.program);
 	}
 
-	render(cameraState: CameraState) {
+	render(time: number, cameraState: CameraState) {
 		const GL = this.gl;
 		twgl.setBuffersAndAttributes(GL, this.programInfo, this.bufferInfo);
 		const offsetX =

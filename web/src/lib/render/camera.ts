@@ -68,10 +68,15 @@ export class Camera extends BasicObjectStore<CameraState> {
 		return this.$store.zoom;
 	}
 
-	setTarget(x: number, y: number, zoom: number, duration: number) {
+	cancelTarget() {
 		if (this.target) {
 			cancelAnimationFrame(this.target.animationFrameID);
+			this.target = undefined;
 		}
+	}
+
+	setTarget(x: number, y: number, zoom: number, duration: number) {
+		this.cancelTarget();
 		this.target = {
 			startX: this.value.x,
 			startY: this.value.y,
@@ -324,6 +329,7 @@ export class Camera extends BasicObjectStore<CameraState> {
 	}
 
 	navigate(x: number, y: number, zoom: number): void {
+		this.cancelTarget();
 		const xDiff = x - this.$store.x;
 		const yDiff = y - this.$store.y;
 		this.$store.x = x;

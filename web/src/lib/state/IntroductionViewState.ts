@@ -32,7 +32,7 @@ const initialState = writable<InitialState>({
 const $state: GameViewState = {
 	characters: {},
 	monsters: [],
-	memory: {moves: [], stateChanges: [], step: 0, tutorialStep: 0},
+	memory: {moves: [], stateChanges: [], step: 0, tutorialStep: 0, stateChangesTimestamp: 0},
 	type: 'intro',
 };
 function merge(
@@ -63,9 +63,31 @@ function merge(
 	$state.currentCharacter = currentCharacter?.id;
 
 	if (memory.stateChanges.length > 0) {
-		$state.monsters = memory.stateChanges[memory.stateChanges.length - 1].monsters;
+		if (memory.stateChanges.length > 1) {
+			$state.monsters = memory.stateChanges[memory.stateChanges.length - 1].monsters.map((v, i) => ({
+				...v,
+				old: {
+					x: memory.stateChanges[memory.stateChanges.length - 2].monsters[i].x,
+					y: memory.stateChanges[memory.stateChanges.length - 2].monsters[i].y,
+				},
+			}));
+		} else {
+			$state.monsters = memory.stateChanges[memory.stateChanges.length - 1].monsters.map((v, i) => ({
+				...v,
+				old: {
+					x: initialState.stateChanges?.monsters[i].x || v.x,
+					y: initialState.stateChanges?.monsters[i].y || v.y,
+				},
+			}));
+		}
 	} else if (initialState.stateChanges) {
-		$state.monsters = initialState.stateChanges.monsters;
+		$state.monsters = initialState.stateChanges.monsters.map((v) => ({
+			...v,
+			old: {
+				x: v.x,
+				y: v.y,
+			},
+		}));
 	}
 
 	console.log($state.monsters, currentCharacter);

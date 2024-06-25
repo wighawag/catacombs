@@ -1,7 +1,7 @@
 <script lang="ts">
-	import {camera} from '$lib/render/camera';
 	import type {GameView} from '$lib/state/ViewState';
 	import {memory} from '$lib/state/memory';
+	import {endInitialCamera, setInitialCamera} from '$lib/tutorial';
 	import {onMount} from 'svelte';
 	import {fly} from 'svelte/transition';
 
@@ -9,21 +9,19 @@
 
 	function nextTutorial() {
 		memory.tutorialNext();
-		const {x, y} = gameView.$state.characters[gameView.$state.currentCharacter!].position;
-		camera.setTarget(x, y, camera.$store.zoom, 800);
+		endInitialCamera(gameView);
 	}
 
 	onMount(() => {
-		camera.navigate(0, 3, 50);
+		setInitialCamera();
 	});
 </script>
 
 <div class="content" transition:fly={{duration: 500, y: '100%'}}>
 	<p>
-		<img src="/images/ui/portraits/port_war_6x.png" alt="profile" />At last, I'm face-to-face with Ethernal's fabled
-		entrance. This magical portal whose light help us see is my doorway to the catacombs and all the secrets they hold.
-		I've come this far – now it's time to step into the unknown and unravel the mysteries of this ancient underground
-		realm.
+		<img src="/images/ui/portraits/port_war_6x.png" alt="profile" />At last, Ethernal's fabled entrance. This magical
+		portal whose light help us see is my doorway to the catacombs and all the secrets they hold. I've come this far –
+		now it's time to step into the unknown and unravel the mysteries of this ancient underground realm.
 	</p>
 	<div class="actions">
 		<button on:click={nextTutorial}>Continue</button>

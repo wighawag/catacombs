@@ -7,8 +7,12 @@ import {memory} from '$lib/state/memory';
 import {bigIntIDToXY, xyToBigIntID, type Monster, type MonsterList} from 'template-game-common';
 import {evmGame} from '$lib/state/computed';
 import {connection} from '$lib/state';
+import {isBlockingMovement} from '$lib/tutorial';
 
 export async function performAction(gameView: GameView, direction: {dx: number; dy: number}) {
+	if (isBlockingMovement()) {
+		return;
+	}
 	const $gameView = get(gameView);
 	if (!$gameView.currentCharacter) {
 		console.log('no current character');
@@ -46,16 +50,16 @@ export function reset(gameView: GameView) {
 		return;
 	}
 	console.log('reseting...');
-	memory.reset();
-
-	// TODO DRY
-	const currentStateChanges = gameView.$state.currentStateChanges;
-	const origPosition = currentStateChanges?.newPosition
-		? bigIntIDToXY(currentStateChanges.newPosition)
-		: $gameView.characters[$gameView.currentCharacter].position;
-	const position = {x: origPosition.x, y: origPosition.y};
-	console.log({position});
-	camera.setTarget(position.x, position.y, camera.$store.zoom, 400);
+	if (memory.reset()) {
+		// TODO DRY
+		const currentStateChanges = gameView.$state.currentStateChanges;
+		const origPosition = currentStateChanges?.newPosition
+			? bigIntIDToXY(currentStateChanges.newPosition)
+			: $gameView.characters[$gameView.currentCharacter].position;
+		const position = {x: origPosition.x, y: origPosition.y};
+		console.log({position});
+		camera.setTarget(position.x, position.y, camera.$store.zoom, 400);
+	}
 }
 
 export function rewind(gameView: GameView) {
@@ -65,16 +69,16 @@ export function rewind(gameView: GameView) {
 		return;
 	}
 	console.log('rewinding...');
-	memory.rewind();
-
-	// TODO DRY
-	const currentStateChanges = gameView.$state.currentStateChanges;
-	const origPosition = currentStateChanges?.newPosition
-		? bigIntIDToXY(currentStateChanges.newPosition)
-		: $gameView.characters[$gameView.currentCharacter].position;
-	const position = {x: origPosition.x, y: origPosition.y};
-	console.log({position});
-	camera.setTarget(position.x, position.y, camera.$store.zoom, 400);
+	if (memory.rewind()) {
+		// TODO DRY
+		const currentStateChanges = gameView.$state.currentStateChanges;
+		const origPosition = currentStateChanges?.newPosition
+			? bigIntIDToXY(currentStateChanges.newPosition)
+			: $gameView.characters[$gameView.currentCharacter].position;
+		const position = {x: origPosition.x, y: origPosition.y};
+		console.log({position});
+		camera.setTarget(position.x, position.y, camera.$store.zoom, 400);
+	}
 }
 
 export class ActionHandler {

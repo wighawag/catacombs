@@ -6,7 +6,7 @@
 	export let gameView: GameView;
 </script>
 
-<div class="content" transition:fade>
+<div class="content" transition:fade={{delay: 300}}>
 	{#if $gameView.memory.step == 0}
 		<div class="text">A skeleton jumped out from the corner of the room.</div>
 		<div class="monster">

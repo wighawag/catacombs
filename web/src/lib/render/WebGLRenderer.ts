@@ -59,10 +59,10 @@ export class WebGLRenderer implements Readable<RenderViewState> {
 
 		if (this.cameraState.zoom > 20) {
 			this.gridLayer.use();
-			this.gridLayer.render(this.cameraState);
+			this.gridLayer.render(time, this.cameraState);
 		}
 
 		this.groundLayer.use();
-		this.groundLayer.render(this.cameraState, this.state);
+		this.groundLayer.render(time, this.cameraState, this.state);
 	}
 }

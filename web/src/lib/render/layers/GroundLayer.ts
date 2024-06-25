@@ -173,7 +173,7 @@ export class GroundLayer extends Textured2DProgram {
 		}
 	}
 
-	render(cameraState: CameraState, state: GameViewState) {
+	render(time: number, cameraState: CameraState, state: GameViewState) {
 		const GL = this.gl;
 		// Compute the matrices
 		var projectionMatrix = m3.projection(cameraState.renderWidth, cameraState.renderHeight);
@@ -235,8 +235,12 @@ export class GroundLayer extends Textured2DProgram {
 		}
 
 		for (const monster of state.monsters) {
-			const hx = monster.x;
-			const hy = monster.y;
+			const t = Math.min(Math.max((time - state.memory.stateChangesTimestamp) / 300, 0), 1); // TODO duration as value in GameVIewState ?
+			const hx = monster.old.x + (monster.x - monster.old.x) * t;
+			const hy = monster.old.y + (monster.y - monster.old.y) * t;
+			// const hx = monster.x;
+			// const hy = monster.y;
+
 			if (monster.hp <= 0) {
 				drawTile(this.attributes, hx + 5 / 22, hy + 3 / 22, texPerSprites['tomb.png'], 16 / 28, 16 / 28, 1);
 			} else {
