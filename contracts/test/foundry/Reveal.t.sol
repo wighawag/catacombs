@@ -93,7 +93,7 @@ contract RevealTest is Test {
         stateChanges.battle.monsterIndexPlus1 = 1;
         stateChanges = revealRoute.stepChanges(stateChanges, 1 << 248, true);
         stateChanges = revealRoute.stepChanges(stateChanges, (1 << 248) | (1 << 8) | 1, true);
-        // revealRoute.stepChanges(stateChanges, (1 << 248) | (1 << 8) | 1, true);
+        revealRoute.stepChanges(stateChanges, (1 << 248) | (1 << 8) | 1, true);
     }
 
     function testFail_battle_actions_same_card_twice() public view {

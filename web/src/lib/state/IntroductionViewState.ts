@@ -34,7 +34,7 @@ const initialState = writable<InitialState>({
 const $state: GameViewState = {
 	characters: {},
 	monsters: [],
-	memory: {moves: [], stateChanges: [], step: 0, tutorialStep: 0, stateChangesTimestamp: 0},
+	memory: {moves: [], stateChanges: [], tutorialStep: 0, stateChangesTimestamp: 0},
 	type: 'intro',
 };
 function merge(
@@ -104,7 +104,7 @@ function merge(
 		currentCharacter.position = currentPosition;
 
 		for (const monster of $state.monsters) {
-			if (monster.x == currentCharacter.position.x && monster.y == currentCharacter.position.y) {
+			if (monster.hp > 0 && monster.x == currentCharacter.position.x && monster.y == currentCharacter.position.y) {
 				$state.inBattle = {
 					monster,
 				};

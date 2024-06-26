@@ -14,6 +14,9 @@ export async function performAction(gameView: GameView, direction: {dx: number; 
 		return;
 	}
 	const $gameView = get(gameView);
+	if ($gameView.memory.inBattle?.accepted) {
+		return;
+	}
 	if (!$gameView.currentCharacter) {
 		console.log('no current character');
 		return;
@@ -115,13 +118,13 @@ export class ActionHandler {
 			return;
 		}
 
-		if (ev.code === 'ArrowUp') {
+		if (ev.code === 'ArrowUp' || ev.code === 'KeyW') {
 			performAction(this.gameView, {dx: 0, dy: -1});
-		} else if (ev.code === 'ArrowDown') {
+		} else if (ev.code === 'ArrowDown' || ev.code === 'KeyS') {
 			performAction(this.gameView, {dx: 0, dy: +1});
-		} else if (ev.code === 'ArrowLeft') {
+		} else if (ev.code === 'ArrowLeft' || ev.code === 'KeyA') {
 			performAction(this.gameView, {dx: -1, dy: 0});
-		} else if (ev.code === 'ArrowRight') {
+		} else if (ev.code === 'ArrowRight' || ev.code === 'KeyD') {
 			performAction(this.gameView, {dx: 1, dy: 0});
 		}
 	}

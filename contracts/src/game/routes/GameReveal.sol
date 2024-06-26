@@ -63,7 +63,7 @@ contract GameReveal is Game {
     function computeStateChanges(
         Context memory context,
         bool revetOnInvalidMoves
-    ) public view returns (StateChanges memory stateChanges) {
+    ) public pure returns (StateChanges memory stateChanges) {
         stateChanges = initialStateChanges(context);
         for (uint256 i = 0; i < context.actions.length; i++) {
             _step(stateChanges, context.actions[i], revetOnInvalidMoves);
@@ -95,7 +95,7 @@ contract GameReveal is Game {
         StateChanges memory stateChanges,
         uint256 action,
         bool revetOnInvalidMoves
-    ) external view returns (StateChanges memory) {
+    ) external pure returns (StateChanges memory) {
         _step(stateChanges, action, revetOnInvalidMoves);
         // as external function, it will always return a copy
         return stateChanges;
@@ -116,7 +116,7 @@ contract GameReveal is Game {
         context.secret = secret;
     }
 
-    function _step(StateChanges memory stateChanges, uint256 action, bool revetOnInvalidMoves) internal view {
+    function _step(StateChanges memory stateChanges, uint256 action, bool revetOnInvalidMoves) internal pure {
         uint64 position = stateChanges.newPosition;
         (int32 x, int32 y) = PositionUtils.toXY(position);
         if (stateChanges.battle.monsterIndexPlus1 == 0) {
@@ -206,12 +206,14 @@ contract GameReveal is Game {
         }
     }
 
+    // TODO : (2 << 98) | (2 << 91) | (2 << 84) | (1 << 77) | (2 << 70)
     uint128 constant defaultAttackGear = (2 << 98) | (4 << 91) | (2 << 84) | (2 << 77) | (1 << 70); // <uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
+    // TODO : (2 << 98) | (2 << 91) | (0 << 84) | (0 << 77) | (1 << 70)
     uint128 constant defaultDefenseGear = (2 << 98) | (3 << 91) | (3 << 84) | (1 << 77) | (2 << 70); // <uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
 
     uint256 constant defaultMonster =
         //<uint8 hp>
-        (3 << 248) |
+        (4 << 248) |
             //<uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
             (2 << 226) |
             (2 << 219) |
@@ -220,12 +222,12 @@ contract GameReveal is Game {
             (1 << 198) |
             //<uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
             (2 << 98) |
-            (2 << 91) |
-            (1 << 84) |
+            (0 << 91) |
+            (0 << 84) |
             (1 << 77) |
-            (2 << 70);
+            (0 << 70);
 
-    function _battle(StateChanges memory stateChanges, uint256 action, bool revetOnInvalidMoves) internal view {
+    function _battle(StateChanges memory stateChanges, uint256 action, bool revetOnInvalidMoves) internal pure {
         if (action >> 248 != 1) {
             if (revetOnInvalidMoves) {
                 revert InvalidMove(Reason.ActionIsNotBattle);

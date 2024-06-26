@@ -1,53 +1,28 @@
 <script lang="ts">
 	import type {GameView} from '$lib/state/ViewState';
-	import {evmGame} from '$lib/state/computed';
 	import {memory} from '$lib/state/memory';
 	import {fade} from 'svelte/transition';
+	import BattleRoundResult from './battle/BattleRoundResult.svelte';
+	import BattleCommand from './battle/BattleCommand.svelte';
 
 	export let gameView: GameView;
-
-	async function battleWith(attackCardIndex: number, defenseCardIndex: number) {
-		const currentStateChanges = gameView.$state.currentStateChanges;
-		if (!currentStateChanges) {
-			return;
-		}
-		const action = (1n << 248n) | BigInt(attackCardIndex << 8) | BigInt(defenseCardIndex);
-		console.log(action.toString(16));
-		console.log(`-----------------------------`);
-		console.log(currentStateChanges);
-		const stateChanges = await evmGame.stepChanges(currentStateChanges, action);
-		console.log(`=>`);
-		console.log(stateChanges);
-		console.log(`-----------------------------`);
-		memory.addMove(
-			{
-				type: 'battle',
-				attackCardIndex,
-				defenseCardIndex,
-			},
-			stateChanges,
-		);
-	}
 </script>
 
-<div class="content" transition:fade={{delay: 300}}>
-	{#if $gameView.memory.step == 0}
+<div class="content" in:fade={{delay: 300}}>
+	{#if !$gameView.memory.inBattle?.accepted}
 		<div class="text">A skeleton jumped out from the corner of the room.</div>
 		<div class="monster">
 			<img alt="skeleton" src="/images/monsters/skeleton.png" />
 		</div>
 		<div class="actions">
-			<button on:click={() => memory.next()}>Battle!</button>
+			<button on:click={() => memory.acceptBattle()}>Battle!</button>
 		</div>
-	{:else}
-		<div class="text">Chose your cards wisely!</div>
-		<div class="monster">
-			<img alt="skeleton" src="/images/monsters/skeleton.png" />
-		</div>
-		<div class="actions">
-			<button on:click={() => battleWith(0, 0)}>card 1</button>
-			<button on:click={() => battleWith(1, 1)}>card 2</button>
-		</div>
+	{:else if !$gameView.memory.inBattle?.cards.confirmed}
+		<BattleCommand {gameView} />
+	{:else if !$gameView.memory.inBattle.resultAccepted}
+		<BattleRoundResult />
+	{:else if !$gameView.memory.inBattle.resultAccepted}
+		<button on:click={() => memory.acceptBattleResult($gameView)}>Continue</button>
 	{/if}
 </div>
 

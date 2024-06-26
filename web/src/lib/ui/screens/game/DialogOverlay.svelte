@@ -62,4 +62,14 @@
 		height: 2rem;
 		font-size: 1.2rem;
 	}
+
+	@media screen and (max-height: 700px) {
+		p {
+			font-size: 12px;
+		}
+
+		img {
+			width: 32px;
+		}
+	}
 </style>

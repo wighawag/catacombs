@@ -12,7 +12,7 @@
 
 {#if $gameView.memory.tutorialStep == 0}
 	<DialogOverlay {gameView} />
-{:else if $gameView.inBattle}
+{:else if $gameView.inBattle || ($gameView.memory.inBattle?.accepted && !$gameView.memory.inBattle?.endAccepted)}
 	<BattleOverlay {gameView} />
 {:else}
 	<div class="navigation">
