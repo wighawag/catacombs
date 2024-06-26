@@ -1,10 +1,10 @@
 <script lang="ts">
 	import {memory} from '$lib/state/memory';
 
-	let selectionOpen: 'none' | 'attack' | 'defense' = 'none';
+	$: attackSelection = $memory.inBattle?.cards.choicePresented == 'attack';
 
 	function pickCard(index: number) {
-		if ($memory.inBattle?.cards.choicePresented == 'attack') {
+		if (attackSelection) {
 			memory.selectAttackCard(index);
 		} else {
 			memory.selectDefenseCard(index);
@@ -14,13 +14,23 @@
 
 <div class="cards">
 	<div class="enemy">
-		<button class="card">+1 / +1</button>
-		<button class="card">+1 / +1</button>
+		{#if attackSelection}
+			<button class="card">+0 / +0</button>
+			<button class="card">+1 / +0</button>
+		{:else}
+			<button class="card">+2 / +1</button>
+			<button class="card">+1 / +1</button>
+		{/if}
 	</div>
 	<hr />
 	<div class="hero">
-		<button on:click={() => pickCard(0)} class="card">+1 / +1</button>
-		<button on:click={() => pickCard(1)} class="card">+1 / +1</button>
+		{#if attackSelection}
+			<button on:click={() => pickCard(0)} class="card">+4 / +2</button>
+			<button on:click={() => pickCard(1)} class="card">+2 / +1</button>
+		{:else}
+			<button on:click={() => pickCard(0)} class="card">+3 / +3</button>
+			<button on:click={() => pickCard(1)} class="card">+1 / +2</button>
+		{/if}
 	</div>
 </div>
 

@@ -13,7 +13,7 @@
 	$: characterClassName = characterClassInfo(characterClass).name;
 
 	$: xp = $gameView && $gameView.currentCharacter ? $gameView.characters[$gameView.currentCharacter].xp : 0;
-	$: hp = $gameView && $gameView.currentCharacter ? $gameView.characters[$gameView.currentCharacter].hp : 0;
+	$: hp = $gameView && $gameView.currentCharacter ? $gameView.characters[$gameView.currentCharacter].hp : 50; // TODO
 </script>
 
 <div class="welcome-header-box">
@@ -29,7 +29,7 @@
 
 		<div class="info-area">
 			<div>{characterClassName}</div>
-			<HPBar value={50} maxValue={50} />
+			<HPBar value={hp} maxValue={50} />
 		</div>
 	</div>
 	<div class="text-right">

@@ -13,6 +13,9 @@
 	$: classPortrait = portrait(characterClass);
 	$: characterClassName = characterClass === 0 ? 'Barbarian' : 'Unknown';
 
+	$: xp = $gameView && $gameView.currentCharacter ? $gameView.characters[$gameView.currentCharacter].xp : 0;
+	$: hp = $gameView && $gameView.currentCharacter ? $gameView.characters[$gameView.currentCharacter].hp : 0;
+
 	async function battleWith(attackCardIndex: number, defenseCardIndex: number) {
 		const currentStateChanges = gameView.$state.currentStateChanges;
 		if (!currentStateChanges) {
@@ -78,7 +81,7 @@
 		<button class="icon">
 			<img src={classPortrait} alt="profile" />
 		</button>
-		<div class="bar"><HPBar value={50} maxValue={50} /></div>
+		<div class="bar"><HPBar value={hp} maxValue={50} /></div>
 	</div>
 
 	{#if $memory.inBattle?.cards.choicePresented == 'attack'}
