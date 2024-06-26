@@ -10,8 +10,24 @@
 	}
 </script>
 
-{#if $gameView.memory.tutorialStep == 0}
-	<DialogOverlay {gameView} />
+{#if $gameView.currentCharacter && $gameView.characters[$gameView.currentCharacter].position.x == 0 && $gameView.characters[$gameView.currentCharacter].position.y == 0}
+	<DialogOverlay {gameView} btnDisabled={$gameView.memory.tutorialStep == 3}>
+		{#if $gameView.memory.tutorialStep == 1}As you approach the imposing gate of Ethernal, an unexpected sight catches
+			your eye. A lone merchant has set up shop in this unlikely place, their stall laden with various foodstuffs.
+		{:else if $gameView.memory.tutorialStep == 2}
+			The rumbling in your stomach suddenly reminds you that it's been days since your last proper meal. A wave of
+			relief washes over you - this is your final opportunity to stock up before venturing into the unknown depths of
+			the ancient city.
+		{:else if $gameView.memory.tutorialStep == 3}
+			To be continued...
+		{/if}
+	</DialogOverlay>
+{:else if $gameView.memory.tutorialStep == 0}
+	<DialogOverlay {gameView}
+		>At last, Ethernal's fabled entrance. This magical portal whose light help us see is my doorway to the catacombs and
+		all the secrets they hold. I've come this far now it's time to step into the unknown and unravel the mysteries of
+		this ancient underground realm.</DialogOverlay
+	>
 {:else if $gameView.inBattle || ($gameView.memory.inBattle?.accepted && !$gameView.memory.inBattle?.endAccepted)}
 	<BattleOverlay {gameView} />
 {:else}

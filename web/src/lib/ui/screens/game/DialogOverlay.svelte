@@ -6,6 +6,7 @@
 	import {fly} from 'svelte/transition';
 
 	export let gameView: GameView;
+	export let btnDisabled: boolean = false;
 
 	function nextTutorial() {
 		memory.tutorialNext();
@@ -19,12 +20,11 @@
 
 <div class="content" transition:fly={{duration: 500, y: '100%'}}>
 	<p>
-		<img src="/images/ui/portraits/port_war_6x.png" alt="profile" />At last, Ethernal's fabled entrance. This magical
-		portal whose light help us see is my doorway to the catacombs and all the secrets they hold. I've come this far –
-		now it's time to step into the unknown and unravel the mysteries of this ancient underground realm.
+		<img src="/images/ui/portraits/port_war_6x.png" alt="profile" />
+		<slot></slot>
 	</p>
 	<div class="actions">
-		<button on:click={nextTutorial}>Continue</button>
+		<button disabled={btnDisabled} on:click={nextTutorial}>Continue</button>
 	</div>
 </div>
 
