@@ -6,9 +6,10 @@
 	import BattleCardSelection from './BattleCardSelection.svelte';
 	import {evmGame} from '$lib/state/computed';
 	import type {GameView} from '$lib/state/ViewState';
+	import {intro} from '$lib/state/intro';
 
 	export let gameView: GameView;
-	export let characterClass = 0;
+	$: characterClass = $intro.character?.classIndex || 0;
 	$: classPortrait = portrait(characterClass);
 	$: characterClassName = characterClass === 0 ? 'Barbarian' : 'Unknown';
 

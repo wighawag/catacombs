@@ -8,7 +8,7 @@
 </script>
 
 <header>
-	<WelcomeProfile />
+	<WelcomeProfile {gameView} />
 </header>
 
 <main>

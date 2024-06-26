@@ -11,6 +11,8 @@ export enum ControllerType {
 
 export type Character = {
 	id: string;
+	xp: number;
+	hp: number;
 	position: {x: number; y: number};
 	controllers: {[address: `0x${string}`]: ControllerType};
 };

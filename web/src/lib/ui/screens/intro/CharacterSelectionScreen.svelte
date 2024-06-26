@@ -2,6 +2,7 @@
 	import DefaultScreen from '../DefaultScreen.svelte';
 	import SelectCharacterClass from '$lib/ui/components/SelectCharacterClass.svelte';
 	import {characterClassInfo} from '$lib/data/characters';
+	import {intro} from '$lib/state/intro';
 
 	export let next;
 
@@ -19,7 +20,7 @@
 			text: 'Go forth',
 			func: async () => {
 				if (name && name !== '') {
-					//characterChoice.setData({name, characterClass});
+					intro.selectCharacter(name, characterClassIndex);
 					next();
 				}
 			},

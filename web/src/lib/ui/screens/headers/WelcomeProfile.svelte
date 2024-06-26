@@ -1,12 +1,19 @@
 <script lang="ts">
 	import HPBar from '../../components/HPBar.svelte';
 	import IconSkull from '$data/assets/skull-key-white.png';
-	import {portrait} from '$lib/data/characters';
+	import {characterClassInfo, portrait} from '$lib/data/characters';
+	import {intro} from '$lib/state/intro';
+	import type {GameView} from '$lib/state/ViewState';
 
 	export let characterClass: number = 0;
+	export let gameView: GameView | undefined = undefined;
 
+	$: characterClass = $intro.character?.classIndex || 0;
 	$: classPortrait = portrait(characterClass);
-	$: characterClassName = characterClass === 0 ? 'Barbarian' : 'Unknown';
+	$: characterClassName = characterClassInfo(characterClass).name;
+
+	$: xp = $gameView && $gameView.currentCharacter ? $gameView.characters[$gameView.currentCharacter].xp : 0;
+	$: hp = $gameView && $gameView.currentCharacter ? $gameView.characters[$gameView.currentCharacter].hp : 0;
 </script>
 
 <div class="welcome-header-box">
@@ -17,7 +24,7 @@
 
 		<div class="info-area">
 			<div>LVL.&nbsp;0&nbsp;&nbsp;&nbsp;</div>
-			<HPBar label="XP" value={0} maxValue={15} />
+			<HPBar label="XP" value={xp} maxValue={15} />
 		</div>
 
 		<div class="info-area">

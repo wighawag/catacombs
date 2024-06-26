@@ -1,5 +1,7 @@
 <script lang="ts">
+	import {portrait} from '$lib/data/characters';
 	import type {GameView} from '$lib/state/ViewState';
+	import {intro} from '$lib/state/intro';
 	import {memory} from '$lib/state/memory';
 	import {endInitialCamera, setInitialCamera} from '$lib/tutorial';
 	import {onMount} from 'svelte';
@@ -20,7 +22,7 @@
 
 <div class="content" transition:fly={{duration: 500, y: '100%'}}>
 	<p>
-		<img src="/images/ui/portraits/port_war_6x.png" alt="profile" />
+		<img src={portrait($intro.character?.classIndex || 0)} alt="profile" />
 		<slot></slot>
 	</p>
 	<div class="actions">

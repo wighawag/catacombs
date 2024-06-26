@@ -52,6 +52,8 @@ function merge(
 		currentCharacter = {
 			controllers: {[connection.address]: ControllerType.Owner},
 			id: initialState.stateChanges.characterID.toString(),
+			xp: initialState.stateChanges.xp,
+			hp: initialState.stateChanges.hp,
 			position: bigIntIDToXY(initialState.stateChanges.newPosition),
 		};
 	}
@@ -81,6 +83,11 @@ function merge(
 					y: initialState.stateChanges?.monsters[i].y || v.y,
 				},
 			}));
+		}
+
+		if (currentCharacter) {
+			currentCharacter.xp = memory.stateChanges[memory.stateChanges.length - 1].xp;
+			currentCharacter.hp = memory.stateChanges[memory.stateChanges.length - 1].hp;
 		}
 	} else if (initialState.stateChanges) {
 		$state.monsters = initialState.stateChanges.monsters.map((v) => ({

@@ -68,6 +68,8 @@ function merge(
 				x: onchain.position.x,
 				y: onchain.position.y,
 			},
+			xp: onchain.xp,
+			hp: onchain.hp,
 		};
 	}
 	if ($state.currentCharacter) {
