@@ -271,7 +271,9 @@ contract GameReveal is Game {
                 if (hp == 0) {
                     stateChanges.battle.monsterIndexPlus1 = 0; // battle end // TODO loot
                     stateChanges.battle.attackCardsUsed1 = 0;
+                    stateChanges.battle.defenseCardsUsed1 = 0;
                     stateChanges.battle.attackCardsUsed2 = 0;
+                    stateChanges.battle.defenseCardsUsed2 = 0;
                     stateChanges.xp += 2;
                 }
                 // console.log("you inflict %i damage", damage);

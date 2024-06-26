@@ -31,13 +31,13 @@
     "named-logs": "^0.2.4",
     "template-game-common": "workspace:*",
     "template-game-contracts": "workspace:*",
-    "viem": "^2.13.8"
+    "viem": "^2.16.2"
   },
   "devDependencies": {
     "ldenv": "^0.3.10",
     "pkgroll": "^2.0.2",
     "prettier": "^3.3.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.2"
   },
   "scripts": {
     "build": "pkgroll",

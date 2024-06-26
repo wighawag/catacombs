@@ -9,12 +9,12 @@
     "template-game-common": "workspace:*",
     "template-game-contracts": "workspace:*",
     "template-game-contracts-js": "workspace:*",
-    "viem": "^2.13.8"
+    "viem": "^2.16.2"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240605.0",
+    "@cloudflare/workers-types": "^4.20240620.0",
     "as-soon": "^0.0.9",
-    "wrangler": "^3.60.1"
+    "wrangler": "^3.62.0"
   },
   "scripts": {
     "sql2ts": "node sql2ts.cjs characters",

@@ -23,15 +23,15 @@
     "src"
   ],
   "dependencies": {
-    "@types/node": "^20.14.2",
+    "@types/node": "^20.14.9",
     "named-logs": "^0.2.4",
-    "viem": "^2.13.8"
+    "viem": "^2.16.2"
   },
   "devDependencies": {
     "ldenv": "^0.3.10",
     "pkgroll": "^2.0.2",
     "prettier": "^3.3.2",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.2"
   },
   "scripts": {
     "build": "pkgroll",
