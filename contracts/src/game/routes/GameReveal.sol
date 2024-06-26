@@ -270,6 +270,8 @@ contract GameReveal is Game {
                 stateChanges.monsters[stateChanges.battle.monsterIndexPlus1 - 1].hp = hp;
                 if (hp == 0) {
                     stateChanges.battle.monsterIndexPlus1 = 0; // battle end // TODO loot
+                    stateChanges.battle.attackCardsUsed1 = 0;
+                    stateChanges.battle.attackCardsUsed2 = 0;
                 }
                 // console.log("you inflict %i damage", damage);
             }
