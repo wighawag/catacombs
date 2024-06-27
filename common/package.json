@@ -25,7 +25,7 @@
   "dependencies": {
     "@types/node": "^20.14.9",
     "named-logs": "^0.2.4",
-    "viem": "^2.16.2"
+    "viem": "^2.16.3"
   },
   "devDependencies": {
     "ldenv": "^0.3.10",

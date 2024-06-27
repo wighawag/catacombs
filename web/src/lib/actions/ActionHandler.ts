@@ -5,9 +5,9 @@ import {modalStack} from '$utils/ui/modals/ModalContainer.svelte';
 import {camera, type Camera} from '$lib/render/camera';
 import {memory} from '$lib/state/memory';
 import {bigIntIDToXY, xyToBigIntID, type Monster, type MonsterList} from 'template-game-common';
-import {evmGame} from '$lib/state/computed';
 import {connection} from '$lib/state';
 import {isBlockingMovement} from '$lib/tutorial';
+import {client, contracts} from '$lib/state/computed';
 
 export async function performAction(gameView: GameView, direction: {dx: number; dy: number}) {
 	if (isBlockingMovement()) {
@@ -31,7 +31,9 @@ export async function performAction(gameView: GameView, direction: {dx: number; 
 		: $gameView.characters[$gameView.currentCharacter].position;
 	const newPosition = {x: origPosition.x + direction.dx, y: origPosition.y + direction.dy};
 
-	const stateChanges = await evmGame.stepChanges(currentStateChanges, xyToBigIntID(newPosition.x, newPosition.y));
+	const stateChanges = await client.readContract(
+		contracts.GameReveal.read.stepChanges(currentStateChanges, xyToBigIntID(newPosition.x, newPosition.y)),
+	);
 	console.log(`-----------------------------`);
 	console.log(currentStateChanges);
 	console.log(`=>`);

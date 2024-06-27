@@ -1,10 +1,28 @@
+import {initialContractsInfos} from '$lib/config';
 import {camera} from '$lib/render/camera';
 import {AREA_SIZE, areaCoord, type Area} from 'template-game-common';
-import {EVMGame} from 'template-game-contracts-js';
+import {createTEVMContracts} from 'template-game-contracts-js';
+// TODO artifact export as esm module same for contracts
+import artifacts from 'template-game-contracts/artifacts';
 
 export const areas = new Map<number, Map<number, Area>>();
 
-export const evmGame = new EVMGame();
+export const {contracts, client} = createTEVMContracts(artifacts);
+
+async function getJSArea(x: number, y: number) {
+	const area = await client.readContract(contracts.GameUtils.read.areaAt(x, y));
+	const southWalls: boolean[] = [];
+	const eastWalls: boolean[] = [];
+	let c = 127n;
+	for (let iy = 0; iy < AREA_SIZE; iy++) {
+		for (let ix = 0; ix < AREA_SIZE; ix++) {
+			southWalls.push(((area.southWalls >> c) & 1n) == 1n);
+			eastWalls.push(((area.eastWalls >> c) & 1n) == 1n);
+			c--;
+		}
+	}
+	return {southWalls, eastWalls, x, y};
+}
 
 camera.subscribe(async ($camera) => {
 	if ($camera) {
@@ -24,12 +42,12 @@ camera.subscribe(async ($camera) => {
 				if (!mapmap) {
 					const mapmap = new Map<number, Area>();
 					areas.set(ax, mapmap);
-					const area = await evmGame.areaAt(x, y);
+					const area = await getJSArea(x, y);
 					mapmap.set(ay, area);
 				} else {
 					let area = mapmap.get(ay);
 					if (!area) {
-						area = await evmGame.areaAt(x, y);
+						const area = await getJSArea(x, y);
 						mapmap.set(ay, area);
 					}
 				}

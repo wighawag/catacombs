@@ -14,12 +14,13 @@
 		"named-logs": "^0.2.4",
 		"template-game-common": "workspace:*",
 		"template-game-contracts-js": "workspace:*",
+		"template-game-contracts": "workspace:*",
 		"template-game-indexer": "workspace:*",
 		"twgl.js": "^5.5.4",
-		"viem": "^2.16.2"
+		"viem": "^2.16.3"
 	},
 	"devDependencies": {
-		"@rocketh/export": "^0.10.8",
+		"@rocketh/export": "^0.10.9",
 		"@sveltejs/adapter-static": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",

@@ -1,126 +1,85 @@
-import {AREA_SIZE, Action, Area, Context, StateChanges, areaCoord, type Game} from 'template-game-common';
-import artifacts from 'template-game-contracts/artifacts'; // TODO use single file per artifact
-import {createEVMRunner} from './utils';
-import {decodeErrorResult, decodeFunctionResult, encodeFunctionData, encodePacked, keccak256} from 'viem';
-import {Areas} from './Areas';
+import {
+	Abi,
+	Contract,
+	FormatAbi,
+	MemoryClient,
+	ReadActionCreator,
+	createContract,
+	createMemoryClient,
+	formatAbi,
+} from 'tevm';
+import {Address, decodeDeployData} from 'viem';
 
-export class EVMGame implements Game {
-	evmPromise: ReturnType<typeof createEVMRunner>;
+export type GenericContractsInfosWithBytecodeAndConstructorData = {
+	readonly [name: string]: {
+		readonly abi: Abi;
+		readonly bytecode: `0x${string}`;
+		readonly argsData?: `0x${string}`;
+	};
+};
 
-	constructor() {
-		this.evmPromise = createEVMRunner({
-			GameUtils: {
-				bytecode: artifacts.GameUtils.bytecode,
-			},
-			GameReveal: {
-				bytecode: artifacts.GameReveal.bytecode,
-			},
-		});
-	}
+export type TEVMContracts<ContractsTypes extends GenericContractsInfosWithBytecodeAndConstructorData> = {
+	[ContractName in Extract<keyof ContractsTypes, string>]: Contract<
+		ContractName,
+		FormatAbi<ContractsTypes[ContractName]['abi']>
+	>;
+};
 
-	async areaAt(x: number, y: number): Promise<Area> {
-		const evm = await this.evmPromise;
+export type TEVMReadContracts<ContractsTypes extends GenericContractsInfosWithBytecodeAndConstructorData> = {
+	[ContractName in Extract<keyof ContractsTypes, string>]: {
+		read: ReadActionCreator<
+			FormatAbi<ContractsTypes[ContractName]['abi']>,
+			Address,
+			ContractsTypes[ContractName]['bytecode']
+		>;
+	};
+};
 
-		const result = await evm.runContract(
-			'GameUtils',
-			encodeFunctionData({
-				abi: artifacts.GameUtils.abi,
-				functionName: 'areaAt',
-				args: [x, y],
-			}),
-		);
-
-		let data: {southWalls: bigint; eastWalls: bigint};
-		try {
-			data = decodeFunctionResult({
-				abi: artifacts.GameUtils.abi,
-				functionName: 'areaAt',
-				data: result,
-			});
-		} catch (err) {
-			const error = decodeErrorResult({
-				abi: artifacts.GameUtils.abi,
-				data: result,
-			});
-			throw error;
-		}
-
-		const southWalls: boolean[] = [];
-		const eastWalls: boolean[] = [];
-		let c = 127n;
-		for (let iy = 0; iy < AREA_SIZE; iy++) {
-			for (let ix = 0; ix < AREA_SIZE; ix++) {
-				southWalls.push(((data.southWalls >> c) & 1n) == 1n);
-				eastWalls.push(((data.eastWalls >> c) & 1n) == 1n);
-				c--;
+function deployContract(
+	client: MemoryClient,
+	name: string,
+	abi: Abi,
+	bytecode: `0x${string}`,
+	argsData?: `0x${string}`,
+) {
+	return client
+		.tevmDeploy({
+			abi,
+			bytecode,
+			args: argsData
+				? decodeDeployData({
+						abi,
+						bytecode,
+						data: argsData,
+					})
+				: undefined,
+		})
+		.then((results: any) => {
+			if (results.createdAddress == null) {
+				throw new Error(`could not deploy contract ${name}`);
 			}
-		}
+			return createContract({
+				name,
+				humanReadableAbi: formatAbi(abi),
+				address: results.createdAddress,
+				bytecode: bytecode,
+			});
+		});
+}
 
-		return {
-			x,
-			y,
-			eastWalls,
-			southWalls,
+export function createTEVMContracts<ContractsTypes extends GenericContractsInfosWithBytecodeAndConstructorData>(
+	contracts: ContractsTypes,
+): {contracts: TEVMReadContracts<ContractsTypes>; client: MemoryClient} {
+	const evm = createMemoryClient();
+
+	const tevmContracts: TEVMReadContracts<ContractsTypes> = {} as TEVMReadContracts<ContractsTypes>;
+	const contractNames = Object.keys(contracts);
+	for (const contractName of contractNames) {
+		const {abi, bytecode, argsData} = contracts[contractName];
+		const deployedContract = deployContract(evm, contractName, abi, bytecode, argsData);
+		(tevmContracts as any)[contractName] = {
+			read: async (...args: any[]) => deployedContract.then((v: any) => v.read(...args)),
 		};
 	}
-
-	getArea(x: number, y: number): Area {
-		const areaX = areaCoord(x);
-		const areaY = areaCoord(y);
-		const areaHash = keccak256(encodePacked(['int32', 'int32'], [areaX, areaY]));
-		const areaIndex = Number(BigInt(areaHash) % 5n);
-		return {...Areas[areaIndex], x: areaX, y: areaY};
-	}
-
-	async stepChanges(stateChanges: StateChanges, action: Action): Promise<StateChanges> {
-		const evm = await this.evmPromise;
-		const result = await evm.runContract(
-			'GameReveal',
-			encodeFunctionData({
-				abi: artifacts.GameReveal.abi,
-				functionName: 'stepChanges',
-				args: [stateChanges, action, true],
-			}),
-		);
-
-		try {
-			return decodeFunctionResult({
-				abi: artifacts.GameReveal.abi,
-				functionName: 'stepChanges',
-				data: result,
-			});
-		} catch (err) {
-			const error = decodeErrorResult({
-				abi: artifacts.GameReveal.abi,
-				data: result,
-			});
-			throw error;
-		}
-	}
-
-	async initialStateChanges(context: Context): Promise<StateChanges> {
-		const evm = await this.evmPromise;
-		const result = await evm.runContract(
-			'GameReveal',
-			encodeFunctionData({
-				abi: artifacts.GameReveal.abi,
-				functionName: 'initialStateChanges',
-				args: [context],
-			}),
-		);
-
-		try {
-			return decodeFunctionResult({
-				abi: artifacts.GameReveal.abi,
-				functionName: 'initialStateChanges',
-				data: result,
-			});
-		} catch (err) {
-			const error = decodeErrorResult({
-				abi: artifacts.GameReveal.abi,
-				data: result,
-			});
-			throw error;
-		}
-	}
+	return {contracts: tevmContracts, client: evm};
 }

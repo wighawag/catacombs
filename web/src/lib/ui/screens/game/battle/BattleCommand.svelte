@@ -4,7 +4,7 @@
 	import BorderedContainer from '$lib/ui/components/BorderedContainer.svelte';
 	import HPBar from '$lib/ui/components/HPBar.svelte';
 	import BattleCardSelection from './BattleCardSelection.svelte';
-	import {evmGame} from '$lib/state/computed';
+	import {client, contracts} from '$lib/state/computed';
 	import type {GameView} from '$lib/state/ViewState';
 	import {intro} from '$lib/state/intro';
 
@@ -25,7 +25,7 @@
 		console.log(action.toString(16));
 		console.log(`-----------------------------`);
 		console.log(currentStateChanges);
-		const stateChanges = await evmGame.stepChanges(currentStateChanges, action);
+		const stateChanges = await client.readContract(contracts.GameReveal.read.stepChanges(currentStateChanges, action));
 		console.log(`=>`);
 		console.log(stateChanges);
 		console.log(`-----------------------------`);
