@@ -242,7 +242,7 @@ export class GroundLayer extends Textured2DProgram {
 			// const hy = monster.y;
 
 			if (monster.hp <= 0) {
-				drawTile(this.attributes, hx + 5 / 22, hy + 3 / 22, texPerSprites['tomb.png'], 16 / 28, 16 / 28, 1);
+				// drawTile(this.attributes, hx + 5 / 22, hy + 3 / 22, texPerSprites['tomb.png'], 16 / 28, 16 / 28, 1);
 			} else {
 				drawTile(this.attributes, hx + 5 / 22, hy + 3 / 22, texPerSprites['skeleton_sword.png'], 16 / 28, 16 / 28, 1);
 			}
