@@ -4,8 +4,8 @@
         "ldenv": "^0.3.10",
         "missiv-server": "^0.0.11",
         "set-defaults": "^0.0.2",
-        "wait-on": "^7.2.0",
-        "wrangler": "^3.62.0"
+        "wait-on": "^8.0.0",
+        "wrangler": "^3.72.0"
     },
     "scripts": {
         "prepare": "set-defaults .",
