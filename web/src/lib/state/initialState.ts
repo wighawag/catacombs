@@ -1,17 +1,21 @@
 import {writable} from 'svelte/store';
-import type {StateChanges} from 'template-game-common';
+import type {Context, StateChanges} from 'template-game-common';
 import {evmGame} from './computed';
 import {zeroAddress, zeroHash} from 'viem';
 
-export type InitialState = {
-	stateChanges?: StateChanges;
-};
+export type InitialState =
+	| {stateChanges: undefined; context: undefined}
+	| {
+			stateChanges: StateChanges;
+			context: Context;
+	  };
 
-const $store: InitialState = {stateChanges: undefined};
+const $store: InitialState = {stateChanges: undefined, context: undefined};
 const store = writable<InitialState>($store);
 
 export async function initialiseStateChanges() {
-	const initialStateChanges = await evmGame.initialStateChanges({
+	// TODO fetch context or give it: Context will be taken from indexer
+	const context = {
 		// TODO context
 		characterID: 1n,
 		actions: [],
@@ -19,9 +23,19 @@ export async function initialiseStateChanges() {
 		epoch: 0,
 		priorPosition: 0n,
 		secret: zeroHash,
-	});
+
+		priorGold: 0n,
+		priorXP: 0,
+		priorHP: 0,
+		accessory1: 0n,
+		accessory2: 0n,
+		attackGear: 0n,
+		defenseGear: 0n,
+	};
+	const initialStateChanges = await evmGame.initialStateChanges(context);
 
 	$store.stateChanges = initialStateChanges;
+	$store.context = context;
 	store.set($store);
 	return initialStateChanges;
 }

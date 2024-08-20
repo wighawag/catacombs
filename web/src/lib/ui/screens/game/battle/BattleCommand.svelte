@@ -21,11 +21,15 @@
 		if (!currentStateChanges) {
 			return;
 		}
+		const context = gameView.$state.context;
+		if (!context) {
+			return;
+		}
 		const action = (1n << 248n) | BigInt(attackCardIndex << 8) | BigInt(defenseCardIndex);
 		console.log(action.toString(16));
 		console.log(`-----------------------------`);
 		console.log(currentStateChanges);
-		const stateChanges = await evmGame.stepChanges(currentStateChanges, action);
+		const stateChanges = await evmGame.stepChanges(currentStateChanges, context, action);
 		console.log(`=>`);
 		console.log(stateChanges);
 		console.log(`-----------------------------`);

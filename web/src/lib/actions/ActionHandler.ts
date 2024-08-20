@@ -8,6 +8,7 @@ import {bigIntIDToXY, xyToBigIntID, type Monster, type MonsterList} from 'templa
 import {evmGame} from '$lib/state/computed';
 import {connection} from '$lib/state';
 import {isBlockingMovement} from '$lib/tutorial';
+import {zeroAddress, zeroHash} from 'viem';
 
 export async function performAction(gameView: GameView, direction: {dx: number; dy: number}) {
 	if (isBlockingMovement()) {
@@ -26,12 +27,22 @@ export async function performAction(gameView: GameView, direction: {dx: number; 
 		return;
 	}
 
+	const context = gameView.$state.context;
+	if (!context) {
+		console.error(`no context found`);
+		return;
+	}
+
 	const origPosition = currentStateChanges?.newPosition
 		? bigIntIDToXY(currentStateChanges.newPosition)
 		: $gameView.characters[$gameView.currentCharacter].position;
 	const newPosition = {x: origPosition.x + direction.dx, y: origPosition.y + direction.dy};
 
-	const stateChanges = await evmGame.stepChanges(currentStateChanges, xyToBigIntID(newPosition.x, newPosition.y));
+	const stateChanges = await evmGame.stepChanges(
+		currentStateChanges,
+		context,
+		xyToBigIntID(newPosition.x, newPosition.y),
+	);
 	console.log(`-----------------------------`);
 	console.log(currentStateChanges);
 	console.log(`=>`);

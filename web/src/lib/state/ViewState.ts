@@ -5,7 +5,7 @@ import {contractState, connection} from '$lib/state';
 // import type {OnChainActions} from '$lib/account/base';
 // import type {GameMetadata, LocalMove, OffchainState} from '$lib/account/account-data';
 import {memory, type MemoryState} from './memory';
-import type {Monster, StateChanges} from 'template-game-common';
+import type {Context, Monster, StateChanges} from 'template-game-common';
 import {initialState, type InitialState} from './initialState';
 import type {Connection} from '$lib/blockchain/connection';
 
@@ -27,6 +27,7 @@ export type GameViewState = {
 	};
 	memory: MemoryState;
 	currentStateChanges?: StateChanges;
+	context?: Context;
 	type: 'intro' | 'game';
 };
 // function isValidMove(move: LocalMove) {
@@ -54,6 +55,7 @@ function merge(
 	$state.monsters = [];
 	$state.memory = memory;
 	$state.inBattle = undefined;
+	$state.context = initialState.context;
 	$state.currentStateChanges =
 		memory.stateChanges.length > 0 ? memory.stateChanges[memory.stateChanges.length - 1] : initialState.stateChanges;
 	for (const key of Object.keys(state.characters)) {

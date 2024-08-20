@@ -17,6 +17,13 @@ contract GameReveal is Game {
         uint24 epoch;
         uint256[] actions;
         bytes32 secret;
+        uint64 priorGold;
+        uint8 priorHP;
+        uint24 priorXP;
+        uint128 attackGear;
+        uint128 defenseGear;
+        uint128 accessory1;
+        uint128 accessory2;
     }
 
     struct Monster {
@@ -37,9 +44,9 @@ contract GameReveal is Game {
     struct StateChanges {
         uint256 characterID;
         uint64 newPosition;
-        uint24 xp;
         uint24 epoch;
-        uint8 hp;
+        uint24 newXP;
+        uint8 newHP;
         Monster[5] monsters;
         Battle battle;
     }
@@ -55,8 +62,8 @@ contract GameReveal is Game {
             context.epoch,
             context.actions,
             stateChanges.newPosition,
-            stateChanges.hp,
-            stateChanges.xp
+            stateChanges.newHP,
+            stateChanges.newXP
         );
     }
 
@@ -66,7 +73,7 @@ contract GameReveal is Game {
     ) public pure returns (StateChanges memory stateChanges) {
         stateChanges = initialStateChanges(context);
         for (uint256 i = 0; i < context.actions.length; i++) {
-            _step(stateChanges, context.actions[i], revetOnInvalidMoves);
+            _step(stateChanges, context, context.actions[i], revetOnInvalidMoves);
         }
     }
 
@@ -88,15 +95,18 @@ contract GameReveal is Game {
         monsters[4] = Monster({x: x + 4, y: y + 8, hp: 3, kind: 1});
         stateChanges.monsters = monsters;
         stateChanges.newPosition = position;
+        stateChanges.newHP = 10; // TODO
+        stateChanges.newXP = 10; // TODO
     }
 
     /// @notice allow to step through each action and predict the outcome in turnn
     function stepChanges(
         StateChanges memory stateChanges,
+        Context memory context,
         uint256 action,
         bool revetOnInvalidMoves
     ) external pure returns (StateChanges memory) {
-        _step(stateChanges, action, revetOnInvalidMoves);
+        _step(stateChanges, context, action, revetOnInvalidMoves);
         // as external function, it will always return a copy
         return stateChanges;
     }
@@ -114,15 +124,28 @@ contract GameReveal is Game {
         (context.epoch, ) = config.getEpoch();
         context.actions = actions;
         context.secret = secret;
+
+        context.priorGold = store.characterStates[characterID].gold;
+        context.priorHP = store.characterStates[characterID].hp;
+        context.priorXP = store.characterStates[characterID].xp;
+        context.attackGear = store.characterStates[characterID].attackGear;
+        context.defenseGear = store.characterStates[characterID].defenseGear;
+        context.accessory1 = store.characterStates[characterID].accessory1;
+        context.accessory2 = store.characterStates[characterID].accessory2;
     }
 
-    function _step(StateChanges memory stateChanges, uint256 action, bool revetOnInvalidMoves) internal pure {
+    function _step(
+        StateChanges memory stateChanges,
+        Context memory context,
+        uint256 action,
+        bool revetOnInvalidMoves
+    ) internal pure {
         uint64 position = stateChanges.newPosition;
         (int32 x, int32 y) = PositionUtils.toXY(position);
         if (stateChanges.battle.monsterIndexPlus1 == 0) {
             _move(x, y, stateChanges, action, revetOnInvalidMoves);
         } else {
-            _battle(stateChanges, action, revetOnInvalidMoves);
+            _battle(stateChanges, context, action, revetOnInvalidMoves);
         }
     }
     function _move(
@@ -227,7 +250,12 @@ contract GameReveal is Game {
             (1 << 77) |
             (0 << 70);
 
-    function _battle(StateChanges memory stateChanges, uint256 action, bool revetOnInvalidMoves) internal pure {
+    function _battle(
+        StateChanges memory stateChanges,
+        Context memory context,
+        uint256 action,
+        bool revetOnInvalidMoves
+    ) internal pure {
         if (action >> 248 != 1) {
             if (revetOnInvalidMoves) {
                 revert InvalidMove(Reason.ActionIsNotBattle);
@@ -238,7 +266,7 @@ contract GameReveal is Game {
         {
             (uint8 attackBonus1, uint8 attackValue1, uint8 newAttackCardsUsed1) = _checkAndGetCardData(
                 stateChanges.battle.attackCardsUsed1,
-                defaultAttackGear,
+                context.attackGear,
                 uint8(action >> 8)
             );
             stateChanges.battle.attackCardsUsed1 = newAttackCardsUsed1;
@@ -274,7 +302,7 @@ contract GameReveal is Game {
                     stateChanges.battle.defenseCardsUsed1 = 0;
                     stateChanges.battle.attackCardsUsed2 = 0;
                     stateChanges.battle.defenseCardsUsed2 = 0;
-                    stateChanges.xp += 2;
+                    stateChanges.newXP += 2;
                 }
                 // console.log("you inflict %i damage", damage);
             }
@@ -283,7 +311,7 @@ contract GameReveal is Game {
         {
             (uint8 defenseBonus1, uint8 defenseValue1, uint8 newDefenseCardsUsed1) = _checkAndGetCardData(
                 stateChanges.battle.defenseCardsUsed1,
-                defaultDefenseGear,
+                context.defenseGear,
                 uint8(action)
             );
             stateChanges.battle.defenseCardsUsed1 = newDefenseCardsUsed1;
@@ -300,14 +328,14 @@ contract GameReveal is Game {
 
             if (attackBonus2 > defenseBonus1) {
                 uint8 damage = defenseValue1 > attackValue2 ? 0 : attackValue2 - defenseValue1;
-                uint8 hp = stateChanges.hp;
+                uint8 hp = stateChanges.newHP;
                 if (damage >= hp) {
                     // YOU ARE DEAD // TODO
                     hp = 0;
                 } else {
                     hp -= damage;
                 }
-                stateChanges.hp = hp;
+                stateChanges.newHP = hp;
 
                 // console.log("monster inflict %i damage", damage);
             }

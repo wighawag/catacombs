@@ -72,14 +72,14 @@ export class EVMGame implements Game {
 		return {...Areas[areaIndex], x: areaX, y: areaY};
 	}
 
-	async stepChanges(stateChanges: StateChanges, action: Action): Promise<StateChanges> {
+	async stepChanges(stateChanges: StateChanges, context: Context, action: Action): Promise<StateChanges> {
 		const evm = await this.evmPromise;
 		const result = await evm.runContract(
 			'GameReveal',
 			encodeFunctionData({
 				abi: artifacts.GameReveal.abi,
 				functionName: 'stepChanges',
-				args: [stateChanges, action, true],
+				args: [stateChanges, context, action, true],
 			}),
 		);
 

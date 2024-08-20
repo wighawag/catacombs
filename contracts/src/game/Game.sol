@@ -85,6 +85,14 @@ abstract contract Game {
         mapping(address => ControllerType) controllers;
         uint64 position;
         uint64 epoch;
+        uint64 gold;
+        uint8 hp; // TODO is 255 enough ?
+        uint24 xp; // TODO: level are virtual ?
+        uint128 attackGear;
+        uint128 defenseGear;
+        uint128 accessory1;
+        uint128 accessory2;
+        uint256[] inventory;
     }
 
     struct Store {

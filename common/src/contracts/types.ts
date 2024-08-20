@@ -18,9 +18,9 @@ export type Battle = {
 export type StateChanges = {
 	characterID: bigint;
 	newPosition: bigint;
-	xp: number;
+	newXP: number;
 	epoch: number;
-	hp: number;
+	newHP: number;
 	monsters: MonsterList;
 	battle: Battle;
 };
@@ -34,6 +34,14 @@ export type Context = {
 	epoch: number;
 	actions: Action[];
 	secret: `0x${string}`;
+
+	priorGold: bigint;
+	priorHP: number;
+	priorXP: number;
+	attackGear: bigint;
+	defenseGear: bigint;
+	accessory1: bigint;
+	accessory2: bigint;
 };
 
 export type Area = {
@@ -45,7 +53,7 @@ export type Area = {
 
 export interface Game {
 	areaAt(x: number, y: number): Promise<Area>;
-	stepChanges(stateChanges: StateChanges, action: Action): Promise<StateChanges>;
+	stepChanges(stateChanges: StateChanges, context: Context, action: Action): Promise<StateChanges>;
 	initialStateChanges(context: Context): Promise<StateChanges>;
 
 	getArea(x: number, y: number): Area;

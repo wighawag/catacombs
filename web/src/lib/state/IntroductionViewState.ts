@@ -6,14 +6,17 @@ import {type InitialState} from './initialState';
 import type {Connection} from '$lib/blockchain/connection';
 import type {GameViewState} from './ViewState';
 import {bigIntIDToXY, xyToBigIntID} from 'template-game-common';
+import {zeroAddress, zeroHash} from 'viem';
 
 const initialState = writable<InitialState>({
+	// FAKE DATA FOR INTRODUCTION:
+	// TODO derive stateChanges from fake context
 	stateChanges: {
 		characterID: 1n,
 		newPosition: xyToBigIntID(0, 19),
-		xp: 0,
+		newXP: 0,
 		epoch: 0,
-		hp: 50,
+		newHP: 50,
 		monsters: [
 			{x: 0, y: 5, hp: 1, kind: 1},
 			{x: 0, y: 10, hp: 1, kind: 1},
@@ -28,6 +31,25 @@ const initialState = writable<InitialState>({
 			attackCardsUsed2: 0,
 			defenseCardsUsed2: 0,
 		},
+	},
+	context: {
+		// TODO context
+		characterID: 1n,
+		actions: [],
+		controller: zeroAddress,
+		epoch: 0,
+		priorPosition: 0n,
+		secret: zeroHash,
+
+		priorGold: 0n,
+		priorXP: 0,
+		priorHP: 50,
+		accessory1: 0n,
+		accessory2: 0n,
+		// TODO : (2 << 98) | (2 << 91) | (2 << 84) | (1 << 77) | (2 << 70)
+		attackGear: 643767809466671935455840174080n, //  (2 << 98) | (4 << 91) | (2 << 84) | (2 << 77) | (1 << 70); // <uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
+		// TODO : (2 << 98) | (2 << 91) | (0 << 84) | (0 << 77) | (1 << 70)
+		defenseGear: 641311122266079177861601689600n, // (2 << 98) | (3 << 91) | (3 << 84) | (1 << 77) | (2 << 70); // <uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
 	},
 });
 
@@ -52,8 +74,8 @@ function merge(
 		currentCharacter = {
 			controllers: {[connection.address]: ControllerType.Owner},
 			id: initialState.stateChanges.characterID.toString(),
-			xp: initialState.stateChanges.xp,
-			hp: initialState.stateChanges.hp,
+			xp: initialState.stateChanges.newXP,
+			hp: initialState.stateChanges.newHP,
 			position: bigIntIDToXY(initialState.stateChanges.newPosition),
 		};
 	}
@@ -61,6 +83,7 @@ function merge(
 	$state.monsters = [];
 	$state.memory = memory;
 	$state.inBattle = undefined;
+	$state.context = initialState.context;
 	$state.currentStateChanges =
 		memory.stateChanges.length > 0 ? memory.stateChanges[memory.stateChanges.length - 1] : initialState.stateChanges;
 
@@ -86,8 +109,8 @@ function merge(
 		}
 
 		if (currentCharacter) {
-			currentCharacter.xp = memory.stateChanges[memory.stateChanges.length - 1].xp;
-			currentCharacter.hp = memory.stateChanges[memory.stateChanges.length - 1].hp;
+			currentCharacter.xp = memory.stateChanges[memory.stateChanges.length - 1].newXP;
+			currentCharacter.hp = memory.stateChanges[memory.stateChanges.length - 1].newHP;
 		}
 	} else if (initialState.stateChanges) {
 		$state.monsters = initialState.stateChanges.monsters.map((v) => ({
