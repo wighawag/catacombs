@@ -35,7 +35,7 @@ export async function performAction(gameView: GameView, direction: {dx: number; 
 
 	const origPosition = currentStateChanges?.newPosition
 		? bigIntIDToXY(currentStateChanges.newPosition)
-		: $gameView.characters[$gameView.currentCharacter].position;
+		: $gameView.currentCharacter.position;
 	const newPosition = {x: origPosition.x + direction.dx, y: origPosition.y + direction.dy};
 
 	const stateChanges = await evmGame.stepChanges(
@@ -66,7 +66,7 @@ export function reset(gameView: GameView) {
 		const currentStateChanges = gameView.$state.currentStateChanges;
 		const origPosition = currentStateChanges?.newPosition
 			? bigIntIDToXY(currentStateChanges.newPosition)
-			: $gameView.characters[$gameView.currentCharacter].position;
+			: $gameView.currentCharacter.position;
 		const position = {x: origPosition.x, y: origPosition.y};
 		console.log({position});
 		camera.setTarget(position.x, position.y, camera.$store.zoom, 400);
@@ -85,7 +85,7 @@ export function rewind(gameView: GameView) {
 		const currentStateChanges = gameView.$state.currentStateChanges;
 		const origPosition = currentStateChanges?.newPosition
 			? bigIntIDToXY(currentStateChanges.newPosition)
-			: $gameView.characters[$gameView.currentCharacter].position;
+			: $gameView.currentCharacter.position;
 		const position = {x: origPosition.x, y: origPosition.y};
 		console.log({position});
 		camera.setTarget(position.x, position.y, camera.$store.zoom, 400);

@@ -13,7 +13,7 @@ export function setInitialCamera() {
 }
 
 export function endInitialCamera(gameView: GameView) {
-	const {x, y} = gameView.$state.characters[gameView.$state.currentCharacter!].position;
+	const {x, y} = gameView.$state.currentCharacter!.position;
 	camera.setTarget(x, y, camera.$store.zoom, 800);
 	_blocked = false;
 }

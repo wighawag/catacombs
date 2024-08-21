@@ -54,13 +54,13 @@ const initialState = writable<InitialState>({
 });
 
 const $state: GameViewState = {
-	characters: {},
+	myCharacters: [],
+	otherCharacters: [],
 	monsters: [],
 	memory: {moves: [], stateChanges: [], tutorialStep: 0, stateChangesTimestamp: 0},
 	type: 'intro',
 };
 function merge(
-	state: Data,
 	initialState: InitialState,
 	memory: MemoryState,
 	connection: Connection,
@@ -79,15 +79,16 @@ function merge(
 			position: bigIntIDToXY(initialState.stateChanges.newPosition),
 		};
 	}
-	$state.characters = currentCharacter ? {[currentCharacter.id]: currentCharacter} : {};
+
+	$state.myCharacters = currentCharacter ? [currentCharacter] : [];
+	$state.currentCharacter = currentCharacter;
+
 	$state.monsters = [];
 	$state.memory = memory;
 	$state.inBattle = undefined;
 	$state.context = initialState.context;
 	$state.currentStateChanges =
 		memory.stateChanges.length > 0 ? memory.stateChanges[memory.stateChanges.length - 1] : initialState.stateChanges;
-
-	$state.currentCharacter = currentCharacter?.id;
 
 	if (memory.stateChanges.length > 0) {
 		if (memory.stateChanges.length > 1) {
@@ -152,12 +153,9 @@ function merge(
 // 	},
 // );
 export const gameView = {
-	...derived(
-		[contractState.state, initialState, memory, connection],
-		([$state, $initialState, $memory, $connection]) => {
-			return merge($state, $initialState, $memory, $connection);
-		},
-	),
+	...derived([initialState, memory, connection], ([$initialState, $memory, $connection]) => {
+		return merge($initialState, $memory, $connection);
+	}),
 	$state,
 };
 

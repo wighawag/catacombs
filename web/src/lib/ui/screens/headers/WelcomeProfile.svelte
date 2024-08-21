@@ -12,8 +12,8 @@
 	$: classPortrait = portrait(characterClass);
 	$: characterClassName = characterClassInfo(characterClass).name;
 
-	$: xp = $gameView && $gameView.currentCharacter ? $gameView.characters[$gameView.currentCharacter].xp : 0;
-	$: hp = $gameView && $gameView.currentCharacter ? $gameView.characters[$gameView.currentCharacter].hp : 50; // TODO
+	$: xp = $gameView && $gameView.currentCharacter ? $gameView.currentCharacter.xp : 0;
+	$: hp = $gameView && $gameView.currentCharacter ? $gameView.currentCharacter.hp : 50; // TODO
 </script>
 
 <div class="welcome-header-box">

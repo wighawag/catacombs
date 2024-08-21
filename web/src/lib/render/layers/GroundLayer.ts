@@ -227,10 +227,15 @@ export class GroundLayer extends Textured2DProgram {
 		// drawTileRow(this.attributes, -3 / 28, -3 / 28, texPerSprites['wall_horiz.png'], 28 / 28, 6 / 28, 128, 1);
 		// drawTile(this.attributes, -6 / 28, -3 / 28, texPerSprites['wall_horiz.png'], 28 / 28, 6 / 28, 1);
 
-		if (state.currentCharacter) {
-			const char = state.characters[state.currentCharacter];
-			const hx = char.position.x;
-			const hy = char.position.y;
+		for (const character of state.otherCharacters) {
+			const hx = character.position.x;
+			const hy = character.position.y;
+			drawTile(this.attributes, hx + 5 / 22, hy + 3 / 22, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
+		}
+
+		for (const character of state.myCharacters) {
+			const hx = character.position.x;
+			const hy = character.position.y;
 			drawTile(this.attributes, hx + 5 / 22, hy + 3 / 22, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
 		}
 

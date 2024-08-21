@@ -13,8 +13,8 @@
 	$: classPortrait = portrait(characterClass);
 	$: characterClassName = characterClass === 0 ? 'Barbarian' : 'Unknown';
 
-	$: xp = $gameView && $gameView.currentCharacter ? $gameView.characters[$gameView.currentCharacter].xp : 0;
-	$: hp = $gameView && $gameView.currentCharacter ? $gameView.characters[$gameView.currentCharacter].hp : 0;
+	$: xp = $gameView && $gameView.currentCharacter ? $gameView.currentCharacter.xp : 0;
+	$: hp = $gameView && $gameView.currentCharacter ? $gameView.currentCharacter.hp : 0;
 
 	async function battleWith(attackCardIndex: number, defenseCardIndex: number) {
 		const currentStateChanges = gameView.$state.currentStateChanges;

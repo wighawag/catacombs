@@ -15,6 +15,7 @@ export type Character = {
 	hp: number;
 	position: {x: number; y: number};
 	controllers: {[address: `0x${string}`]: ControllerType};
+	commitment?: Commitment;
 };
 
 export type Commitment = {
@@ -25,9 +26,6 @@ export type Commitment = {
 export type Data = {
 	characters: {
 		[id: string]: Character;
-	};
-	commitments: {
-		[id: string]: Commitment;
 	};
 	controllers: {
 		[address: `0x${string}`]: string[];
@@ -43,7 +41,6 @@ const GameIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 	construct(): Data {
 		return {
 			characters: {},
-			commitments: {},
 			controllers: {},
 		};
 	},
@@ -73,7 +70,12 @@ const GameIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 
 	onCommitmentMade(state, event) {
 		const {characterID, commitmentHash, controller, epoch} = event.args;
-		// TODO
+		const characterIDString = characterID.toString();
+		const character = state.characters[characterIDString];
+		character.commitment = {
+			epoch,
+			commitmentHash,
+		};
 	},
 
 	onMoveRevealed(state, event) {
@@ -82,6 +84,8 @@ const GameIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 		const character = state.characters[chracterIDString];
 		character.position = bigIntIDToXY(newPosition);
 		// show last move ?
+
+		character.commitment = undefined;
 	},
 };
 

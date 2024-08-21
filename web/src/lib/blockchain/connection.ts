@@ -6,10 +6,13 @@ import {EIP1193LocalSigner, wrapProviderWithLocalSigner} from 'eip-1193-signer';
 import {entropyToMnemonic, mnemonicToSeedSync} from '@scure/bip39';
 import {hexToBytes, bytesToHex} from '@noble/hashes/utils';
 import {wordlist} from '@scure/bip39/wordlists/english';
+import {initEmitter} from 'radiate';
 
 export type Connection =
 	| {
 			providerWithoutSigner: undefined;
+			chainId: undefined;
+			genesisHash: undefined;
 			providerWithSigner: undefined;
 			address: undefined;
 			mainAccount: undefined;
@@ -17,6 +20,8 @@ export type Connection =
 	  }
 	| {
 			providerWithoutSigner: EIP1193ProviderWithoutEvents;
+			chainId: string;
+			genesisHash: string;
 			providerWithSigner: undefined;
 			address: undefined;
 			mainAccount: undefined;
@@ -24,6 +29,8 @@ export type Connection =
 	  }
 	| {
 			providerWithoutSigner: EIP1193ProviderWithoutEvents;
+			chainId: string;
+			genesisHash: string;
 			providerWithSigner: EIP1193SignerProvider;
 			address: `0x${string}`;
 			mainAccount: `0x${string}`;
@@ -47,8 +54,11 @@ function createSignerProvider(provider: EIP1193ProviderWithoutEvents, key: strin
 const MY_KEY = '_my_key';
 
 export function initConnection() {
+	let lastBlockNumberFetched: number = 0;
 	const {$state, readable, set} = createStore<Connection>({
 		providerWithoutSigner: undefined,
+		chainId: undefined,
+		genesisHash: undefined,
 		providerWithSigner: undefined,
 		address: undefined,
 		mainAccount: undefined,
@@ -88,10 +98,51 @@ export function initConnection() {
 			return $state.providerWithoutSigner;
 		}
 		const provider = new JSONRPCHTTPProvider(rpcURL);
+		const chainId = await provider.request({method: 'eth_chainId'});
+		// TODO
+		// const genesisBlock = await provider.request({method: 'eth_getBlockByNumber', params: [0, false]});
+		lastBlockNumberFetched = 0;
 		set({
 			providerWithoutSigner: provider,
+			chainId: Number(chainId).toString(),
+			genesisHash: '', // genesisBlock?.hash || '',
 		});
+		pollLatestBlockAgainAndAgain();
 		return provider;
+	}
+
+	let pollingTimer: NodeJS.Timeout | undefined;
+
+	function stopPollingBlocks() {
+		if (pollingTimer) {
+			clearTimeout(pollingTimer);
+			pollingTimer = undefined;
+		}
+	}
+
+	async function pollLatestBlock() {
+		const timerAtStart = pollingTimer;
+		if ($state.providerWithoutSigner) {
+			try {
+				const block = await $state.providerWithoutSigner.request({
+					method: 'eth_getBlockByNumber',
+					params: ['latest', false],
+				});
+				if (pollingTimer === timerAtStart) {
+					if (block && Number(block.number) > lastBlockNumberFetched) {
+						lastBlockNumberFetched = Number(block.number);
+						blockEmitter.emit(lastBlockNumberFetched);
+					}
+				}
+			} catch (e) {
+				console.error(`failed to poll block`, e);
+			}
+		}
+	}
+
+	function pollLatestBlockAgainAndAgain() {
+		pollLatestBlock();
+		pollingTimer = setTimeout(pollLatestBlockAgainAndAgain, 5000); // TODO interval config
 	}
 
 	async function initSignerFromLocalStorage() {
@@ -136,11 +187,22 @@ export function initConnection() {
 		});
 	}
 
+	const blockEmitter = initEmitter<number>();
+
+	function onNewBlock(func: (blockNumber: number) => void) {
+		return blockEmitter.on(func);
+	}
+	function offNewBlock(func: (blockNumber: number) => void) {
+		return blockEmitter.off(func);
+	}
+
 	return {
 		...readable,
 		initProviderWithHTTPEndpoint,
 		loginWithEmail,
 		initSignerFromLocalStorage,
 		logout,
+		onNewBlock,
+		offNewBlock,
 	};
 }

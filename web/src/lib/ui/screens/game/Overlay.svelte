@@ -10,7 +10,7 @@
 	}
 </script>
 
-{#if $gameView.currentCharacter && $gameView.characters[$gameView.currentCharacter].position.x == 0 && $gameView.characters[$gameView.currentCharacter].position.y == 0}
+{#if $gameView.currentCharacter && $gameView.currentCharacter.position.x == 0 && $gameView.currentCharacter.position.y == 0}
 	<DialogOverlay {gameView} btnDisabled={$gameView.memory.tutorialStep == 3}>
 		{#if $gameView.memory.tutorialStep == 1}As you approach the imposing gate of Ethernal, an unexpected sight catches
 			your eye. A lone merchant has set up shop in this unlikely place, their stall laden with various foodstuffs.

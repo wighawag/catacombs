@@ -1,13 +1,12 @@
-import type {Data, Character} from 'template-game-indexer';
+import type {Character} from 'template-game-indexer';
 import {derived} from 'svelte/store';
-import {contractState, connection} from '$lib/state';
 // import {epochState, type EpochState} from '$lib/state/Epoch';
 // import type {OnChainActions} from '$lib/account/base';
 // import type {GameMetadata, LocalMove, OffchainState} from '$lib/account/account-data';
 import {memory, type MemoryState} from './memory';
 import type {Context, Monster, StateChanges} from 'template-game-common';
 import {initialState, type InitialState} from './initialState';
-import type {Connection} from '$lib/blockchain/connection';
+import {connectedState, type ConnectedState} from './ConnectedState';
 
 export type MovingMonster = Monster & {
 	old: {
@@ -18,9 +17,10 @@ export type MovingMonster = Monster & {
 
 // TODO
 export type GameViewState = {
+	otherCharacters: Character[];
+	myCharacters: Character[];
 	hasCommitment?: boolean; // TODO
-	currentCharacter?: string;
-	characters: {[id: string]: Character};
+	currentCharacter?: Character;
 	monsters: readonly MovingMonster[];
 	inBattle?: {
 		monster: Monster;
@@ -36,46 +36,34 @@ export type GameViewState = {
 // }
 
 const $state: GameViewState = {
-	characters: {},
+	otherCharacters: [],
+	myCharacters: [],
 	monsters: [],
 	memory: {moves: [], stateChanges: [], tutorialStep: 0, stateChangesTimestamp: 0},
 	type: 'game',
 };
 function merge(
-	state: Data,
+	connectedState: ConnectedState,
 	initialState: InitialState,
 	memory: MemoryState,
-	connection: Connection,
 	// offchainState: OffchainState,
 	// onchainActions: OnChainActions<GameMetadata>,
 	// epochState: EpochState,
 	// account: AccountState<`0x${string}`>,
 ): GameViewState {
-	$state.characters = {};
 	$state.monsters = [];
 	$state.memory = memory;
 	$state.inBattle = undefined;
 	$state.context = initialState.context;
+	$state.hasCommitment = connectedState.hasCommitment;
+	$state.myCharacters = connectedState.myCharacters;
+	$state.otherCharacters = connectedState.otherCharacters;
 	$state.currentStateChanges =
 		memory.stateChanges.length > 0 ? memory.stateChanges[memory.stateChanges.length - 1] : initialState.stateChanges;
-	for (const key of Object.keys(state.characters)) {
-		const onchain = state.characters[key];
-		if (connection.address && onchain.controllers[connection.address]) {
-			$state.currentCharacter = key;
-		}
-		$state.characters[key] = {
-			controllers: onchain.controllers,
-			id: onchain.id,
-			position: {
-				x: onchain.position.x,
-				y: onchain.position.y,
-			},
-			xp: onchain.xp,
-			hp: onchain.hp,
-		};
-	}
-	if ($state.currentCharacter) {
-		const currentCharacter = $state.characters[$state.currentCharacter];
+
+	const currentCharacter = $state.myCharacters[0]; // TODO based on offchainState;
+	$state.currentCharacter = currentCharacter;
+	if (currentCharacter) {
 		let currentPosition = currentCharacter.position;
 		for (const move of memory.moves) {
 			if (move.type === 'move') {
@@ -123,12 +111,9 @@ function merge(
 // 	},
 // );
 export const gameView = {
-	...derived(
-		[contractState.state, initialState, memory, connection],
-		([$state, $initialState, $memory, $connection]) => {
-			return merge($state, $initialState, $memory, $connection);
-		},
-	),
+	...derived([connectedState, initialState, memory], ([$connectedState, $initialState, $memory]) => {
+		return merge($connectedState, $initialState, $memory);
+	}),
 	$state,
 };
 
