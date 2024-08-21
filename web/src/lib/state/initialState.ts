@@ -13,6 +13,12 @@ export type InitialState =
 const $store: InitialState = {stateChanges: undefined, context: undefined};
 const store = writable<InitialState>($store);
 
+// TODO derive from Indexed State => undefined | 'computing' | InitialState
+// Context can also be computed from IndexedState but this can be instant (no computing needed)
+// It cannot be computed from Indexed State directly as it depends on connected account
+
+// NOTE: to manage multiple character, the initialState would be an array, same as context
+
 export async function initialiseStateChanges() {
 	// TODO fetch context or give it: Context will be taken from indexer
 	const context = {
