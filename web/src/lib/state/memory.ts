@@ -1,7 +1,9 @@
 import {setInitialCamera} from '$lib/tutorial';
 import {writable} from 'svelte/store';
-import type {StateChanges} from 'template-game-common';
+import {xyToBigIntID, type StateChanges} from 'template-game-common';
 import type {GameViewState} from './ViewState';
+import {initialiseStateChanges} from './initialState';
+import {time} from './time';
 
 export type Move =
 	| {
@@ -57,6 +59,25 @@ function reset() {
 	return true;
 }
 
+async function end() {
+	$store.moves.splice(0, $store.moves.length);
+	$store.stateChanges.splice(0, $store.stateChanges.length);
+	$store.stateChangesTimestamp = 0;
+	$store.tutorialStep = 1;
+	$store.inBattle = undefined;
+
+	const stateChange = await initialiseStateChanges();
+	stateChange.newPosition = xyToBigIntID(0, 0);
+	$store.stateChangesTimestamp = time.now;
+	$store.moves.push({
+		position: {x: 0, y: 0},
+		type: 'move',
+	});
+	$store.stateChanges.push(stateChange);
+	store.set($store);
+	return true;
+}
+
 function rewind() {
 	if ($store.stateChanges.length == 0) {
 		return false;
@@ -65,6 +86,7 @@ function rewind() {
 	$store.stateChangesTimestamp = 0; // TODO allow rewind anim too
 	$store.stateChanges.pop();
 	$store.inBattle = undefined;
+	$store.tutorialStep = 1;
 	if ($store.stateChanges.length == 0) {
 		$store.tutorialStep = 0;
 		setInitialCamera();
@@ -146,6 +168,7 @@ export const memory = {
 	selectDefenseCard,
 	showChoice,
 	acceptEnd,
+	end,
 };
 
 if (typeof window != 'undefined') {

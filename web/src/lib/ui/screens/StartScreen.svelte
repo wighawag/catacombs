@@ -1,9 +1,13 @@
 <script>
 	import {welcomeBack} from '$lib/data/texts';
-	import {connection, introductionState, playerStatus} from '$lib/state';
+	import {connection, introductionState, playerStatus, setContext} from '$lib/state';
 	import DefaultScreen from './DefaultScreen.svelte';
 	export function startIntroduction() {
 		introductionState.next();
+	}
+
+	function backToGame() {
+		setContext({context: 'game'});
 	}
 </script>
 
@@ -23,7 +27,7 @@
 	<DefaultScreen
 		header="logo"
 		footer="social"
-		btn={[{text: 'Continue', func: startIntroduction}]}
+		btn={[{text: 'Continue', func: backToGame}]}
 		text={welcomeBack($connection)}
 		subtext="You are already in the Catacombs. Come explore more..."
 		signOut={true}

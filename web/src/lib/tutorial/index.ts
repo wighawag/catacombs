@@ -17,3 +17,7 @@ export function endInitialCamera(gameView: GameView) {
 	camera.setTarget(x, y, camera.$store.zoom, 800);
 	_blocked = false;
 }
+
+export function endBlock() {
+	_blocked = false;
+}

@@ -33,6 +33,7 @@
 	</p> -->
 	<div class="actions">
 		<div class="rewind">
+			<button on:click={() => memory.end()}>J</button>
 			<button on:click={() => memory.reset()}>&lt;&lt;</button>
 			<button on:click={() => memory.rewind()}>&lt;</button>
 		</div>

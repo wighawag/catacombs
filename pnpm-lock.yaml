@@ -365,8 +365,8 @@ importers:
         specifier: ^0.4.2
         version: 0.4.2
       eip-1193-signer:
-        specifier: ^0.0.3
-        version: 0.0.3(typescript@5.5.4)
+        specifier: ^0.0.5
+        version: 0.0.5(typescript@5.5.4)
       ethereum-indexer-browser:
         specifier: ^0.7.6
         version: 0.7.6(typescript@5.5.4)
@@ -3520,7 +3520,7 @@ packages:
       vite: ^5.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 5.4.1(sass@1.77.8)
+      vite: 5.4.1(@types/node@22.4.1)
       vue: 3.4.38
     dev: true
 
@@ -3973,6 +3973,7 @@ packages:
     dependencies:
       normalize-path: 3.0.0
       picomatch: 2.3.1
+    dev: true
 
   /argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
@@ -4162,6 +4163,7 @@ packages:
   /binary-extensions@2.3.0:
     resolution: {integrity: sha512-Ceh+7ox5qe7LJuLHoY0feh3pHuUDHAcRUeyL2VYghZwfpkNIy/+8Ocg0a3UuSoYzavmylwuLWQOf3hl0jjMMIw==}
     engines: {node: '>=8'}
+    dev: true
 
   /birpc@0.2.17:
     resolution: {integrity: sha512-+hkTxhot+dWsLpp3gia5AkVHIsKlZybNT5gIYiDlNzJrmYPcTM9k5/w2uaj3IPpd7LlEYpmCj4Jj1nC41VhDFg==}
@@ -4538,6 +4540,7 @@ packages:
       readdirp: 3.6.0
     optionalDependencies:
       fsevents: 2.3.3
+    dev: true
 
   /ci-info@2.0.0:
     resolution: {integrity: sha512-5tK7EtrZ0N+OLFMthtqOj4fI2Jeb88C4CAZPu25LDVUgXJ0A3Js4PMGqrn0JU1W0Mh1/Z8wZzYPxqUrXeBboCQ==}
@@ -5285,8 +5288,8 @@ packages:
       - utf-8-validate
       - zod
 
-  /eip-1193-signer@0.0.3(typescript@5.5.4):
-    resolution: {integrity: sha512-y4b1Yle04B8dVQ0oE2/C3LYMH1sA5UIZA0Op9MvrPki37I2Qgk5OQsdILTH3H+r7li/mcjBZFf2aSgoNlE2Sfg==}
+  /eip-1193-signer@0.0.5(typescript@5.5.4):
+    resolution: {integrity: sha512-q9QVHoqKA+ybcJAcpfApgxC5MblCqspS+MU6FYpUJ2EuFH4EHlaNSABZpY0oMH6ok76LHzkRlvmnbArZ4UiwZQ==}
     dependencies:
       viem: 2.19.8(typescript@5.5.4)(zod@3.23.8)
     transitivePeerDependencies:
@@ -6074,7 +6077,7 @@ packages:
       path-browserify: 1.0.1
       valibot: 0.31.1
       viem: 2.19.8(typescript@5.5.4)(zod@3.23.8)
-      vite: 5.4.1(sass@1.77.8)
+      vite: 5.4.1(@types/node@22.4.1)
     transitivePeerDependencies:
       - '@types/node'
       - bufferutil
@@ -6732,6 +6735,7 @@ packages:
 
   /immutable@4.3.7:
     resolution: {integrity: sha512-1hqclzwYwjRDFLjcFxOM5AYkkG0rpFPpr1RLPMEuGczoS7YA8gLhy8SWXYRAA/XwfEHpfo3cw5JGioS32fnMRw==}
+    dev: true
 
   /import-fresh@3.3.0:
     resolution: {integrity: sha512-veYYhQa+D1QBKznvhUHxb8faxlrwUnxseDAbAp457E0wLNio2bOSKnjYDhMj+YiAq61xrMGhQk9iXVk5FzgQMw==}
@@ -6833,6 +6837,7 @@ packages:
     engines: {node: '>=8'}
     dependencies:
       binary-extensions: 2.3.0
+    dev: true
 
   /is-builtin-module@3.2.1:
     resolution: {integrity: sha512-BSLE3HnV2syZ0FK0iMA/yUGplUeMmNz4AW5fnTunbCIqZi4vG3WjJT9FHMy5D69xmAYBHXQhJdALdpwVxV501A==}
@@ -8209,6 +8214,7 @@ packages:
   /normalize-path@3.0.0:
     resolution: {integrity: sha512-6eZs5Ls3WtCisHWp9S2GUy8dqkpGi4BVSz3GaqiE6ezub0512ESztXUwUB6C6IKbQkY2Pnb/mD4WYojCRwcwLA==}
     engines: {node: '>=0.10.0'}
+    dev: true
 
   /npm-package-arg@11.0.3:
     resolution: {integrity: sha512-sHGJy8sOC1YraBywpzQlIKBE4pBbGbiF95U6Auspzyem956E0+FtDtsx1ZxlOJkQCZ1AFXAY/yuvtFYrOxF+Bw==}
@@ -9055,6 +9061,7 @@ packages:
     engines: {node: '>=8.10.0'}
     dependencies:
       picomatch: 2.3.1
+    dev: true
 
   /reduce-flatten@2.0.0:
     resolution: {integrity: sha512-EJ4UNY/U1t2P/2k6oqotuX2Cc3T6nxJwsM0N0asT7dhrtH1ltUxDn4NalSYmPE2rCkVpcf/X6R0wDwcFpzhd4w==}
@@ -9340,6 +9347,7 @@ packages:
       chokidar: 3.6.0
       immutable: 4.3.7
       source-map-js: 1.2.0
+    dev: true
 
   /satori@0.10.14:
     resolution: {integrity: sha512-abovcqmwl97WKioxpkfuMeZmndB1TuDFY/R+FymrZyiGP+pMYomvgSzVPnbNMWHHESOPosVHGL352oFbdAnJcA==}
@@ -10595,7 +10603,6 @@ packages:
       rollup: 4.21.0
     optionalDependencies:
       fsevents: 2.3.3
-    dev: true
 
   /vite@5.4.1(sass@1.77.8):
     resolution: {integrity: sha512-1oE6yuNXssjrZdblI9AfBbHCC41nnyoVoEZxQnID6yvQZAFBzxxkqoFLtHUMkYunL8hwOLEjgTuxpkRxvba3kA==}
@@ -10634,6 +10641,7 @@ packages:
       sass: 1.77.8
     optionalDependencies:
       fsevents: 2.3.3
+    dev: true
 
   /vitefu@0.2.5(vite@5.4.1):
     resolution: {integrity: sha512-SgHtMLoqaeeGnd2evZ849ZbACbnwQCIwRH57t18FxcXoZop0uQu0uzlIhJBlF/eWVzuce0sHeqPcDo+evVcg8Q==}
@@ -10672,7 +10680,7 @@ packages:
       mark.js: 8.11.1
       minisearch: 7.1.0
       shiki: 1.14.1
-      vite: 5.4.1(sass@1.77.8)
+      vite: 5.4.1(@types/node@22.4.1)
       vue: 3.4.38
     transitivePeerDependencies:
       - '@algolia/client-search'

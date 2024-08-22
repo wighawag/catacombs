@@ -81,6 +81,7 @@ export function rewind(gameView: GameView) {
 	}
 	console.log('rewinding...');
 	if (memory.rewind()) {
+		gameView.$state.memory.tutorialStep = 0;
 		// TODO DRY
 		const currentStateChanges = gameView.$state.currentStateChanges;
 		const origPosition = currentStateChanges?.newPosition

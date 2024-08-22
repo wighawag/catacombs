@@ -4,6 +4,7 @@
 	import StartScreen from './StartScreen.svelte';
 	import LoadingScreen from './loading/LoadingScreen.svelte';
 	import GameScreen from './game/GameScreen.svelte';
+	import Flow from '$lib/actions/flow/Flow.svelte';
 </script>
 
 {#if $context.context === 'loading'}
@@ -19,3 +20,5 @@
 {:else}
 	Invalid {$playerStatus}
 {/if}
+
+<Flow />

@@ -67,3 +67,7 @@ export function initFlow() {
 }
 
 export const currentFlow = initFlow();
+
+if (typeof window != 'undefined') {
+	(window as any).currentFlow = currentFlow;
+}

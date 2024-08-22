@@ -101,6 +101,24 @@ function merge(
 		}
 	}
 
+	if (currentCharacter) {
+		let currentPosition = currentCharacter.position;
+		for (const move of memory.moves) {
+			if (move.type == 'move') {
+				currentPosition = move.position;
+			}
+		}
+		currentCharacter.position = currentPosition;
+
+		for (const monster of $state.monsters) {
+			if (monster.hp > 0 && monster.x == currentCharacter.position.x && monster.y == currentCharacter.position.y) {
+				$state.inBattle = {
+					monster,
+				};
+			}
+		}
+	}
+
 	return $state;
 }
 

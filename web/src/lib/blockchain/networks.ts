@@ -51,16 +51,36 @@ export function getWalletSwitchChainInfo(chainInfo: ChainInfo): NetworkWalletDat
 export const initialNetworkConfig = getWalletSwitchChainInfo(initialContractsInfos.chainInfo);
 export const initialNetworkName = initialNetworkConfig?.chainName || `Chain with id: ${initialContractsInfos.chainId}`;
 
-export const contractNetwork = derived([contractsInfos], ([$contractsInfos]) => {
+export type ContractNetwork = {
+	config: NetworkWalletData;
+	name: string;
+	chainId: string;
+};
+
+function getNetworkData<ContractsInfos extends {chainId: string; chainInfo: ChainInfo}>(
+	$contractsInfos: ContractsInfos,
+) {
 	const chainId = $contractsInfos.chainId;
 	const chainInfo = $contractsInfos.chainInfo;
 	const config = getWalletSwitchChainInfo(chainInfo);
-	return {
+	const data = {
 		config,
 		name: config?.chainName || `Chain with id: ${chainId}`,
 		chainId,
 	};
-});
+	return data;
+}
+
+export const contractNetwork: Readable<ContractNetwork> & {
+	$current: ContractNetwork;
+} = derived([contractsInfos], ([$contractsInfos]) => {
+	const data = getNetworkData($contractsInfos);
+	contractNetwork.$current = data;
+	return data;
+}) as Readable<ContractNetwork> & {
+	$current: ContractNetwork;
+};
+contractNetwork.$current = getNetworkData(initialContractsInfos);
 
 // GameConfig parsed:
 export type GameConfig = Omit<

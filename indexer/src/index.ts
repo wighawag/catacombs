@@ -37,7 +37,7 @@ type ContractsABI = MergedAbis<typeof contractsInfo.contracts>;
 const GameIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 	// version is automatically populated via version.cjs to let the browser knows to reindex on changes
 	// only works if the changes ends up in the generated js
-	version: '__VERSION_HASH__', //
+	version: '1', // '__VERSION_HASH__', //
 	construct(): Data {
 		return {
 			characters: {},
@@ -49,22 +49,28 @@ const GameIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 		const {characterID, controller: controllerAddress, newPosition} = event.args;
 		const controller = controllerAddress.toLowerCase() as `0x${string}`;
 		const characterIDString = characterID.toString();
+
 		const character = state.characters[characterIDString] || {controllers: {}, position: {x: 0, y: 0}};
 		character.controllers[controller] = ControllerType.Owner; // TODO
 		character.position = bigIntIDToXY(newPosition);
 
 		state.characters[characterIDString] = character;
-		const controlledCharacters = state.controllers[controller] || [];
+		const controlledCharacters = (state.controllers[controller] = state.controllers[controller] || []);
 		controlledCharacters.push(characterIDString);
+
+		console.log({controlledCharacters, character});
 
 		console.log('onEnteredTheGame');
 	},
 
 	onLeftTheGame(state, event) {
 		const {characterID, controller: controllerAddress, positionWhenLeaving} = event.args;
+		const characterIDString = characterID.toString();
 		const controller = controllerAddress.toLowerCase() as `0x${string}`;
-		const chracterIDString = characterID.toString();
-		delete state.characters[chracterIDString];
+
+		const characterIndex = state.controllers[controller].indexOf(characterIDString);
+		state.controllers[controller].splice(characterIndex, 1);
+		delete state.characters[characterIDString];
 		// TODO show left status
 	},
 

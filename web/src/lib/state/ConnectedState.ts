@@ -21,7 +21,7 @@ function merge(state: Data, connection: Connection): ConnectedState {
 
 	for (const key of Object.keys(state.characters)) {
 		const onchain = state.characters[key];
-		if (connection.address && onchain.controllers[connection.address]) {
+		if (connection.address && onchain.controllers[connection.address.toLowerCase() as `0x${string}`]) {
 			$state.myCharacters.push({...onchain});
 		} else {
 			$state.otherCharacters.push({...onchain});

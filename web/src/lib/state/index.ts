@@ -159,7 +159,7 @@ const playerStatus = derived(
 		}
 		// TODO reenable once we get the mint
 		// if ($contractStatus.state === 'IndexingLatest') {
-		if ($contractState.controllers[$connection.address]) {
+		if ($contractState.controllers[$connection.address.toLowerCase() as `0x${string}`]) {
 			if ($context.context === 'loading') {
 				// we jump right into the game
 				setContext({context: 'game'});
@@ -174,6 +174,8 @@ const playerStatus = derived(
 		// }
 	},
 );
+
+export {setContext};
 
 start();
 

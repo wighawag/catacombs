@@ -80,6 +80,8 @@ function merge(
 		};
 	}
 
+	console.log({stateChanges: memory.stateChanges});
+
 	$state.myCharacters = currentCharacter ? [currentCharacter] : [];
 	$state.currentCharacter = currentCharacter;
 
