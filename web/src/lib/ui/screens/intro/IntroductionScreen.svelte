@@ -4,8 +4,7 @@
 	import CharacterSelectionScreen from './CharacterSelectionScreen.svelte';
 	import {connection, context, introductionState, playerStatus} from '$lib/state';
 	import LoadingScreen from '../loading/LoadingScreen.svelte';
-	import IntroductionGameScreen from '../game/IntroductionGameScreen.svelte';
-	import {text} from '@sveltejs/kit';
+	import IntroductionGameScreen from './IntroductionGameScreen.svelte';
 	import {welcomeBack} from '$lib/data/texts';
 
 	async function next() {

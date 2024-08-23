@@ -3,6 +3,7 @@
 	import {type GameView} from '$lib/state/ViewState';
 	import {memory} from '$lib/state/memory';
 	import WelcomeProfile from '../headers/WelcomeProfile.svelte';
+	import IntroOverlay from '../intro/IntroOverlay.svelte';
 	import Overlay from './Overlay.svelte';
 	export let gameView: GameView;
 </script>
@@ -20,7 +21,11 @@
 			id="game-overlay"
 			style="position: absolute; top:0; left:0; width:100%; height: 100%; pointer-events: none; overflow: hidden;"
 		>
-			<Overlay {gameView} />
+			{#if $gameView.type === 'intro'}
+				<IntroOverlay {gameView} />
+			{:else}
+				<Overlay {gameView} />
+			{/if}
 		</div>
 	</div>
 </main>

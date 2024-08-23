@@ -22,6 +22,7 @@
 {:else if $playerStatus == 'in-game-already'}
 	<MainGameScreen {gameView} />
 {:else if $playerStatus == 'first-time'}
+	<!-- we should be in IntroductionScreen here -->
 	<!-- TODO remove and use Welcome -->
 	<MainGameScreen {gameView} />
 
