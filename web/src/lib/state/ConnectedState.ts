@@ -1,8 +1,8 @@
 import type {Data, Character} from 'template-game-indexer';
 import {derived} from 'svelte/store';
-import {contractState, connection} from '$lib/state';
-import type {Context} from 'template-game-common';
 import type {Connection} from '$lib/blockchain/connection';
+import {connection} from './connection';
+import {contractState} from './IndexedState';
 
 // TODO
 export type ConnectedState = {
@@ -30,6 +30,8 @@ function merge(state: Data, connection: Connection): ConnectedState {
 
 	return $state;
 }
+
+console.log(`contractState`, contractState);
 
 export const connectedState = {
 	...derived([contractState.state, connection], ([$state, $connection]) => {

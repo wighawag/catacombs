@@ -1,6 +1,6 @@
 <script lang="ts">
 	import IconSkull from '$data/assets/skull-key-white.png'; // TODO remove ?
-	import {connection} from '$lib/state';
+	import {connection} from '$lib/state/connection';
 	import WelcomeProfile from '$lib/ui/screens/headers/WelcomeProfile.svelte';
 	import {shortAddress} from '$utils/ethereum/format';
 	import BorderedContainer from '../components/BorderedContainer.svelte';

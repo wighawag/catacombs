@@ -1,12 +1,14 @@
 <script lang="ts">
 	import {portrait} from '$lib/data/characters';
-	import {memory} from '$lib/state/memory';
 	import BorderedContainer from '$lib/ui/components/BorderedContainer.svelte';
 	import HPBar from '$lib/ui/components/HPBar.svelte';
 	import BattleCardSelection from './BattleCardSelection.svelte';
 	import {evmGame} from '$lib/state/computed';
 	import type {GameView} from '$lib/state/ViewState';
 	import {intro} from '$lib/state/intro';
+	import {accountState} from '$lib/state/AccountState';
+
+	const offchainState = accountState.offchainState;
 
 	export let gameView: GameView;
 	$: characterClass = $intro.character?.classIndex || 0;
@@ -33,7 +35,7 @@
 		console.log(`=>`);
 		console.log(stateChanges);
 		console.log(`-----------------------------`);
-		memory.addMove(
+		accountState.addMove(
 			{
 				type: 'battle',
 				attackCardIndex,
@@ -42,13 +44,16 @@
 			stateChanges,
 		);
 		if (stateChanges.battle.monsterIndexPlus1 == 0) {
-			memory.acceptEnd();
+			accountState.acceptEnd();
 		}
 	}
 
 	async function confirm() {
-		if ($memory.inBattle?.cards.attackChosen && $memory.inBattle?.cards.defenseChosen) {
-			battleWith($memory.inBattle.cards.attackChosen.cardIndex, $memory.inBattle.cards.defenseChosen.cardIndex);
+		if ($offchainState.inBattle?.cards.attackChosen && $offchainState.inBattle?.cards.defenseChosen) {
+			battleWith(
+				$offchainState.inBattle.cards.attackChosen.cardIndex,
+				$offchainState.inBattle.cards.defenseChosen.cardIndex,
+			);
 		}
 	}
 </script>
@@ -64,7 +69,7 @@
 	<div class="monster">
 		<img alt="skeleton" src="/images/monsters/skeleton.png" />
 	</div>
-	{#if $memory.inBattle?.cards.attackChosen && $memory.inBattle?.cards.defenseChosen}
+	{#if $offchainState.inBattle?.cards.attackChosen && $offchainState.inBattle?.cards.defenseChosen}
 		<div class="confirmation">
 			<button on:click={confirm}>Confirm</button>
 		</div>
@@ -72,12 +77,12 @@
 	<div class="actions">
 		<button
 			on:click={() => {
-				memory.showChoice('attack');
+				accountState.showChoice('attack');
 			}}>Select Attack</button
 		>
 		<button
 			on:click={() => {
-				memory.showChoice('defense');
+				accountState.showChoice('defense');
 			}}>Select Defense</button
 		>
 	</div>
@@ -88,12 +93,12 @@
 		<div class="bar"><HPBar value={hp} maxValue={50} /></div>
 	</div>
 
-	{#if $memory.inBattle?.cards.choicePresented == 'attack'}
+	{#if $offchainState.inBattle?.cards.choicePresented == 'attack'}
 		<div class="selection-overlay"></div>
 		<div class="selection-modal">
 			<BattleCardSelection />
 		</div>
-	{:else if $memory.inBattle?.cards.choicePresented == 'defense'}
+	{:else if $offchainState.inBattle?.cards.choicePresented == 'defense'}
 		<div class="selection-overlay"></div>
 		<div class="selection-modal">
 			<BattleCardSelection />

@@ -1,15 +1,15 @@
 import {browser} from '$app/environment';
-import {goto, replaceState} from '$app/navigation';
+import {goto} from '$app/navigation';
 import {page} from '$app/stores';
-import {initConnection} from '$lib/blockchain/connection';
-import {initContractState} from '$lib/blockchain/contractState';
 import {defaultRPC} from '$lib/config';
 import {createStore} from '$utils/stores/utils';
 import {derived, get} from 'svelte/store';
-import {AccountState} from './AccountState';
 import {initTransactionProcessor} from 'ethereum-tx-observer';
 import type {EIP1193Provider} from 'eip-1193';
 import {stringToHex} from 'viem';
+import {connection} from './connection';
+import {contractState} from './IndexedState';
+import {accountState} from './AccountState';
 
 async function start() {
 	if (!defaultRPC?.url) {
@@ -20,12 +20,6 @@ async function start() {
 		await connection.initSignerFromLocalStorage();
 	}
 }
-
-const connection = initConnection();
-
-const contractState = initContractState(connection);
-
-const accountState = new AccountState();
 
 const txObserver = initTransactionProcessor({finality: 12}); // TODO config.finality
 
@@ -177,11 +171,11 @@ const playerStatus = derived(
 
 export {setContext};
 
+export {context, playerStatus, introductionState};
+
 start();
 
-export {context, connection, contractState, playerStatus, introductionState, accountState};
-
 if (typeof window != 'undefined') {
-	(window as any).state = {context, connection, contractState, playerStatus, introductionState, accountState};
+	(window as any).state = {context, playerStatus, introductionState};
 	(window as any).get = get;
 }

@@ -1,5 +1,5 @@
 import {writable} from 'svelte/store';
-import {connection} from './';
+import {connection} from './connection';
 import {params} from '$lib/config';
 
 let timestamp = Math.floor(Date.now() / 1000);

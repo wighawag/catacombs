@@ -1,13 +1,15 @@
 <script lang="ts">
-	import {memory} from '$lib/state/memory';
+	import {accountState} from '$lib/state/AccountState';
 
-	$: attackSelection = $memory.inBattle?.cards.choicePresented == 'attack';
+	const offchainState = accountState.offchainState;
+
+	$: attackSelection = $offchainState.inBattle?.cards.choicePresented == 'attack';
 
 	function pickCard(index: number) {
 		if (attackSelection) {
-			memory.selectAttackCard(index);
+			accountState.selectAttackCard(index);
 		} else {
-			memory.selectDefenseCard(index);
+			accountState.selectDefenseCard(index);
 		}
 	}
 </script>

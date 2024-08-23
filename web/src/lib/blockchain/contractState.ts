@@ -36,6 +36,8 @@ export function initContractState(connection: Readable<Connection>) {
 		keepState: keepStateOnIndexedDB('Game', indexedStateLocations) as any, // TODO types
 	});
 
+	console.log(`state`, state);
+
 	async function indexIfNotIndexing() {
 		await indexMoreAndCatchupIfNeeded();
 	}

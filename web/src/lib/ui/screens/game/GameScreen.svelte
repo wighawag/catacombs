@@ -24,7 +24,7 @@
 {:else if $playerStatus == 'first-time'}
 	<!-- we should be in IntroductionScreen here -->
 	<!-- TODO remove and use Welcome -->
-	<MainGameScreen {gameView} />
+	<!-- <MainGameScreen {gameView} /> -->
 
 	<!-- <DefaultScreen header="logo" btn={[{text: 'ok', func: goToIntro}]} text="Welcome" /> -->
 {:else}

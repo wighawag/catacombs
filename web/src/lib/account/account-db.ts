@@ -11,6 +11,7 @@ import {time} from '$lib/state/time';
 
 import {logs} from 'named-logs';
 import type {AccountInfo, CleanFunction, MergeFunction, SyncInfo} from './types';
+import {bnReplacer, bnReviver} from '$utils/js';
 const logger = logs('AccountDB');
 
 const LOCAL_STORAGE_PRIVATE_ACCOUNT = '_account';
@@ -230,20 +231,20 @@ export class AccountDB<T extends Record<string, unknown>> implements Readable<Sy
 		if (fromStorage) {
 			try {
 				const decrypted = this.accountInfo.doNotEncryptLocally ? fromStorage : this._decrypt(fromStorage);
-				return JSON.parse(decrypted);
+				return JSON.parse(decrypted, bnReviver);
 			} catch (e) {
 				if (this.accountInfo.doNotEncryptLocally) {
 					// we might have switched from encrypted
 					try {
 						const decrypted = this._decrypt(fromStorage);
-						return JSON.parse(decrypted);
+						return JSON.parse(decrypted, bnReviver);
 					} catch (e) {
 						console.error(e);
 					}
 				} else {
 					try {
 						const decrypted = fromStorage;
-						return JSON.parse(decrypted);
+						return JSON.parse(decrypted, bnReviver);
 					} catch (e) {
 						console.error(e);
 					}
@@ -254,7 +255,7 @@ export class AccountDB<T extends Record<string, unknown>> implements Readable<Sy
 	}
 
 	private async _saveToLocalStorage(data: T): Promise<void> {
-		const toStorage = JSON.stringify(data);
+		const toStorage = JSON.stringify(data, bnReplacer);
 
 		const encrypted = this.accountInfo.doNotEncryptLocally ? toStorage : this._encrypt(toStorage);
 		await localCache.setItem(
@@ -283,7 +284,7 @@ export class AccountDB<T extends Record<string, unknown>> implements Readable<Sy
 		if (json.result.data && json.result.data !== '') {
 			try {
 				const decryptedData = this._decrypt(json.result.data);
-				data = JSON.parse(decryptedData);
+				data = JSON.parse(decryptedData, bnReviver);
 			} catch (err: any) {
 				console.error(err);
 				throw new Error(err);
@@ -298,7 +299,7 @@ export class AccountDB<T extends Record<string, unknown>> implements Readable<Sy
 		if (!this._signer) {
 			throw new Error(`no signer, do not sync`);
 		}
-		const dataToEncrypt = JSON.stringify(data);
+		const dataToEncrypt = JSON.stringify(data, bnReplacer);
 		const encryptedData = this._encrypt(dataToEncrypt);
 
 		const counter = (syncDownCounter + 1n).toString();

@@ -234,13 +234,22 @@ export class GroundLayer extends Textured2DProgram {
 		}
 
 		for (const character of state.myCharacters) {
+			if (state.currentCharacter && character.id !== state.currentCharacter.id) {
+				const hx = character.position.x;
+				const hy = character.position.y;
+				drawTile(this.attributes, hx + 5 / 22, hy + 3 / 22, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
+			}
+		}
+
+		if (state.currentCharacter) {
+			const character = state.currentCharacter;
 			const hx = character.position.x;
 			const hy = character.position.y;
 			drawTile(this.attributes, hx + 5 / 22, hy + 3 / 22, texPerSprites['hero_00.png'], 16 / 28, 16 / 28, 1);
 		}
 
 		for (const monster of state.monsters) {
-			const t = Math.min(Math.max((time - state.memory.stateChangesTimestamp) / 300, 0), 1); // TODO duration as value in GameVIewState ?
+			const t = Math.min(Math.max((time - (state.offchainState?.stateChangesTimestamp || 0)) / 300, 0), 1); // TODO duration as value in GameVIewState ?
 			const hx = monster.old.x + (monster.x - monster.old.x) * t;
 			const hy = monster.old.y + (monster.y - monster.old.y) * t;
 			// const hx = monster.x;

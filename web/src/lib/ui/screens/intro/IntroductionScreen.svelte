@@ -2,10 +2,11 @@
 	import TypingTextScreen from '$lib/ui/utils/TypingTextScreen.svelte';
 	import DefaultScreen from '../DefaultScreen.svelte';
 	import CharacterSelectionScreen from './CharacterSelectionScreen.svelte';
-	import {connection, context, introductionState, playerStatus} from '$lib/state';
+	import {context, introductionState, playerStatus} from '$lib/state';
 	import LoadingScreen from '../loading/LoadingScreen.svelte';
 	import IntroductionGameScreen from './IntroductionGameScreen.svelte';
 	import {welcomeBack} from '$lib/data/texts';
+	import {connection} from '$lib/state/connection';
 
 	async function next() {
 		introductionState.next();

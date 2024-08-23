@@ -2,8 +2,8 @@ import {writable} from 'svelte/store';
 import {currentFlow, type Flow, type Step} from '../flow';
 import contracts from '$data/contracts';
 import {createPublicClient, createWalletClient, custom, parseEther} from 'viem';
-import {accountState, connection} from '$lib/state';
 import {contractNetwork} from '$lib/blockchain/networks';
+import {connection} from '$lib/state/connection';
 
 export type EnterState = {
 	transaction?: {

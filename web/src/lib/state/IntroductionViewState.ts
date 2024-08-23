@@ -1,12 +1,12 @@
 import {type Data, ControllerType, type Character} from 'template-game-indexer';
 import {derived, writable} from 'svelte/store';
-import {contractState, connection} from '$lib/state';
-import {memory, type MemoryState} from './memory';
 import {type InitialState} from './initialState';
 import type {Connection} from '$lib/blockchain/connection';
 import type {GameViewState} from './ViewState';
 import {bigIntIDToXY, xyToBigIntID} from 'template-game-common';
 import {zeroAddress, zeroHash} from 'viem';
+import {accountState, type OffchainState} from './AccountState';
+import {connection} from './connection';
 
 const initialState = writable<InitialState>({
 	// FAKE DATA FOR INTRODUCTION:
@@ -57,12 +57,11 @@ const $state: GameViewState = {
 	myCharacters: [],
 	otherCharacters: [],
 	monsters: [],
-	memory: {moves: [], stateChanges: [], tutorialStep: 0, stateChangesTimestamp: 0},
 	type: 'intro',
 };
 function merge(
 	initialState: InitialState,
-	memory: MemoryState,
+	offchainState: OffchainState,
 	connection: Connection,
 	// offchainState: OffchainState,
 	// onchainActions: OnChainActions<GameMetadata>,
@@ -80,29 +79,29 @@ function merge(
 		};
 	}
 
-	console.log({stateChanges: memory.stateChanges});
-
 	$state.myCharacters = currentCharacter ? [currentCharacter] : [];
 	$state.currentCharacter = currentCharacter;
 
 	$state.monsters = [];
-	$state.memory = memory;
+	$state.offchainState = offchainState;
 	$state.inBattle = undefined;
 	$state.context = initialState.context;
 	$state.currentStateChanges =
-		memory.stateChanges.length > 0 ? memory.stateChanges[memory.stateChanges.length - 1] : initialState.stateChanges;
+		offchainState.stateChanges.length > 0
+			? offchainState.stateChanges[offchainState.stateChanges.length - 1]
+			: initialState.stateChanges;
 
-	if (memory.stateChanges.length > 0) {
-		if (memory.stateChanges.length > 1) {
-			$state.monsters = memory.stateChanges[memory.stateChanges.length - 1].monsters.map((v, i) => ({
+	if (offchainState.stateChanges.length > 0) {
+		if (offchainState.stateChanges.length > 1) {
+			$state.monsters = offchainState.stateChanges[offchainState.stateChanges.length - 1].monsters.map((v, i) => ({
 				...v,
 				old: {
-					x: memory.stateChanges[memory.stateChanges.length - 2].monsters[i].x,
-					y: memory.stateChanges[memory.stateChanges.length - 2].monsters[i].y,
+					x: offchainState.stateChanges[offchainState.stateChanges.length - 2].monsters[i].x,
+					y: offchainState.stateChanges[offchainState.stateChanges.length - 2].monsters[i].y,
 				},
 			}));
 		} else {
-			$state.monsters = memory.stateChanges[memory.stateChanges.length - 1].monsters.map((v, i) => ({
+			$state.monsters = offchainState.stateChanges[offchainState.stateChanges.length - 1].monsters.map((v, i) => ({
 				...v,
 				old: {
 					x: initialState.stateChanges?.monsters[i].x || v.x,
@@ -112,8 +111,8 @@ function merge(
 		}
 
 		if (currentCharacter) {
-			currentCharacter.xp = memory.stateChanges[memory.stateChanges.length - 1].newXP;
-			currentCharacter.hp = memory.stateChanges[memory.stateChanges.length - 1].newHP;
+			currentCharacter.xp = offchainState.stateChanges[offchainState.stateChanges.length - 1].newXP;
+			currentCharacter.hp = offchainState.stateChanges[offchainState.stateChanges.length - 1].newHP;
 		}
 	} else if (initialState.stateChanges) {
 		$state.monsters = initialState.stateChanges.monsters.map((v) => ({
@@ -129,7 +128,7 @@ function merge(
 
 	if (currentCharacter) {
 		let currentPosition = currentCharacter.position;
-		for (const move of memory.moves) {
+		for (const move of offchainState.moves) {
 			if (move.type == 'move') {
 				currentPosition = move.position;
 			}
@@ -149,14 +148,14 @@ function merge(
 }
 
 // export const gameView = derived(
-// 	[state, initialState, memory, accountData.offchainState, accountData.onchainActions, epochState, account],
-// 	([$state, $initialState, $memory, $offchainState, $onchainActions, $epochState, $account]) => {
-// 		return merge($state, $initialState, $memory, $offchainState, $onchainActions, $epochState, $account);
+// 	[state, initialState, offchainState, accountData.offchainState, accountData.onchainActions, epochState, account],
+// 	([$state, $initialState, $offchainState, $offchainState, $onchainActions, $epochState, $account]) => {
+// 		return merge($state, $initialState, $offchainState, $offchainState, $onchainActions, $epochState, $account);
 // 	},
 // );
 export const gameView = {
-	...derived([initialState, memory, connection], ([$initialState, $memory, $connection]) => {
-		return merge($initialState, $memory, $connection);
+	...derived([initialState, accountState.offchainState, connection], ([$initialState, $offchainState, $connection]) => {
+		return merge($initialState, $offchainState, $connection);
 	}),
 	$state,
 };

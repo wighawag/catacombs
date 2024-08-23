@@ -210,7 +210,9 @@ export abstract class BaseAccountHandler<
 		if (this.accountDB) {
 			try {
 				await this.accountDB.save(this.$data);
-			} catch {}
+			} catch (err) {
+				console.error(`failed to save`, err);
+			}
 		}
 	}
 

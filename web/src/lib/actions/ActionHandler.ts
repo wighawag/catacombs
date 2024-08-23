@@ -3,19 +3,19 @@ import {type GameView} from '$lib/state/ViewState';
 import {get} from 'svelte/store';
 import {modalStack} from '$utils/ui/modals/ModalContainer.svelte';
 import {camera, type Camera} from '$lib/render/camera';
-import {memory} from '$lib/state/memory';
+
 import {bigIntIDToXY, xyToBigIntID, type Monster, type MonsterList} from 'template-game-common';
 import {evmGame} from '$lib/state/computed';
-import {connection} from '$lib/state';
 import {isBlockingMovement} from '$lib/tutorial';
-import {zeroAddress, zeroHash} from 'viem';
+import {connection} from '$lib/state/connection';
+import {accountState} from '$lib/state/AccountState';
 
 export async function performAction(gameView: GameView, direction: {dx: number; dy: number}) {
 	if (isBlockingMovement()) {
 		return;
 	}
 	const $gameView = get(gameView);
-	if ($gameView.memory.inBattle?.accepted) {
+	if ($gameView.offchainState?.inBattle?.accepted) {
 		return;
 	}
 	if (!$gameView.currentCharacter) {
@@ -49,7 +49,7 @@ export async function performAction(gameView: GameView, direction: {dx: number; 
 	console.log(stateChanges);
 	console.log(`-----------------------------`);
 	const pos = bigIntIDToXY(stateChanges.newPosition);
-	memory.addMove({position: pos, type: 'move'}, stateChanges);
+	accountState.addMove({position: pos, type: 'move'}, stateChanges);
 
 	camera.setTarget(pos.x, pos.y, camera.$store.zoom, 400);
 }
@@ -61,7 +61,7 @@ export function reset(gameView: GameView) {
 		return;
 	}
 	console.log('reseting...');
-	if (memory.reset()) {
+	if (accountState.resetMoves(gameView.$state.type === 'intro')) {
 		// TODO DRY
 		const currentStateChanges = gameView.$state.currentStateChanges;
 		const origPosition = currentStateChanges?.newPosition
@@ -80,8 +80,7 @@ export function rewind(gameView: GameView) {
 		return;
 	}
 	console.log('rewinding...');
-	if (memory.rewind()) {
-		gameView.$state.memory.tutorialStep = 0;
+	if (accountState.rewindMoves(gameView.$state.type === 'intro')) {
 		// TODO DRY
 		const currentStateChanges = gameView.$state.currentStateChanges;
 		const origPosition = currentStateChanges?.newPosition

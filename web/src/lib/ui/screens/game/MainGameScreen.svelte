@@ -1,7 +1,7 @@
 <script lang="ts">
 	import WebGlCanvas from '$lib/render/WebGLCanvas.svelte';
+	import {accountState} from '$lib/state/AccountState';
 	import {type GameView} from '$lib/state/ViewState';
-	import {memory} from '$lib/state/memory';
 	import WelcomeProfile from '../headers/WelcomeProfile.svelte';
 	import IntroOverlay from '../intro/IntroOverlay.svelte';
 	import Overlay from './Overlay.svelte';
@@ -38,9 +38,9 @@
 	</p> -->
 	<div class="actions">
 		<div class="rewind">
-			<button on:click={() => memory.end()}>J</button>
-			<button on:click={() => memory.reset()}>&lt;&lt;</button>
-			<button on:click={() => memory.rewind()}>&lt;</button>
+			<button on:click={() => accountState.endTutorial()}>J</button>
+			<button on:click={() => accountState.resetMoves()}>&lt;&lt;</button>
+			<button on:click={() => accountState.rewindMoves()}>&lt;</button>
 		</div>
 	</div>
 </footer>

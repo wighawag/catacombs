@@ -14,27 +14,28 @@
 	$: console.log({inBattle: $gameView.inBattle});
 </script>
 
-{#if $context.context === 'start' && !$gameView.inBattle && $gameView.currentCharacter && $gameView.currentCharacter.position.x == 0 && $gameView.currentCharacter.position.y == 0}
-	{#if $gameView.memory.tutorialStep == 3}
+{#if !$gameView.inBattle && $gameView.currentCharacter && $gameView.currentCharacter.position.x == 0 && $gameView.currentCharacter.position.y == 0}
+	{#if $gameView.offchainState?.tutorialStep == 3}
 		<PaymentDialogOverlay {gameView} />
 	{:else}
 		<TutorialDialogOverlay {gameView}>
-			{#if $gameView.memory.tutorialStep == 1}As you approach the imposing gate of Ethernal, an unexpected sight catches
-				your eye. A lone merchant has set up shop in this unlikely place, their stall laden with various foodstuffs.
-			{:else if $gameView.memory.tutorialStep == 2}
+			{#if $gameView.offchainState?.tutorialStep == 1}As you approach the imposing gate of Ethernal, an unexpected sight
+				catches your eye. A lone merchant has set up shop in this unlikely place, their stall laden with various
+				foodstuffs.
+			{:else if $gameView.offchainState?.tutorialStep == 2}
 				The rumbling in your stomach suddenly reminds you that it's been days since your last proper meal. A wave of
 				relief washes over you - this is your final opportunity to stock up before venturing into the unknown depths of
 				the ancient city.
 			{/if}
 		</TutorialDialogOverlay>
 	{/if}
-{:else if $context.context === 'start' && $gameView.memory.tutorialStep == 0}
+{:else if $context.context === 'start' && (!$gameView.offchainState || $gameView.offchainState?.tutorialStep == 0)}
 	<TutorialDialogOverlay {gameView}
 		>At last, Ethernal's fabled entrance. This magical portal whose light help us see is my doorway to the catacombs and
 		all the secrets they hold. I've come this far now it's time to step into the unknown and unravel the mysteries of
 		this ancient underground realm.</TutorialDialogOverlay
 	>
-{:else if $gameView.inBattle || ($gameView.memory.inBattle?.accepted && !$gameView.memory.inBattle?.endAccepted)}
+{:else if $gameView.inBattle || ($gameView.offchainState?.inBattle?.accepted && !$gameView.offchainState?.inBattle?.endAccepted)}
 	<BattleOverlay {gameView} />
 {:else}
 	<div class="navigation">

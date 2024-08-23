@@ -11,7 +11,7 @@
 	$: console.log({inBattle: $gameView.inBattle});
 </script>
 
-{#if $gameView.inBattle || ($gameView.memory.inBattle?.accepted && !$gameView.memory.inBattle?.endAccepted)}
+{#if $gameView.inBattle || ($gameView.offchainState?.inBattle?.accepted && !$gameView.offchainState?.inBattle?.endAccepted)}
 	<BattleOverlay {gameView} />
 {:else}
 	<div class="navigation">

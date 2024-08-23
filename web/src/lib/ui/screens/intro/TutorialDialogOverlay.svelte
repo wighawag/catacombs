@@ -1,8 +1,8 @@
 <script lang="ts">
 	import {portrait} from '$lib/data/characters';
+	import {accountState} from '$lib/state/AccountState';
 	import type {GameView} from '$lib/state/ViewState';
 	import {intro} from '$lib/state/intro';
-	import {memory} from '$lib/state/memory';
 	import {endBlock, endInitialCamera, setInitialCamera} from '$lib/tutorial';
 	import {onDestroy, onMount} from 'svelte';
 	import {fly} from 'svelte/transition';
@@ -11,8 +11,8 @@
 	export let btnDisabled: boolean = false;
 
 	function nextTutorial() {
-		memory.tutorialNext();
-		if (memory.$store.tutorialStep == 1) {
+		accountState.tutorialNext();
+		if (accountState.$offchainState.tutorialStep == 1) {
 			endInitialCamera(gameView);
 		}
 	}

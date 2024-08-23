@@ -1,6 +1,7 @@
 <script>
 	import {welcomeBack} from '$lib/data/texts';
-	import {connection, introductionState, playerStatus, setContext} from '$lib/state';
+	import {introductionState, playerStatus, setContext} from '$lib/state';
+	import {connection} from '$lib/state/connection';
 	import DefaultScreen from './DefaultScreen.svelte';
 	export function startIntroduction() {
 		introductionState.next();

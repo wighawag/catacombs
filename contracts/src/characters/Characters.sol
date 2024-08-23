@@ -18,6 +18,6 @@ contract Characters is BasicERC721 {
         if (msg.value < _price) {
             revert NotEnoughAmountSent(msg.value, _price);
         }
-        _safeMint(to, (uint256(uint160(to)) << 92) | data);
+        _safeMint(to, (uint256(uint160(msg.sender)) << 92) | data);
     }
 }

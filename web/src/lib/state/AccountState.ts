@@ -16,6 +16,10 @@ import type {ScheduleInfo} from 'fuzd-scheduler';
 import type {PrivateKeyAccount} from 'viem';
 import {privateKeyToAccount} from 'viem/accounts';
 import {copy} from '$utils/js';
+import {xyToBigIntID, type StateChanges} from 'template-game-common';
+import {initialiseStateChanges} from './initialState';
+import type {GameViewState} from './ViewState';
+import {endInitialCamera, setInitialCamera} from '$lib/tutorial';
 
 export type Move =
 	| {
@@ -26,18 +30,6 @@ export type Move =
 			attackCardIndex: number;
 			defenseCardIndex: number;
 			type: `battle`;
-	  };
-
-export type OffchainMoves =
-	| {
-			timestamp: number;
-			list: [];
-			epoch: undefined;
-	  }
-	| {
-			epoch: number;
-			timestamp: number;
-			list: Move[];
 	  };
 
 export type CommitMetadata = {
@@ -79,12 +71,24 @@ export function hasCompletedTutorial(progression: number, step: TUTORIAL_STEP): 
 
 export type OffchainState = {
 	version: number;
-	lastEpochAcknowledged: number;
-	moves: OffchainMoves;
-	tutorial: {
-		timestamp: number;
-		progression: number;
+	timestamp: number;
+	stateChangesTimestamp: number;
+	epoch?: number;
+	moves: Move[];
+	stateChanges: StateChanges[];
+	inBattle?: {
+		accepted?: boolean;
+		cards: {
+			choicePresented?: 'attack' | 'defense';
+			attackChosen?: {cardIndex: number};
+			defenseChosen?: {cardIndex: number};
+			confirmed?: boolean;
+		};
+
+		resultAccepted?: boolean;
+		endAccepted?: boolean;
 	};
+	tutorialStep: number;
 };
 
 export type AccountData = {
@@ -108,15 +112,7 @@ function fromOnChainActionToPendingTransaction(
 function defaultData(): AccountData {
 	return {
 		onchainActions: {},
-		offchainState: {
-			version: 1,
-			moves: {epoch: 0, timestamp: 0, list: []},
-			lastEpochAcknowledged: 0,
-			tutorial: {
-				timestamp: 0,
-				progression: 0,
-			},
-		},
+		offchainState: {version: 1, moves: [], stateChanges: [], tutorialStep: 0, timestamp: 0, stateChangesTimestamp: 0},
 	};
 }
 
@@ -250,38 +246,30 @@ export class AccountState extends BaseAccountHandler<AccountData, Metadata> {
 			}
 		}
 
-		if (
-			remoteData.offchainState.lastEpochAcknowledged &&
-			remoteData.offchainState.lastEpochAcknowledged > newData.offchainState.lastEpochAcknowledged
-		) {
-			newData.offchainState.lastEpochAcknowledged = remoteData.offchainState.lastEpochAcknowledged;
-			newDataOnRemote = true;
-		} else if (
-			newData.offchainState.lastEpochAcknowledged &&
-			newData.offchainState.lastEpochAcknowledged > remoteData.offchainState.lastEpochAcknowledged
-		) {
-			newDataOnLocal = true;
-		}
+		// if (
+		// 	remoteData.offchainState.lastEpochAcknowledged &&
+		// 	remoteData.offchainState.lastEpochAcknowledged > newData.offchainState.lastEpochAcknowledged
+		// ) {
+		// 	newData.offchainState.lastEpochAcknowledged = remoteData.offchainState.lastEpochAcknowledged;
+		// 	newDataOnRemote = true;
+		// } else if (
+		// 	newData.offchainState.lastEpochAcknowledged &&
+		// 	newData.offchainState.lastEpochAcknowledged > remoteData.offchainState.lastEpochAcknowledged
+		// ) {
+		// 	newDataOnLocal = true;
+		// }
 
 		if (
-			remoteData.offchainState.moves.epoch &&
-			remoteData.offchainState.moves.timestamp > newData.offchainState.moves.timestamp
+			// remoteData.offchainState.moves.epoch &&
+			remoteData.offchainState.timestamp > newData.offchainState.timestamp
 		) {
-			newData.offchainState.moves = remoteData.offchainState.moves;
+			newData.offchainState = remoteData.offchainState;
 			newDataOnRemote = true;
 		} else if (
-			newData.offchainState.moves.epoch &&
-			newData.offchainState.moves.timestamp > remoteData.offchainState.moves.timestamp
+			// newData.offchainState.moves.epoch &&
+			newData.offchainState.timestamp > remoteData.offchainState.timestamp
 		) {
-			remoteData.offchainState.moves = newData.offchainState.moves;
-			newDataOnLocal = true;
-		}
-
-		if (remoteData.offchainState.tutorial.timestamp > newData.offchainState.tutorial.timestamp) {
-			newData.offchainState.tutorial = remoteData.offchainState.tutorial;
-			newDataOnRemote = true;
-		} else if (newData.offchainState.tutorial.timestamp > remoteData.offchainState.tutorial.timestamp) {
-			remoteData.offchainState.tutorial = newData.offchainState.tutorial;
+			remoteData.offchainState = newData.offchainState;
 			newDataOnLocal = true;
 		}
 
@@ -294,6 +282,7 @@ export class AccountState extends BaseAccountHandler<AccountData, Metadata> {
 
 	_clean(data: AccountData): AccountData {
 		const cleanedData = copy(data);
+		data.offchainState.stateChangesTimestamp = 0;
 		_filterOutOldActions(cleanedData.onchainActions);
 		return cleanedData;
 	}
@@ -346,52 +335,156 @@ export class AccountState extends BaseAccountHandler<AccountData, Metadata> {
 	// 	this._offchainState.set(this.$data.offchainState);
 	// }
 
-	resetOffchainMoves(epoch: number, alsoSave: boolean = true) {
-		this.$data.offchainState.moves = {list: [], timestamp: time.now, epoch};
-
-		if (alsoSave) {
-			this._save();
+	resetMoves(setTutorialCamera: boolean = false) {
+		if (this.$data.offchainState.stateChanges.length == 0) {
+			return false;
 		}
+		this.$data.offchainState.timestamp = time.now;
+
+		this.$data.offchainState.moves.splice(0, this.$data.offchainState.moves.length);
+		this.$data.offchainState.stateChanges.splice(0, this.$data.offchainState.stateChanges.length);
+		this.$data.offchainState.tutorialStep = 0;
+		this.$data.offchainState.inBattle = undefined;
+
+		if (setTutorialCamera) {
+			setInitialCamera();
+		}
+
+		this._save();
 		this._offchainState.set(this.$data.offchainState);
+		return true;
 	}
 
-	resetOffchainProgression(alsoSave: boolean = true) {
-		this.$data.offchainState.tutorial = {progression: 0, timestamp: time.now};
-
-		if (alsoSave) {
-			this._save();
-		}
-		this._offchainState.set(this.$data.offchainState);
-	}
-
-	addMove(move: Move, epoch: number) {
-		const timestamp = time.now;
-		if (this.$data.offchainState.moves?.epoch != epoch) {
-			this.$data.offchainState.moves = {list: [move], timestamp, epoch};
-		} else {
-			if (this.$data.offchainState.moves.list.length === 0) {
-				this.$data.offchainState.moves = {list: [move], epoch, timestamp};
-			} else {
-				this.$data.offchainState.moves.timestamp = timestamp;
-				this.$data.offchainState.moves.epoch = epoch;
-				this.$data.offchainState.moves.list.push(move);
-			}
-		}
+	// TODO epoch
+	addMove(move: Move, stateChanges: StateChanges) {
+		this.$data.offchainState.moves.push(move);
+		this.$data.offchainState.stateChanges.push(stateChanges);
+		this.$data.offchainState.timestamp = time.now;
+		this.$data.offchainState.stateChangesTimestamp = performance.now();
 
 		this._save();
 		this._offchainState.set(this.$data.offchainState);
 	}
 
-	back() {
-		// TODO undo
-		// $offchainState.moves.splice($offchainState.moves.length - 1, 1);
-		// $offchainState.timestamp = time.now;
-		// save();
-		// offchainState.set($offchainState);
+	async endTutorial() {
+		this.$data.offchainState.moves.splice(0, this.$data.offchainState.moves.length);
+		this.$data.offchainState.stateChanges.splice(0, this.$data.offchainState.stateChanges.length);
+		this.$data.offchainState.timestamp = time.now;
+		this.$data.offchainState.tutorialStep = 1;
+		this.$data.offchainState.inBattle = undefined;
+
+		const stateChange = await initialiseStateChanges();
+		stateChange.newPosition = xyToBigIntID(0, 0);
+		this.$data.offchainState.moves.push({
+			position: {x: 0, y: 0},
+			type: 'move',
+		});
+		this.$data.offchainState.stateChanges.push(stateChange);
+
+		this._save();
+		this._offchainState.set(this.$data.offchainState);
+		return true;
 	}
 
-	acknowledgeEpoch(epochNumber: number) {
-		this.$data.offchainState.lastEpochAcknowledged = epochNumber;
+	rewindMoves(setTutorialCamera: boolean = false) {
+		if (this.$data.offchainState.stateChanges.length == 0) {
+			return false;
+		}
+		this.$data.offchainState.moves.pop();
+		this.$data.offchainState.timestamp = time.now;
+		this.$data.offchainState.stateChanges.pop();
+		this.$data.offchainState.inBattle = undefined;
+		this.$data.offchainState.tutorialStep = 1;
+
+		if (this.$data.offchainState.stateChanges.length == 0) {
+			this.$data.offchainState.tutorialStep = 0;
+			if (setTutorialCamera) {
+				setInitialCamera();
+			}
+		}
+
+		this._save();
+		this._offchainState.set(this.$data.offchainState);
+		return true;
+	}
+
+	tutorialNext() {
+		this.$data.offchainState.tutorialStep++;
+		this.$data.offchainState.timestamp = time.now;
+
+		this._save();
+		this._offchainState.set(this.$data.offchainState);
+	}
+
+	acceptBattle() {
+		this.$data.offchainState.inBattle = this.$data.offchainState.inBattle || {cards: {}};
+		this.$data.offchainState.inBattle.accepted = true;
+		this.$data.offchainState.inBattle.endAccepted = false;
+		this.$data.offchainState.timestamp = time.now;
+
+		this._save();
+		this._offchainState.set(this.$data.offchainState);
+	}
+
+	acceptBattleResult(gameView: GameViewState) {
+		if (gameView.inBattle?.monster.hp == 0) {
+			this.$data.offchainState.inBattle = undefined;
+		} else if (this.$data.offchainState.inBattle) {
+			this.$data.offchainState.inBattle.cards = {};
+		}
+		this.$data.offchainState.timestamp = time.now;
+
+		this._save();
+		this._offchainState.set(this.$data.offchainState);
+	}
+
+	selectAttackCard(cardIndex: number) {
+		if (!this.$data.offchainState.inBattle) {
+			throw new Error(`not in battle`);
+		}
+		this.$data.offchainState.timestamp = time.now;
+		this.$data.offchainState.inBattle.cards.attackChosen = {
+			cardIndex,
+		};
+		this.$data.offchainState.inBattle.cards.choicePresented = undefined;
+
+		this._save();
+		this._offchainState.set(this.$data.offchainState);
+	}
+
+	selectDefenseCard(cardIndex: number) {
+		if (!this.$data.offchainState.inBattle) {
+			throw new Error(`not in battle`);
+		}
+		this.$data.offchainState.timestamp = time.now;
+		this.$data.offchainState.inBattle.cards.defenseChosen = {
+			cardIndex,
+		};
+		this.$data.offchainState.inBattle.cards.choicePresented = undefined;
+
+		this._save();
+		this._offchainState.set(this.$data.offchainState);
+	}
+
+	showChoice(choice: 'attack' | 'defense') {
+		if (!this.$data.offchainState.inBattle) {
+			throw new Error(`not in battle`);
+		}
+		this.$data.offchainState.timestamp = time.now;
+		this.$data.offchainState.inBattle.cards.choicePresented = choice;
+
+		this._save();
+		this._offchainState.set(this.$data.offchainState);
+	}
+
+	acceptEnd() {
+		if (!this.$data.offchainState.inBattle) {
+			throw new Error(`not in battle`);
+		}
+		this.$data.offchainState.timestamp = time.now;
+		this.$data.offchainState.inBattle.endAccepted = true;
+		this.$data.offchainState.inBattle.accepted = false;
+
 		this._save();
 		this._offchainState.set(this.$data.offchainState);
 	}
@@ -421,18 +514,6 @@ export class AccountState extends BaseAccountHandler<AccountData, Metadata> {
 			this._onchainActions.set(this.$data.onchainActions);
 		} else {
 			throw new Error(`Action is not of type "commit"`);
-		}
-	}
-
-	markTutorialAsComplete(step: TUTORIAL_STEP) {
-		// TODO ensure timestamp synced ?
-		const timestamp = time.now;
-
-		if (!hasCompletedTutorial(this.$data.offchainState.tutorial.progression, step)) {
-			this.$data.offchainState.tutorial.timestamp = timestamp;
-			this.$data.offchainState.tutorial.progression |= Math.pow(2, step);
-			this._save();
-			this._offchainState.set(this.$data.offchainState);
 		}
 	}
 }
@@ -499,3 +580,5 @@ function _filterOutOldActions(actions: OnChainActions<Metadata>): boolean {
 	}
 	return changes;
 }
+
+export const accountState = new AccountState();
