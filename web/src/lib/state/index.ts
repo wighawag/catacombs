@@ -10,6 +10,10 @@ import {stringToHex} from 'viem';
 import {connection} from './connection';
 import {contractState} from './IndexedState';
 import {accountState} from './AccountState';
+import {initInitialStateChanges} from './InitialStateChanges';
+import {connectedState} from './ConnectedState';
+
+const initialStateChanges = initInitialStateChanges(connectedState, accountState);
 
 async function start() {
 	if (!defaultRPC?.url) {
@@ -171,7 +175,7 @@ const playerStatus = derived(
 
 export {setContext};
 
-export {context, playerStatus, introductionState};
+export {context, playerStatus, introductionState, initialStateChanges};
 
 start();
 

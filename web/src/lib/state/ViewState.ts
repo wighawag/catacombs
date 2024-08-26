@@ -3,10 +3,11 @@ import {derived} from 'svelte/store';
 // import {epochState, type EpochState} from '$lib/state/Epoch';
 // import type {OnChainActions} from '$lib/account/base';
 // import type {GameMetadata, LocalMove, OffchainState} from '$lib/account/account-data';
-import type {Context, Monster, StateChanges} from 'template-game-common';
-import {initialState, type InitialState} from './initialState';
+import {bigIntIDToXY, type Context, type Monster, type StateChanges} from 'template-game-common';
 import {connectedState, type ConnectedState} from './ConnectedState';
 import {accountState, type OffchainState} from './AccountState';
+import type {InitialState} from './InitialStateChanges';
+import {initialStateChanges} from '.';
 
 export type MovingMonster = Monster & {
 	old: {
@@ -55,8 +56,23 @@ function merge(
 	$state.inBattle = undefined;
 	$state.context = initialState.context;
 	$state.hasCommitment = connectedState.hasCommitment;
-	$state.myCharacters = connectedState.myCharacters;
+	$state.myCharacters = [...connectedState.myCharacters];
 	$state.otherCharacters = connectedState.otherCharacters;
+
+	$state.type = 'game';
+	if ($state.myCharacters.length == 0) {
+		// if (initialState.stateChanges) {
+		$state.myCharacters.push({
+			controllers: {},
+			hp: 50,
+			id: '1',
+			position: {x: 0, y: 19},
+			xp: 0,
+		});
+		// }
+		$state.type = 'intro';
+	}
+
 	$state.currentStateChanges =
 		offchainState.stateChanges.length > 0
 			? offchainState.stateChanges[offchainState.stateChanges.length - 1]
@@ -64,58 +80,50 @@ function merge(
 
 	const currentCharacter = $state.myCharacters[0] ? {...$state.myCharacters[0]} : undefined; // TODO based on offchainState;
 	$state.currentCharacter = currentCharacter;
-	if (currentCharacter) {
-		let currentPosition = currentCharacter.position;
-		for (const move of offchainState.moves) {
-			if (move.type === 'move') {
-				currentPosition = move.position;
+	if (offchainState.type === $state.type) {
+		if (currentCharacter) {
+			let currentPosition = currentCharacter.position;
+			for (const move of offchainState.moves) {
+				if (move.type === 'move') {
+					currentPosition = move.position;
+				}
 			}
-		}
-		currentCharacter.position = currentPosition;
+			currentCharacter.position = currentPosition;
 
-		if (offchainState.stateChanges.length > 0) {
-			if (offchainState.stateChanges.length > 1) {
-				$state.monsters = offchainState.stateChanges[offchainState.stateChanges.length - 1].monsters.map((v, i) => ({
+			if (offchainState.stateChanges.length > 0) {
+				if (offchainState.stateChanges.length > 1) {
+					$state.monsters = offchainState.stateChanges[offchainState.stateChanges.length - 1].monsters.map((v, i) => ({
+						...v,
+						old: {
+							x: offchainState.stateChanges[offchainState.stateChanges.length - 2].monsters[i].x,
+							y: offchainState.stateChanges[offchainState.stateChanges.length - 2].monsters[i].y,
+						},
+					}));
+				} else {
+					$state.monsters = offchainState.stateChanges[offchainState.stateChanges.length - 1].monsters.map((v, i) => ({
+						...v,
+						old: {
+							x: initialState.stateChanges?.monsters[i].x || v.x,
+							y: initialState.stateChanges?.monsters[i].y || v.y,
+						},
+					}));
+				}
+			} else if (initialState.stateChanges) {
+				$state.monsters = initialState.stateChanges.monsters.map((v) => ({
 					...v,
 					old: {
-						x: offchainState.stateChanges[offchainState.stateChanges.length - 2].monsters[i].x,
-						y: offchainState.stateChanges[offchainState.stateChanges.length - 2].monsters[i].y,
-					},
-				}));
-			} else {
-				$state.monsters = offchainState.stateChanges[offchainState.stateChanges.length - 1].monsters.map((v, i) => ({
-					...v,
-					old: {
-						x: initialState.stateChanges?.monsters[i].x || v.x,
-						y: initialState.stateChanges?.monsters[i].y || v.y,
+						x: v.x,
+						y: v.y,
 					},
 				}));
 			}
-		} else if (initialState.stateChanges) {
-			$state.monsters = initialState.stateChanges.monsters.map((v) => ({
-				...v,
-				old: {
-					x: v.x,
-					y: v.y,
-				},
-			}));
-		}
-	}
 
-	if (currentCharacter) {
-		let currentPosition = currentCharacter.position;
-		for (const move of offchainState.moves) {
-			if (move.type == 'move') {
-				currentPosition = move.position;
-			}
-		}
-		currentCharacter.position = currentPosition;
-
-		for (const monster of $state.monsters) {
-			if (monster.hp > 0 && monster.x == currentCharacter.position.x && monster.y == currentCharacter.position.y) {
-				$state.inBattle = {
-					monster,
-				};
+			for (const monster of $state.monsters) {
+				if (monster.hp > 0 && monster.x == currentCharacter.position.x && monster.y == currentCharacter.position.y) {
+					$state.inBattle = {
+						monster,
+					};
+				}
 			}
 		}
 	}
@@ -131,7 +139,7 @@ function merge(
 // );
 export const gameView = {
 	...derived(
-		[connectedState, initialState, accountState.offchainState],
+		[connectedState, initialStateChanges, accountState.offchainState],
 		([$connectedState, $initialState, $offchainState]) => {
 			return merge($connectedState, $initialState, $offchainState);
 		},

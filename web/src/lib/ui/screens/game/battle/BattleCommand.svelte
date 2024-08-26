@@ -36,6 +36,7 @@
 		console.log(stateChanges);
 		console.log(`-----------------------------`);
 		accountState.addMove(
+			gameView.$state.type,
 			{
 				type: 'battle',
 				attackCardIndex,

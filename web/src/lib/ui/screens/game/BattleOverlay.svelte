@@ -15,7 +15,7 @@
 			<img alt="skeleton" src="/images/monsters/skeleton.png" />
 		</div>
 		<div class="actions">
-			<button on:click={() => accountState.acceptBattle()}>Battle!</button>
+			<button on:click={() => accountState.acceptBattle(gameView.$state.type)}>Battle!</button>
 		</div>
 	{:else if !$gameView.offchainState?.inBattle?.cards.confirmed}
 		<BattleCommand {gameView} />

@@ -4,9 +4,10 @@
 	import CharacterSelectionScreen from './CharacterSelectionScreen.svelte';
 	import {context, introductionState, playerStatus} from '$lib/state';
 	import LoadingScreen from '../loading/LoadingScreen.svelte';
-	import IntroductionGameScreen from './IntroductionGameScreen.svelte';
 	import {welcomeBack} from '$lib/data/texts';
 	import {connection} from '$lib/state/connection';
+	import MainGameScreen from '../game/MainGameScreen.svelte';
+	import {gameView} from '$lib/state/ViewState';
 
 	async function next() {
 		introductionState.next();
@@ -109,7 +110,7 @@
 			signOut={true}
 		/>
 	{:else if $playerStatus == 'first-time'}
-		<IntroductionGameScreen />
+		<MainGameScreen {gameView} />
 	{:else}
 		Invalid playerStatus: {$playerStatus}
 	{/if}

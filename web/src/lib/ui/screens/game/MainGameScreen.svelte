@@ -39,8 +39,8 @@
 	<div class="actions">
 		<div class="rewind">
 			<button on:click={() => accountState.endTutorial()}>J</button>
-			<button on:click={() => accountState.resetMoves()}>&lt;&lt;</button>
-			<button on:click={() => accountState.rewindMoves()}>&lt;</button>
+			<button on:click={() => accountState.resetMoves(gameView.$state.type)}>&lt;&lt;</button>
+			<button on:click={() => accountState.rewindMoves(gameView.$state.type)}>&lt;</button>
 		</div>
 	</div>
 </footer>

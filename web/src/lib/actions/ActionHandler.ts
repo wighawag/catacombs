@@ -49,7 +49,7 @@ export async function performAction(gameView: GameView, direction: {dx: number; 
 	console.log(stateChanges);
 	console.log(`-----------------------------`);
 	const pos = bigIntIDToXY(stateChanges.newPosition);
-	accountState.addMove({position: pos, type: 'move'}, stateChanges);
+	accountState.addMove(gameView.$state.type, {position: pos, type: 'move'}, stateChanges);
 
 	camera.setTarget(pos.x, pos.y, camera.$store.zoom, 400);
 }
@@ -61,7 +61,7 @@ export function reset(gameView: GameView) {
 		return;
 	}
 	console.log('reseting...');
-	if (accountState.resetMoves(gameView.$state.type === 'intro')) {
+	if (accountState.resetMoves(gameView.$state.type)) {
 		// TODO DRY
 		const currentStateChanges = gameView.$state.currentStateChanges;
 		const origPosition = currentStateChanges?.newPosition
@@ -80,7 +80,7 @@ export function rewind(gameView: GameView) {
 		return;
 	}
 	console.log('rewinding...');
-	if (accountState.rewindMoves(gameView.$state.type === 'intro')) {
+	if (accountState.rewindMoves(gameView.$state.type)) {
 		// TODO DRY
 		const currentStateChanges = gameView.$state.currentStateChanges;
 		const origPosition = currentStateChanges?.newPosition

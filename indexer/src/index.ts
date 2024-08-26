@@ -37,7 +37,7 @@ type ContractsABI = MergedAbis<typeof contractsInfo.contracts>;
 const GameIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 	// version is automatically populated via version.cjs to let the browser knows to reindex on changes
 	// only works if the changes ends up in the generated js
-	version: '1', // '__VERSION_HASH__', //
+	version: '3', // '__VERSION_HASH__', //
 	construct(): Data {
 		return {
 			characters: {},
@@ -50,7 +50,14 @@ const GameIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 		const controller = controllerAddress.toLowerCase() as `0x${string}`;
 		const characterIDString = characterID.toString();
 
-		const character = state.characters[characterIDString] || {controllers: {}, position: {x: 0, y: 0}};
+		const defaultCharacrer: Character = {
+			id: characterIDString,
+			controllers: {},
+			position: {x: 0, y: 0},
+			xp: 0,
+			hp: 50,
+		};
+		const character: Character = state.characters[characterIDString] || defaultCharacrer;
 		character.controllers[controller] = ControllerType.Owner; // TODO
 		character.position = bigIntIDToXY(newPosition);
 

@@ -16,8 +16,7 @@ import type {ScheduleInfo} from 'fuzd-scheduler';
 import type {PrivateKeyAccount} from 'viem';
 import {privateKeyToAccount} from 'viem/accounts';
 import {copy} from '$utils/js';
-import {xyToBigIntID, type StateChanges} from 'template-game-common';
-import {initialiseStateChanges} from './initialState';
+import {xyToBigIntID, type MonsterList, type StateChanges} from 'template-game-common';
 import type {GameViewState} from './ViewState';
 import {endInitialCamera, setInitialCamera} from '$lib/tutorial';
 
@@ -72,10 +71,12 @@ export function hasCompletedTutorial(progression: number, step: TUTORIAL_STEP): 
 export type OffchainState = {
 	version: number;
 	timestamp: number;
+	type: 'intro' | 'game';
 	stateChangesTimestamp: number;
 	epoch?: number;
 	moves: Move[];
 	stateChanges: StateChanges[];
+
 	inBattle?: {
 		accepted?: boolean;
 		cards: {
@@ -112,7 +113,15 @@ function fromOnChainActionToPendingTransaction(
 function defaultData(): AccountData {
 	return {
 		onchainActions: {},
-		offchainState: {version: 1, moves: [], stateChanges: [], tutorialStep: 0, timestamp: 0, stateChangesTimestamp: 0},
+		offchainState: {
+			type: 'intro',
+			version: 1,
+			moves: [],
+			stateChanges: [],
+			tutorialStep: 0,
+			timestamp: 0,
+			stateChangesTimestamp: 0,
+		},
 	};
 }
 
@@ -335,10 +344,11 @@ export class AccountState extends BaseAccountHandler<AccountData, Metadata> {
 	// 	this._offchainState.set(this.$data.offchainState);
 	// }
 
-	resetMoves(setTutorialCamera: boolean = false) {
+	resetMoves(type: 'intro' | 'game', setTutorialCamera: boolean = false) {
 		if (this.$data.offchainState.stateChanges.length == 0) {
 			return false;
 		}
+		this.$data.offchainState.type = type;
 		this.$data.offchainState.timestamp = time.now;
 
 		this.$data.offchainState.moves.splice(0, this.$data.offchainState.moves.length);
@@ -356,7 +366,8 @@ export class AccountState extends BaseAccountHandler<AccountData, Metadata> {
 	}
 
 	// TODO epoch
-	addMove(move: Move, stateChanges: StateChanges) {
+	addMove(type: 'intro' | 'game', move: Move, stateChanges: StateChanges) {
+		this.$data.offchainState.type = type;
 		this.$data.offchainState.moves.push(move);
 		this.$data.offchainState.stateChanges.push(stateChanges);
 		this.$data.offchainState.timestamp = time.now;
@@ -367,14 +378,59 @@ export class AccountState extends BaseAccountHandler<AccountData, Metadata> {
 	}
 
 	async endTutorial() {
+		this.$data.offchainState.type = 'intro';
 		this.$data.offchainState.moves.splice(0, this.$data.offchainState.moves.length);
 		this.$data.offchainState.stateChanges.splice(0, this.$data.offchainState.stateChanges.length);
 		this.$data.offchainState.timestamp = time.now;
 		this.$data.offchainState.tutorialStep = 1;
 		this.$data.offchainState.inBattle = undefined;
 
-		const stateChange = await initialiseStateChanges();
-		stateChange.newPosition = xyToBigIntID(0, 0);
+		const stateChange: StateChanges = {
+			battle: {
+				monsterIndexPlus1: 0,
+				attackCardsUsed1: 0,
+				attackCardsUsed2: 0,
+				defenseCardsUsed1: 0,
+				defenseCardsUsed2: 0,
+			},
+			characterID: 1n,
+			epoch: 0,
+			monsters: [
+				{
+					x: 1,
+					y: 1,
+					hp: 0,
+					kind: 0,
+				},
+				{
+					x: 1,
+					y: 1,
+					hp: 0,
+					kind: 0,
+				},
+				{
+					x: 1,
+					y: 1,
+					hp: 0,
+					kind: 0,
+				},
+				{
+					x: 1,
+					y: 1,
+					hp: 0,
+					kind: 0,
+				},
+				{
+					x: 1,
+					y: 1,
+					hp: 0,
+					kind: 0,
+				},
+			],
+			newHP: 10,
+			newXP: 10,
+			newPosition: xyToBigIntID(0, 0),
+		};
 		this.$data.offchainState.moves.push({
 			position: {x: 0, y: 0},
 			type: 'move',
@@ -386,7 +442,7 @@ export class AccountState extends BaseAccountHandler<AccountData, Metadata> {
 		return true;
 	}
 
-	rewindMoves(setTutorialCamera: boolean = false) {
+	rewindMoves(type: 'intro' | 'game') {
 		if (this.$data.offchainState.stateChanges.length == 0) {
 			return false;
 		}
@@ -398,7 +454,7 @@ export class AccountState extends BaseAccountHandler<AccountData, Metadata> {
 
 		if (this.$data.offchainState.stateChanges.length == 0) {
 			this.$data.offchainState.tutorialStep = 0;
-			if (setTutorialCamera) {
+			if (type === 'intro') {
 				setInitialCamera();
 			}
 		}
@@ -409,6 +465,7 @@ export class AccountState extends BaseAccountHandler<AccountData, Metadata> {
 	}
 
 	tutorialNext() {
+		this.$data.offchainState.type = 'intro';
 		this.$data.offchainState.tutorialStep++;
 		this.$data.offchainState.timestamp = time.now;
 
@@ -416,7 +473,8 @@ export class AccountState extends BaseAccountHandler<AccountData, Metadata> {
 		this._offchainState.set(this.$data.offchainState);
 	}
 
-	acceptBattle() {
+	acceptBattle(type: 'intro' | 'game') {
+		this.$data.offchainState.type = type;
 		this.$data.offchainState.inBattle = this.$data.offchainState.inBattle || {cards: {}};
 		this.$data.offchainState.inBattle.accepted = true;
 		this.$data.offchainState.inBattle.endAccepted = false;
