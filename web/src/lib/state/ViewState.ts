@@ -5,9 +5,10 @@ import {derived} from 'svelte/store';
 // import type {GameMetadata, LocalMove, OffchainState} from '$lib/account/account-data';
 import {bigIntIDToXY, type Context, type Monster, type StateChanges} from 'template-game-common';
 import {connectedState, type ConnectedState} from './ConnectedState';
-import {accountState, type OffchainState} from './AccountState';
+import {accountState, type GameTxMetadata, type OffchainState} from './AccountState';
 import type {InitialState} from './InitialStateChanges';
 import {initialStateChanges} from '.';
+import type {OnChainActions} from '$lib/account/base';
 
 export type MovingMonster = Monster & {
 	old: {
@@ -29,7 +30,7 @@ export type GameViewState = {
 	offchainState?: OffchainState;
 	currentStateChanges?: StateChanges;
 	context?: Context;
-	type: 'intro' | 'game';
+	type: 'intro' | 'game' | 'pending';
 };
 // function isValidMove(move: LocalMove) {
 // 	// TODO
@@ -47,7 +48,7 @@ function merge(
 	initialState: InitialState,
 	offchainState: OffchainState,
 	// offchainState: OffchainState,
-	// onchainActions: OnChainActions<GameMetadata>,
+	onchainActions: OnChainActions<GameTxMetadata>,
 	// epochState: EpochState,
 	// account: AccountState<`0x${string}`>,
 ): GameViewState {
@@ -58,6 +59,13 @@ function merge(
 	$state.hasCommitment = connectedState.hasCommitment;
 	$state.myCharacters = [...connectedState.myCharacters];
 	$state.otherCharacters = connectedState.otherCharacters;
+
+	for (const txHash of Object.keys(onchainActions)) {
+		const onchainAction = onchainActions[txHash as `0x${string}`];
+		if (onchainAction.tx.metadata?.type === 'enter') {
+			$state.type = 'pending';
+		}
+	}
 
 	$state.type = 'game';
 	if ($state.myCharacters.length == 0) {
@@ -139,9 +147,9 @@ function merge(
 // );
 export const gameView = {
 	...derived(
-		[connectedState, initialStateChanges, accountState.offchainState],
-		([$connectedState, $initialState, $offchainState]) => {
-			return merge($connectedState, $initialState, $offchainState);
+		[connectedState, initialStateChanges, accountState.offchainState, accountState.onchainActions],
+		([$connectedState, $initialState, $offchainState, $onchainActions]) => {
+			return merge($connectedState, $initialState, $offchainState, $onchainActions);
 		},
 	),
 	$state,

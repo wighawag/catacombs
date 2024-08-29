@@ -156,20 +156,20 @@ const playerStatus = derived(
 			return 'unconnected';
 		}
 		// TODO reenable once we get the mint
-		// if ($contractStatus.state === 'IndexingLatest') {
-		if ($contractState.controllers[$connection.address.toLowerCase() as `0x${string}`]) {
-			if ($context.context === 'loading') {
-				// we jump right into the game
-				setContext({context: 'game'});
+		if ($contractStatus.state === 'IndexingLatest') {
+			if ($contractState.controllers[$connection.address.toLowerCase() as `0x${string}`]) {
+				if ($context.context === 'loading') {
+					// we jump right into the game
+					setContext({context: 'game'});
+				}
+				return 'in-game-already';
+			} else {
+				setContext({context: 'start'});
+				return 'first-time';
 			}
-			return 'in-game-already';
 		} else {
-			setContext({context: 'start'});
-			return 'first-time';
+			return 'catchingup';
 		}
-		// } else {
-		// 	return 'catchingup';
-		// }
 	},
 );
 

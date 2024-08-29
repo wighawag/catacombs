@@ -368,8 +368,8 @@ importers:
         specifier: ^0.0.5
         version: 0.0.5(typescript@5.5.4)
       ethereum-indexer-browser:
-        specifier: ^0.7.6
-        version: 0.7.6(typescript@5.5.4)
+        specifier: ^0.7.7
+        version: 0.7.7(typescript@5.5.4)
       ethereum-tx-observer:
         specifier: ^0.0.5
         version: 0.0.5
@@ -5624,6 +5624,23 @@ packages:
       - typescript
       - utf-8-validate
       - zod
+    dev: true
+
+  /ethereum-indexer-browser@0.7.7(typescript@5.5.4):
+    resolution: {integrity: sha512-wo6itWmQMtPEMOHtHn4CZ3ul6jN8yAvGXjcXwDMXiovjO/ErPQab1ITFSYZPBu3f/nnaFZVda7aoJ9wDRxxvhg==}
+    dependencies:
+      ethereum-indexer: 0.6.21(typescript@5.5.4)
+      ethereum-indexer-utils: 0.6.13
+      idb-keyval: 6.2.1
+      named-logs: 0.2.4
+      sveltore: 0.0.2
+      use-stores: 0.1.0
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - zod
+    dev: false
 
   /ethereum-indexer-cli@0.6.30(typescript@5.5.4):
     resolution: {integrity: sha512-3ZJio0hQSVV/l7EdjWy1TIR8S3fAyeMXAyMaftZHXF2cHPPMr/JKiScdo/VUeictd/x+fOIe6ZDO3bArsARSaw==}

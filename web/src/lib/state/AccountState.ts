@@ -48,16 +48,21 @@ export type CommitMetadata = {
 		| false;
 };
 
-export type Metadata =
+export type EnterMetadata = {
+	type: 'enter';
+	// TODO more data
+};
+
+export type GameTxMetadata =
 	| undefined
 	| ({
 			epoch: {
 				hash: `0x${string}`;
 				number: number;
 			};
-	  } & (CommitMetadata | RevealMetadata | CommitCancelMetadata));
+	  } & (CommitMetadata | RevealMetadata | CommitCancelMetadata | EnterMetadata));
 
-export type Transaction = EIP1193TransactionWithMetadata<Metadata>;
+export type Transaction = EIP1193TransactionWithMetadata<GameTxMetadata>;
 
 export type Epoch = {number: number};
 
@@ -93,13 +98,13 @@ export type OffchainState = {
 };
 
 export type AccountData = {
-	onchainActions: OnChainActions<Metadata>;
+	onchainActions: OnChainActions<GameTxMetadata>;
 	offchainState: OffchainState;
 };
 
 function fromOnChainActionToPendingTransaction(
 	hash: `0x${string}`,
-	onchainAction: OnChainAction<Metadata>,
+	onchainAction: OnChainAction<GameTxMetadata>,
 ): PendingTransaction {
 	return {
 		hash,
@@ -129,7 +134,7 @@ export type LocalAccountInfo = {
 	localKey?: `0x${string}`;
 };
 
-export class AccountState extends BaseAccountHandler<AccountData, Metadata> {
+export class AccountState extends BaseAccountHandler<AccountData, GameTxMetadata> {
 	fuzdClient: ReturnType<typeof createClient> | undefined;
 	localWallet: PrivateKeyAccount | undefined;
 
@@ -576,7 +581,7 @@ export class AccountState extends BaseAccountHandler<AccountData, Metadata> {
 	}
 }
 
-function _filterOutOldActions(actions: OnChainActions<Metadata>): boolean {
+function _filterOutOldActions(actions: OnChainActions<GameTxMetadata>): boolean {
 	let changes = false;
 	const keys = Object.keys(actions);
 	let lastCommitAction: OnChainAction<CommitMetadata> | undefined;

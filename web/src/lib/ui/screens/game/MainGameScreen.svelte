@@ -23,8 +23,10 @@
 		>
 			{#if $gameView.type === 'intro'}
 				<IntroOverlay {gameView} />
-			{:else}
+			{:else if $gameView.type === 'game'}
 				<Overlay {gameView} />
+			{:else if $gameView.type === 'pending'}
+				<div style="background-color: red;width: 100%; height: 100%; position: fixed; top: 0; left: 0;">Pending...</div>
 			{/if}
 		</div>
 	</div>

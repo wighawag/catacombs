@@ -14,6 +14,7 @@ export function initContractState(connection: Readable<Connection>) {
 	let _timeout: NodeJS.Timeout | undefined;
 	let unsubscribeFromConnection: (() => void) | undefined;
 	let _stopped: boolean = false;
+	let _lastProvider: EIP1193ProviderWithoutEvents | undefined;
 
 	const processor = createProcessor();
 
@@ -77,7 +78,12 @@ export function initContractState(connection: Readable<Connection>) {
 
 	unsubscribeFromConnection = connection.subscribe(($connection) => {
 		if ($connection.providerWithoutSigner) {
-			initialize($connection.providerWithoutSigner);
+			if (!_lastProvider) {
+				_lastProvider = $connection.providerWithoutSigner;
+				initialize($connection.providerWithoutSigner);
+			} else if (_lastProvider != $connection.providerWithoutSigner) {
+				throw new Error(`do not support changing provider`);
+			}
 		}
 	});
 
