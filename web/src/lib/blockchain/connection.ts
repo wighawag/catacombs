@@ -99,13 +99,19 @@ export function initConnection() {
 		}
 		const provider = new JSONRPCHTTPProvider(rpcURL);
 		const chainId = await provider.request({method: 'eth_chainId'});
-		// TODO
-		// const genesisBlock = await provider.request({method: 'eth_getBlockByNumber', params: [0, false]});
+		let genesisHash = '';
+		try {
+			const genesisBlock = await provider.request({method: 'eth_getBlockByNumber', params: ['0x0', false]});
+			genesisHash = genesisBlock.hash;
+		} catch (err) {
+			console.error(`could not fecth genesis block`);
+		}
+
 		lastBlockNumberFetched = 0;
 		set({
 			providerWithoutSigner: provider,
 			chainId: Number(chainId).toString(),
-			genesisHash: '', // genesisBlock?.hash || '',
+			genesisHash,
 		});
 		pollLatestBlockAgainAndAgain();
 		return provider;

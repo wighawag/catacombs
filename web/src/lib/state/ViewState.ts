@@ -81,14 +81,15 @@ function merge(
 		$state.type = 'intro';
 	}
 
-	$state.currentStateChanges =
-		offchainState.stateChanges.length > 0
-			? offchainState.stateChanges[offchainState.stateChanges.length - 1]
-			: initialState.stateChanges;
+	$state.currentStateChanges = initialState.stateChanges;
 
 	const currentCharacter = $state.myCharacters[0] ? {...$state.myCharacters[0]} : undefined; // TODO based on offchainState;
 	$state.currentCharacter = currentCharacter;
 	if (offchainState.type === $state.type) {
+		if (offchainState.stateChanges.length > 0) {
+			$state.currentStateChanges = offchainState.stateChanges[offchainState.stateChanges.length - 1];
+		}
+
 		if (currentCharacter) {
 			let currentPosition = currentCharacter.position;
 			for (const move of offchainState.moves) {
@@ -134,6 +135,14 @@ function merge(
 				}
 			}
 		}
+	} else if ($state.currentStateChanges) {
+		$state.monsters = $state.currentStateChanges.monsters.map((v) => ({
+			...v,
+			old: {
+				x: v.x,
+				y: v.y,
+			},
+		}));
 	}
 
 	return $state;

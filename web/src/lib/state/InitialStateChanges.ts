@@ -79,9 +79,9 @@ export function initInitialStateChanges(connectedState: ConnectedStateStore, acc
 				};
 			}
 
-			const initialStateChanges = await evmGame.initialStateChanges(context);
+			const stateChanges = await evmGame.initialStateChanges(context);
 
-			$store.stateChanges = initialStateChanges;
+			$store.stateChanges = stateChanges;
 			$store.context = context;
 			store.set($store);
 		}
