@@ -66,7 +66,7 @@ export class GroundLayer extends Textured2DProgram {
 	}
 
 	drawArea(state: GameViewState, x: number, y: number) {
-		if (state.type === 'intro') {
+		if (state.stage === 'intro') {
 			if (x >= 3 || x <= -3 || y >= 3 || y <= -3) {
 				return;
 			}

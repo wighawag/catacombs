@@ -92,7 +92,7 @@ const GameIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 	},
 
 	onMoveRevealed(state, event) {
-		const {characterID, controller: controllerAddress, epoch, newPosition, actions} = event.args;
+		const {characterID, epoch, newPosition, actions} = event.args;
 		const chracterIDString = characterID.toString();
 		const character = state.characters[chracterIDString];
 		character.position = bigIntIDToXY(newPosition);

@@ -13,7 +13,6 @@ contract GameReveal is Game {
     struct Context {
         uint256 characterID;
         uint64 priorPosition;
-        address controller;
         uint24 epoch;
         uint256[] actions;
         bytes32 secret;
@@ -58,7 +57,6 @@ contract GameReveal is Game {
         _apply(store, stateChanges);
         emit MoveRevealed(
             context.characterID,
-            context.controller,
             context.epoch,
             context.actions,
             stateChanges.newPosition,

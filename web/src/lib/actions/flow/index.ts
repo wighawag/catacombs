@@ -1,5 +1,5 @@
 import type {ComponentType} from 'svelte';
-import {get, writable, type Writable} from 'svelte/store';
+import {derived, get, writable, type Writable} from 'svelte/store';
 
 export type Step<State> = {
 	title: string;
@@ -67,6 +67,65 @@ export function initFlow() {
 }
 
 export const currentFlow = initFlow();
+
+//-------------------------------------------------------------------------------------------------
+// TODO test
+//-------------------------------------------------------------------------------------------------
+const currentStep = writable<Step<any> | undefined>(undefined);
+export const action = derived(currentStep, ($currentStep) => {
+	return $currentStep ? $currentStep.action : 'done';
+});
+let last:
+	| {
+			state: Writable<any>;
+			unsubscribeFromState: () => void;
+			currentStepIndex: Writable<number>;
+			unsubscribeFromCurrentStepIndex: () => void;
+	  }
+	| undefined = undefined;
+
+currentFlow.subscribe(($currentFlow) => {
+	const state = $currentFlow?.state;
+	const currentStepIndex = $currentFlow?.currentStepIndex;
+
+	if (!state || !currentStepIndex) {
+		if (last) {
+			last.unsubscribeFromState();
+			last.unsubscribeFromCurrentStepIndex();
+			last = undefined;
+		}
+	} else {
+		let needSubscribtion = false;
+
+		if (last) {
+			if (last.state != state || last.currentStepIndex != currentStepIndex) {
+				last.unsubscribeFromState();
+				last.unsubscribeFromCurrentStepIndex();
+				needSubscribtion = true;
+			}
+		} else {
+			needSubscribtion = true;
+		}
+
+		if (needSubscribtion) {
+			const unsubscribeFromState = state.subscribe(($state) => {});
+			const unsubscribeFromCurrentStepIndex = currentStepIndex.subscribe(($currentStepIndex) => {
+				currentStep.set(
+					$currentFlow && $currentStepIndex != undefined && $currentStepIndex < $currentFlow.steps.length
+						? $currentFlow.steps[$currentStepIndex]
+						: undefined,
+				);
+			});
+			last = {
+				state,
+				currentStepIndex,
+				unsubscribeFromCurrentStepIndex,
+				unsubscribeFromState,
+			};
+		}
+	}
+});
+//-------------------------------------------------------------------------------------------------
 
 if (typeof window != 'undefined') {
 	(window as any).currentFlow = currentFlow;

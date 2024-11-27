@@ -17,7 +17,7 @@ import type {PrivateKeyAccount} from 'viem';
 import {privateKeyToAccount} from 'viem/accounts';
 import {copy} from '$utils/js';
 import {xyToBigIntID, type MonsterList, type StateChanges} from 'template-game-common';
-import type {GameViewState} from './ViewState';
+import type {GameStage, GameValidStage, GameViewState} from './ViewState';
 import {endInitialCamera, setInitialCamera} from '$lib/tutorial';
 
 export type Move =
@@ -76,7 +76,7 @@ export function hasCompletedTutorial(progression: number, step: TUTORIAL_STEP): 
 export type OffchainState = {
 	version: number;
 	timestamp: number;
-	type: 'intro' | 'game';
+	stage: GameValidStage;
 	stateChangesTimestamp: number;
 	epoch?: number;
 	moves: Move[];
@@ -119,7 +119,7 @@ function defaultData(): AccountData {
 	return {
 		onchainActions: {},
 		offchainState: {
-			type: 'intro',
+			stage: 'intro',
 			version: 1,
 			moves: [],
 			stateChanges: [],
@@ -349,11 +349,14 @@ export class AccountState extends BaseAccountHandler<AccountData, GameTxMetadata
 	// 	this._offchainState.set(this.$data.offchainState);
 	// }
 
-	resetMoves(type: 'intro' | 'game', setTutorialCamera: boolean = false) {
+	resetMoves(stage: GameStage, setTutorialCamera: boolean = false) {
+		if (stage === 'pending') {
+			throw new Error(`invalid GameState: ${stage}`);
+		}
 		if (this.$data.offchainState.stateChanges.length == 0) {
 			return false;
 		}
-		this.$data.offchainState.type = type;
+		this.$data.offchainState.stage = stage;
 		this.$data.offchainState.timestamp = time.now;
 
 		this.$data.offchainState.moves.splice(0, this.$data.offchainState.moves.length);
@@ -371,8 +374,11 @@ export class AccountState extends BaseAccountHandler<AccountData, GameTxMetadata
 	}
 
 	// TODO epoch
-	addMove(type: 'intro' | 'game', move: Move, stateChanges: StateChanges) {
-		this.$data.offchainState.type = type;
+	addMove(stage: GameStage, move: Move, stateChanges: StateChanges) {
+		if (stage === 'pending') {
+			throw new Error(`invalid GameState: ${stage}`);
+		}
+		this.$data.offchainState.stage = stage;
 		this.$data.offchainState.moves.push(move);
 		this.$data.offchainState.stateChanges.push(stateChanges);
 		this.$data.offchainState.timestamp = time.now;
@@ -383,7 +389,7 @@ export class AccountState extends BaseAccountHandler<AccountData, GameTxMetadata
 	}
 
 	async endTutorial() {
-		this.$data.offchainState.type = 'intro';
+		this.$data.offchainState.stage = 'intro';
 		this.$data.offchainState.moves.splice(0, this.$data.offchainState.moves.length);
 		this.$data.offchainState.stateChanges.splice(0, this.$data.offchainState.stateChanges.length);
 		this.$data.offchainState.timestamp = time.now;
@@ -447,7 +453,10 @@ export class AccountState extends BaseAccountHandler<AccountData, GameTxMetadata
 		return true;
 	}
 
-	rewindMoves(type: 'intro' | 'game') {
+	rewindMoves(stage: GameStage) {
+		if (stage === 'pending') {
+			throw new Error(`invalid GameState: ${stage}`);
+		}
 		if (this.$data.offchainState.stateChanges.length == 0) {
 			return false;
 		}
@@ -459,7 +468,7 @@ export class AccountState extends BaseAccountHandler<AccountData, GameTxMetadata
 
 		if (this.$data.offchainState.stateChanges.length == 0) {
 			this.$data.offchainState.tutorialStep = 0;
-			if (type === 'intro') {
+			if (stage === 'intro') {
 				setInitialCamera();
 			}
 		}
@@ -470,7 +479,7 @@ export class AccountState extends BaseAccountHandler<AccountData, GameTxMetadata
 	}
 
 	tutorialNext() {
-		this.$data.offchainState.type = 'intro';
+		this.$data.offchainState.stage = 'intro';
 		this.$data.offchainState.tutorialStep++;
 		this.$data.offchainState.timestamp = time.now;
 
@@ -478,8 +487,11 @@ export class AccountState extends BaseAccountHandler<AccountData, GameTxMetadata
 		this._offchainState.set(this.$data.offchainState);
 	}
 
-	acceptBattle(type: 'intro' | 'game') {
-		this.$data.offchainState.type = type;
+	acceptBattle(stage: GameStage) {
+		if (stage === 'pending') {
+			throw new Error(`invalid GameState: ${stage}`);
+		}
+		this.$data.offchainState.stage = stage;
 		this.$data.offchainState.inBattle = this.$data.offchainState.inBattle || {cards: {}};
 		this.$data.offchainState.inBattle.accepted = true;
 		this.$data.offchainState.inBattle.endAccepted = false;

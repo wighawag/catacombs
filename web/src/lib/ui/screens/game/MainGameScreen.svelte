@@ -21,11 +21,11 @@
 			id="game-overlay"
 			style="position: absolute; top:0; left:0; width:100%; height: 100%; pointer-events: none; overflow: hidden;"
 		>
-			{#if $gameView.type === 'intro'}
+			{#if $gameView.stage === 'intro'}
 				<IntroOverlay {gameView} />
-			{:else if $gameView.type === 'game'}
+			{:else if $gameView.stage === 'game'}
 				<Overlay {gameView} />
-			{:else if $gameView.type === 'pending'}
+			{:else if $gameView.stage === 'pending'}
 				<div style="background-color: red;width: 100%; height: 100%; position: fixed; top: 0; left: 0;">Pending...</div>
 			{/if}
 		</div>
@@ -41,8 +41,8 @@
 	<div class="actions">
 		<div class="rewind">
 			<button on:click={() => accountState.endTutorial()}>J</button>
-			<button on:click={() => accountState.resetMoves(gameView.$state.type)}>&lt;&lt;</button>
-			<button on:click={() => accountState.rewindMoves(gameView.$state.type)}>&lt;</button>
+			<button on:click={() => accountState.resetMoves(gameView.$state.stage)}>&lt;&lt;</button>
+			<button on:click={() => accountState.rewindMoves(gameView.$state.stage)}>&lt;</button>
 		</div>
 	</div>
 </footer>

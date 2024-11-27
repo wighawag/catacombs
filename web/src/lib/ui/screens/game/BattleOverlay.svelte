@@ -2,8 +2,8 @@
 	import type {GameView} from '$lib/state/ViewState';
 	import {fade} from 'svelte/transition';
 	import BattleRoundResult from './battle/BattleRoundResult.svelte';
-	import BattleCommand from './battle/BattleCommand.svelte';
 	import {accountState} from '$lib/state/AccountState';
+	import BattleCommand from './battle/BattleCommand.svelte';
 
 	export let gameView: GameView;
 </script>
@@ -15,7 +15,7 @@
 			<img alt="skeleton" src="/images/monsters/skeleton.png" />
 		</div>
 		<div class="actions">
-			<button on:click={() => accountState.acceptBattle(gameView.$state.type)}>Battle!</button>
+			<button on:click={() => accountState.acceptBattle(gameView.$state.stage)}>Battle!</button>
 		</div>
 	{:else if !$gameView.offchainState?.inBattle?.cards.confirmed}
 		<BattleCommand {gameView} />
@@ -35,6 +35,8 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: space-between;
+		overflow-y: auto;
+		pointer-events: all;
 	}
 
 	.text {

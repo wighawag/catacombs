@@ -17,6 +17,9 @@ export type MovingMonster = Monster & {
 	};
 };
 
+export type GameValidStage = 'intro' | 'game';
+export type GameStage = GameValidStage | 'pending';
+
 // TODO
 export type GameViewState = {
 	otherCharacters: Character[];
@@ -30,7 +33,7 @@ export type GameViewState = {
 	offchainState?: OffchainState;
 	currentStateChanges?: StateChanges;
 	context?: Context;
-	type: 'intro' | 'game' | 'pending';
+	stage: GameStage;
 };
 // function isValidMove(move: LocalMove) {
 // 	// TODO
@@ -41,7 +44,7 @@ const $state: GameViewState = {
 	otherCharacters: [],
 	myCharacters: [],
 	monsters: [],
-	type: 'game',
+	stage: 'game',
 };
 function merge(
 	connectedState: ConnectedState,
@@ -63,11 +66,11 @@ function merge(
 	for (const txHash of Object.keys(onchainActions)) {
 		const onchainAction = onchainActions[txHash as `0x${string}`];
 		if (onchainAction.tx.metadata?.type === 'enter') {
-			$state.type = 'pending';
+			$state.stage = 'pending';
 		}
 	}
 
-	$state.type = 'game';
+	$state.stage = 'game';
 	if ($state.myCharacters.length == 0) {
 		// if (initialState.stateChanges) {
 		$state.myCharacters.push({
@@ -78,14 +81,14 @@ function merge(
 			xp: 0,
 		});
 		// }
-		$state.type = 'intro';
+		$state.stage = 'intro';
 	}
 
 	$state.currentStateChanges = initialState.stateChanges;
 
 	const currentCharacter = $state.myCharacters[0] ? {...$state.myCharacters[0]} : undefined; // TODO based on offchainState;
 	$state.currentCharacter = currentCharacter;
-	if (offchainState.type === $state.type) {
+	if (offchainState.stage === $state.stage) {
 		if (offchainState.stateChanges.length > 0) {
 			$state.currentStateChanges = offchainState.stateChanges[offchainState.stateChanges.length - 1];
 		}
