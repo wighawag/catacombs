@@ -7,7 +7,7 @@
 	export let bonus: number;
 </script>
 
-<button class="card" class:disabled class:enemy>
+<button class="card" class:disabled class:enemy class:hoverable={!disabled && !enemy}>
 	<div class="top">
 		<div>DEF</div>
 		<div>{value}</div>
@@ -33,7 +33,7 @@
 		justify-content: space-between;
 	}
 
-	.card:hover {
+	.hoverable:hover {
 		transform: scale(1.2);
 		transition-duration: 0.2s;
 		z-index: 2;
