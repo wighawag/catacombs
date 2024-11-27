@@ -18,18 +18,18 @@
 	const offchainState = accountState.offchainState;
 
 	let myCards = [
-		{defense: 2, armor: 3},
-		{defense: 2, armor: 3},
-		{defense: 2, armor: 3},
-		{defense: 2, armor: 3},
-		{defense: 2, armor: 3},
-		{defense: 2, armor: 3},
+		{defense: 2, armor: 3, used: false},
+		{defense: 2, armor: 3, used: false},
+		{defense: 2, armor: 3, used: true},
+		{defense: 2, armor: 3, used: false},
+		{defense: 2, armor: 3, used: true},
+		{defense: 2, armor: 3, used: false},
 	];
 	let monsterCards = [
-		{defense: 2, armor: 3},
-		{defense: 2, armor: 3},
-		{defense: 2, armor: 3},
-		{defense: 2, armor: 3},
+		{defense: 2, armor: 3, used: true},
+		{defense: 2, armor: 3, used: false},
+		{defense: 2, armor: 3, used: false},
+		{defense: 2, armor: 3, used: false},
 	];
 </script>
 
@@ -43,7 +43,7 @@
 	</div>
 	<div class="monster">
 		<div class="monster-cards">
-			<BattleChooseYourDefense cards={monsterCards} selected={0} enemy={true} />
+			<BattleChooseYourDefense cards={monsterCards} selected={2} enemy={true} />
 		</div>
 
 		<div class="monster-image">

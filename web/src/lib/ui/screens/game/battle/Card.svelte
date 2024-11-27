@@ -5,9 +5,10 @@
 	export let enemy = false;
 	export let value: number;
 	export let bonus: number;
+	export let hilighted: boolean = false;
 </script>
 
-<button class="card" class:disabled class:enemy class:hoverable={!disabled && !enemy}>
+<button class="card" class:disabled class:enemy class:hoverable={!disabled && !enemy} class:hilighted>
 	<div class="top">
 		<div>DEF</div>
 		<div>{value}</div>
@@ -33,9 +34,13 @@
 		justify-content: space-between;
 	}
 
+	.hilighted {
+		transform: scale(1.5);
+		z-index: 3;
+	}
 	.hoverable:hover {
 		transform: scale(1.2);
-		transition-duration: 0.2s;
+		transition-duration: 0.1s;
 		z-index: 2;
 	}
 	/* .enemy {
