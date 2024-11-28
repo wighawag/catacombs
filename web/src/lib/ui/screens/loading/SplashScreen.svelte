@@ -5,19 +5,23 @@
 	import {url} from '$utils/path';
 	import type {Action} from 'svelte/action';
 
-	let gameTitle: HTMLImageElement = $state();
+	let gameTitle: HTMLImageElement | undefined = $state();
 	onMount(() => {
 		splash.start();
-		if ((gameTitle as any)._loaded) {
+		if ((gameTitle as any)?._loaded) {
 			splash.gameLogoReady();
 		}
 	});
 
 	const onload: Action<HTMLImageElement> = (node) => {
 		(node as any)._loaded = false;
-		node.addEventListener('load', () => {
+		const onLoaded = () => {
 			(node as any)._loaded = true;
 			splash.gameLogoReady();
+		};
+		$effect(() => {
+			node.addEventListener('load', onLoaded);
+			return node.removeEventListener('load', onLoaded);
 		});
 	};
 </script>
