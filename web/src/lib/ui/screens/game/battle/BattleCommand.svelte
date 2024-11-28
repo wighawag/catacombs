@@ -18,19 +18,19 @@
 	const offchainState = accountState.offchainState;
 
 	let myCards = [
-		{defense: 2, armor: 3, used: false},
-		{defense: 2, armor: 3, used: false},
-		{defense: 2, armor: 3, used: true},
-		{defense: 2, armor: 3, used: false},
-		{defense: 2, armor: 3, used: true},
-		{defense: 2, armor: 3, used: false},
-	];
+		{type: 'defense', def: 2, armor: 3, used: false},
+		{type: 'defense', def: 2, armor: 3, used: false},
+		{type: 'defense', def: 2, armor: 3, used: true},
+		{type: 'defense', def: 2, armor: 3, used: false},
+		{type: 'defense', def: 2, armor: 3, used: true},
+		{type: 'defense', def: 2, armor: 3, used: false},
+	] as const;
 	let monsterCards = [
-		{defense: 2, armor: 3, used: true},
-		{defense: 2, armor: 3, used: false},
-		{defense: 2, armor: 3, used: false},
-		{defense: 2, armor: 3, used: false},
-	];
+		{type: 'attack', atk: 2, dmg: 3, used: true},
+		{type: 'attack', atk: 2, dmg: 3, used: false},
+		{type: 'attack', atk: 2, dmg: 3, used: false},
+		{type: 'attack', atk: 2, dmg: 3, used: false},
+	] as const;
 </script>
 
 <div class="wrapper">
@@ -58,9 +58,9 @@
 	{/if}
 
 	<div class="hero">
-		<button class="icon">
+		<div class="icon">
 			<img src={classPortrait} alt="profile" />
-		</button>
+		</div>
 		<div class="bar"><HpBar value={hp} maxValue={50} /></div>
 	</div>
 </div>

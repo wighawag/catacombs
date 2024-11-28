@@ -1,22 +1,22 @@
 <script lang="ts">
 	import IconSkull from '$data/assets/skull-key-white.png'; // TODO remove ?
+	import type {CurrentCard} from 'template-game-common';
 
+	export let card: CurrentCard;
 	export let disabled = false;
 	export let enemy = false;
-	export let value: number;
-	export let bonus: number;
 	export let hilighted: boolean = false;
 </script>
 
 <button class="card" class:disabled class:enemy class:hoverable={!disabled && !enemy} class:hilighted>
 	<div class="top">
-		<div>DEF</div>
-		<div>{value}</div>
+		<div>{card.type == 'attack' ? 'ATK' : 'DEF'}</div>
+		<div>{card.type == 'attack' ? card.atk : card.def}</div>
 	</div>
 	<div class="center"><img alt="defense" src={IconSkull} /></div>
 	<div class="bottom">
-		<div>{bonus}</div>
-		<div class="armor">ARMOR</div>
+		<div>{card.type == 'attack' ? card.dmg : card.armor}</div>
+		<div class="bonus">{card.type == 'attack' ? 'DMG' : 'ARMOR'}</div>
 	</div>
 </button>
 
@@ -76,7 +76,7 @@
 		justify-content: space-between;
 		align-items: end;
 	}
-	.armor {
+	.bonus {
 		color: #5a5a5a;
 		font-size: x-small;
 	}

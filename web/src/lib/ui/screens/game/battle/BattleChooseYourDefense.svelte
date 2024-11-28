@@ -1,8 +1,9 @@
 <script lang="ts">
+	import type {CurrentCard} from 'template-game-common';
 	import Card from './Card.svelte';
 
 	export let selected: number | undefined = undefined;
-	export let cards: {defense: number; armor: number; used: boolean}[];
+	export let cards: readonly CurrentCard[];
 	export let enemy = false;
 </script>
 
@@ -10,8 +11,7 @@
 	{#each cards as card, i}
 		<Card
 			{enemy}
-			value={card.defense}
-			bonus={card.armor}
+			{card}
 			disabled={(selected != undefined && i != selected) || card.used}
 			hilighted={enemy && selected == i}
 		/>
