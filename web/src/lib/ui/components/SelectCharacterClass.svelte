@@ -1,32 +1,38 @@
 <script lang="ts">
 	import {characterClassInfo, portrait} from '$lib/data/characters';
 
-	export let name: string;
-	export let characterClassIndex: number = 0;
+	interface Props {
+		name: string;
+		characterClassIndex?: number;
+	}
 
-	$: classInfo = characterClassInfo(characterClassIndex);
+	let {name = $bindable(), characterClassIndex = $bindable(0)}: Props = $props();
 
-	$: console.log({
-		characterClassIndex,
+	let classInfo = $derived(characterClassInfo(characterClassIndex));
+
+	$effect(() => {
+		console.log({
+			characterClassIndex,
+		});
 	});
 </script>
 
 <h3>Select a class</h3>
 <div class="container hide">
 	<label class:disabled={characterClassIndex != 0} class="selection-box">
-		<input type="radio" bind:group={characterClassIndex} value={'0'} />
+		<input type="radio" bind:group={characterClassIndex} value={0} />
 		<img src={portrait(0)} alt={characterClassInfo(0).name} />
 	</label>
 	<label class:disabled={characterClassIndex != 1} class="selection-box">
-		<input type="radio" bind:group={characterClassIndex} value={'1'} />
+		<input type="radio" bind:group={characterClassIndex} value={1} />
 		<img src={portrait(1)} alt={characterClassInfo(1).name} />
 	</label>
 	<label class:disabled={characterClassIndex != 2} class="selection-box">
-		<input type="radio" bind:group={characterClassIndex} value={'2'} />
+		<input type="radio" bind:group={characterClassIndex} value={2} />
 		<img src={portrait(2)} alt={characterClassInfo(2).name} />
 	</label>
 	<label class:disabled={characterClassIndex != 3} class="selection-box">
-		<input type="radio" bind:group={characterClassIndex} value={'3'} />
+		<input type="radio" bind:group={characterClassIndex} value={3} />
 		<img src={portrait(3)} alt={characterClassInfo(3).name} />
 	</label>
 </div>

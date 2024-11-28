@@ -5,15 +5,19 @@
 	import {intro} from '$lib/state/intro';
 	import type {GameView} from '$lib/state/ViewState';
 
-	export let characterClass: number = 0;
-	export let gameView: GameView | undefined = undefined;
+	interface Props {
+		characterClass?: number;
+		gameView?: GameView | undefined;
+	}
 
-	$: characterClass = $intro.character?.classIndex || 0;
-	$: classPortrait = portrait(characterClass);
-	$: characterClassName = characterClassInfo(characterClass).name;
+	let {gameView = undefined}: Props = $props();
 
-	$: xp = $gameView && $gameView.currentCharacter ? $gameView.currentCharacter.xp : 0;
-	$: hp = $gameView && $gameView.currentCharacter ? $gameView.currentCharacter.hp : 50; // TODO
+	let characterClass = $derived($intro.character?.classIndex || 0);
+	let classPortrait = $derived(portrait(characterClass));
+	let characterClassName = $derived(characterClassInfo(characterClass).name);
+
+	let xp = $derived($gameView && $gameView.currentCharacter ? $gameView.currentCharacter.xp : 0);
+	let hp = $derived($gameView && $gameView.currentCharacter ? $gameView.currentCharacter.hp : 50); // TODO
 </script>
 
 <div class="welcome-header-box">

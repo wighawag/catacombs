@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	import type {TypedEventTarget} from '$utils/types/events';
 
 	class ModalStack extends (EventTarget as TypedEventTarget<{
@@ -56,10 +56,15 @@
 	import {createFocusTrap, type FocusTargetOrFalse, type FocusTrap} from 'focus-trap';
 	import {fade} from 'svelte/transition';
 
-	export let oncancel: Cancellation | undefined = undefined;
-	export let onclosed: Cancellation | undefined = undefined;
+	interface Props {
+		oncancel?: Cancellation | undefined;
+		onclosed?: Cancellation | undefined;
+		children?: import('svelte').Snippet;
+	}
 
-	let element: HTMLElement;
+	let {oncancel = undefined, onclosed = undefined, children}: Props = $props();
+
+	let element: HTMLElement = $state() as HTMLElement;
 	let modal: ModalOnStack;
 	onMount(() => {
 		const trigger = document.querySelector(':focus-visible') || undefined;
@@ -130,18 +135,18 @@
 	}
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="modal-container" bind:this={element}>
 	<div
 		class="overlay"
-		on:mousedown={onBackdropInteraction}
-		on:touchstart={onBackdropInteraction}
+		onmousedown={onBackdropInteraction}
+		ontouchstart={onBackdropInteraction}
 		transition:fade
-		on:outrostart={onOutroStart}
-		on:outroend={onOutroEnd}
+		onoutrostart={onOutroStart}
+		onoutroend={onOutroEnd}
 	></div>
 
-	<slot />
+	{@render children?.()}
 </div>
 
 <style>

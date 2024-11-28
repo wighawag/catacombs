@@ -5,7 +5,7 @@
 	import {url} from '$utils/path';
 	import type {Action} from 'svelte/action';
 
-	let gameTitle: HTMLImageElement;
+	let gameTitle: HTMLImageElement = $state();
 	onMount(() => {
 		splash.start();
 		if ((gameTitle as any)._loaded) {
@@ -23,9 +23,9 @@
 </script>
 
 {#if $splash && $splash.stage === 0}
-	<!-- svelte-ignore a11y-click-events-have-key-events -->
-	<!-- svelte-ignore a11y-no-static-element-interactions -->
-	<div class="overlay game-title" out:fade on:click={() => splash.nextStage()}>
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div class="overlay game-title" out:fade onclick={() => splash.nextStage()}>
 		<div class="content">
 			<!-- see https://github.com/sveltejs/svelte/issues/11624 -->
 			<img src={url('/title.png')} alt="Game title" use:onload bind:this={gameTitle} />

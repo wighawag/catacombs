@@ -5,7 +5,11 @@
 	import {accountState} from '$lib/state/AccountState';
 	import BattleCommand from './battle/BattleCommand.svelte';
 
-	export let gameView: GameView;
+	interface Props {
+		gameView: GameView;
+	}
+
+	let { gameView }: Props = $props();
 </script>
 
 <div class="content" in:fade={{delay: 300}}>
@@ -15,14 +19,14 @@
 			<img alt="skeleton" src="/images/monsters/skeleton.png" />
 		</div>
 		<div class="actions">
-			<button on:click={() => accountState.acceptBattle(gameView.$state.stage)}>Battle!</button>
+			<button onclick={() => accountState.acceptBattle(gameView.$state.stage)}>Battle!</button>
 		</div>
 	{:else if !$gameView.offchainState?.inBattle?.cards.confirmed}
 		<BattleCommand {gameView} />
 	{:else if !$gameView.offchainState?.inBattle.resultAccepted}
 		<BattleRoundResult />
 	{:else if !$gameView.offchainState?.inBattle.resultAccepted}
-		<button on:click={() => accountState.acceptBattleResult($gameView)}>Continue</button>
+		<button onclick={() => accountState.acceptBattleResult($gameView)}>Continue</button>
 	{/if}
 </div>
 

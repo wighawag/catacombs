@@ -3,17 +3,21 @@
 	import DefaultScreen from '../screens/DefaultScreen.svelte';
 	import TypeWriterSingleText from './TypeWriterSingleText.svelte';
 
-	export let text: string;
-	export let next: () => Promise<void>;
-	export let buttonText = 'Continue on...';
-	export let waitText = 'Please wait...';
-	export let disableSkip: boolean = false;
+	interface Props {
+		text: string;
+		next: () => Promise<void>;
+		buttonText?: string;
+		waitText?: string;
+		disableSkip?: boolean;
+	}
 
-	let writing = true;
-	let waiting = false;
+	let {text, next, buttonText = 'Continue on...', waitText = 'Please wait...', disableSkip = false}: Props = $props();
 
-	$: btnText = buttonText;
-	$: btnDisabled = writing;
+	let writing = $state(true);
+	let waiting = $state(false);
+
+	let btnText = $derived(buttonText);
+	let btnDisabled = $derived(writing);
 
 	const btnPressed = async () => {
 		waiting = true;
@@ -21,9 +25,10 @@
 		waiting = false;
 	};
 
+	// svelte-ignore non_reactive_update
 	let writer: SvelteComponent;
-	let progress: number;
-	let timeLeft: number;
+	let progress: number = $state(0);
+	let timeLeft: number = $state(1000000000);
 
 	function skipText() {
 		if (timeLeft > 400) {

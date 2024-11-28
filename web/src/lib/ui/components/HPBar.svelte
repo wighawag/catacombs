@@ -2,18 +2,24 @@
 	import {tweened} from 'svelte/motion';
 	import {cubicOut} from 'svelte/easing';
 
-	export let label = 'HP';
-	export let value = 0;
-	export let maxValue: number;
-	export let infinite = false;
+	interface Props {
+		label?: string;
+		value?: number;
+		maxValue: number;
+		infinite?: boolean;
+	}
+
+	let {label = 'HP', value = 0, maxValue, infinite = false}: Props = $props();
 
 	const percentage = tweened(infinite ? 100 : Math.min(100, Math.max(0, (value / maxValue) * 100)), {
 		duration: 1000,
 		easing: cubicOut,
 	});
 
-	$: percentage.set(infinite ? 100 : Math.min(100, Math.max(0, (value / maxValue) * 100)));
-	$: smaller = value > 999 || (maxValue && maxValue > 999);
+	$effect(() => {
+		percentage.set(infinite ? 100 : Math.min(100, Math.max(0, (value / maxValue) * 100)));
+	});
+	let smaller = $derived(value > 999 || (maxValue && maxValue > 999));
 </script>
 
 <div class="area">

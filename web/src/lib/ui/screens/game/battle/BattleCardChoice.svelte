@@ -2,9 +2,13 @@
 	import type {CurrentCard} from 'template-game-common';
 	import Card from './Card.svelte';
 
-	export let selected: number | undefined = undefined;
-	export let cards: readonly CurrentCard[];
-	export let enemy = false;
+	interface Props {
+		selected?: number | undefined;
+		cards: readonly CurrentCard[];
+		enemy?: boolean;
+	}
+
+	let { selected = undefined, cards, enemy = false }: Props = $props();
 </script>
 
 <div class="actions">

@@ -4,7 +4,7 @@
 	import {genericModals} from './generic-modals.js';
 	import GenericModal from './GenericModal.svelte';
 
-	let modalsContainer: HTMLDivElement;
+	let modalsContainer: HTMLDivElement = $state() as HTMLDivElement;
 	onMount(() => {
 		modalStack.addEventListener('added', (event) => {
 			modalsContainer.appendChild(event.detail.element);
@@ -18,7 +18,7 @@
 	}
 </script>
 
-<svelte:window on:keydown={onKeyDown} />
+<svelte:window onkeydown={onKeyDown} />
 
 <div class="modals" bind:this={modalsContainer}></div>
 

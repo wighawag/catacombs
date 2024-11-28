@@ -7,13 +7,17 @@
 	import BorderedContainer from '$lib/ui/components/BorderedContainer.svelte';
 	import HpBar from '$lib/ui/components/HPBar.svelte';
 
-	export let gameView: GameView;
-	$: characterClass = $intro.character?.classIndex || 0;
-	$: classPortrait = portrait(characterClass);
-	$: characterClassName = characterClass === 0 ? 'Barbarian' : 'Unknown';
+	interface Props {
+		gameView: GameView;
+	}
 
-	$: xp = $gameView && $gameView.currentCharacter ? $gameView.currentCharacter.xp : 0;
-	$: hp = $gameView && $gameView.currentCharacter ? $gameView.currentCharacter.hp : 0;
+	let { gameView }: Props = $props();
+	let characterClass = $derived($intro.character?.classIndex || 0);
+	let classPortrait = $derived(portrait(characterClass));
+	let characterClassName = $derived(characterClass === 0 ? 'Barbarian' : 'Unknown');
+
+	let xp = $derived($gameView && $gameView.currentCharacter ? $gameView.currentCharacter.xp : 0);
+	let hp = $derived($gameView && $gameView.currentCharacter ? $gameView.currentCharacter.hp : 0);
 
 	const offchainState = accountState.offchainState;
 

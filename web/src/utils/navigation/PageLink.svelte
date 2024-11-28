@@ -2,12 +2,17 @@
 	import {page} from '$app/stores';
 	import {route, isParentRoute, isSameRoute} from '$utils/path';
 
-	export let href: string;
+	interface Props {
+		href: string;
+		children?: import('svelte').Snippet;
+	}
 
-	$: current = href === '/' ? isSameRoute($page.url.pathname, href) : isParentRoute($page.url.pathname, href);
+	let { href, children }: Props = $props();
+
+	let current = $derived(href === '/' ? isSameRoute($page.url.pathname, href) : isParentRoute($page.url.pathname, href));
 </script>
 
-<a class:current href={route(href)}><slot /></a>
+<a class:current href={route(href)}>{@render children?.()}</a>
 
 <style>
 	a {

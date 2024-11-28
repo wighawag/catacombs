@@ -5,8 +5,12 @@
 	import {intro} from '$lib/state/intro';
 	import {fly} from 'svelte/transition';
 
-	// export let gameView: GameView;
-	export let btnDisabled: boolean = false;
+	interface Props {
+		gameView: GameView;
+		btnDisabled?: boolean;
+	}
+
+	let {btnDisabled = false}: Props = $props();
 
 	async function enter(e: Event) {
 		e.preventDefault();
@@ -25,7 +29,7 @@
 	</p>
 	<!-- <p class="final">Enter at your own risk.</p> -->
 	<div class="actions">
-		<button disabled={btnDisabled} on:click={enter}>Pay 0.004 ETH</button>
+		<button disabled={btnDisabled} onclick={enter}>Pay 0.004 ETH</button>
 	</div>
 </div>
 

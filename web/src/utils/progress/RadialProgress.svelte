@@ -1,10 +1,14 @@
 <script lang="ts">
-	export let value: number;
-	export let style: string = '';
+	interface Props {
+		value: number;
+		style?: string;
+	}
 
-	$: val = Math.floor(value * 100) / 100;
+	let { value, style = '' }: Props = $props();
 
-	$: fullStyle = `--progress-value:${val}%;--progress-value-text:'${val}%';${style}`;
+	let val = $derived(Math.floor(value * 100) / 100);
+
+	let fullStyle = $derived(`--progress-value:${val}%;--progress-value-text:'${val}%';${style}`);
 </script>
 
 <div class="progress-bar" style={fullStyle}>

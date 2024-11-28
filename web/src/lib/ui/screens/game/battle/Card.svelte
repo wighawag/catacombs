@@ -2,10 +2,19 @@
 	import IconSkull from '$data/assets/skull-key-white.png'; // TODO remove ?
 	import type {CurrentCard} from 'template-game-common';
 
-	export let card: CurrentCard;
-	export let disabled = false;
-	export let enemy = false;
-	export let hilighted: boolean = false;
+	interface Props {
+		card: CurrentCard;
+		disabled?: boolean;
+		enemy?: boolean;
+		hilighted?: boolean;
+	}
+
+	let {
+		card,
+		disabled = false,
+		enemy = false,
+		hilighted = false
+	}: Props = $props();
 </script>
 
 <button class="card" class:disabled class:enemy class:hoverable={!disabled && !enemy} class:hilighted>

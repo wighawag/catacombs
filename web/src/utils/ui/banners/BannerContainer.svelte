@@ -1,4 +1,4 @@
-<script lang="ts" context="module">
+<script lang="ts" module>
 	import type {TypedEventTarget} from '$utils/types/events';
 
 	class BannerStack extends (EventTarget as TypedEventTarget<{
@@ -34,8 +34,13 @@
 <script lang="ts">
 	import {onMount} from 'svelte';
 	import type {BannerOnStack} from './types.js';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
 
-	let element: HTMLElement;
+	let { children }: Props = $props();
+
+	let element: HTMLElement = $state();
 	let banner: BannerOnStack;
 	onMount(() => {
 		console.log('add banner', banner);
@@ -48,9 +53,9 @@
 	});
 </script>
 
-<!-- svelte-ignore a11y-no-static-element-interactions -->
+<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div class="banner-container" bind:this={element}>
-	<slot />
+	{@render children?.()}
 </div>
 
 <style>

@@ -7,8 +7,13 @@
 	import {onDestroy, onMount} from 'svelte';
 	import {fly} from 'svelte/transition';
 
-	export let gameView: GameView;
-	export let btnDisabled: boolean = false;
+	interface Props {
+		gameView: GameView;
+		btnDisabled?: boolean;
+		children?: import('svelte').Snippet;
+	}
+
+	let { gameView, btnDisabled = false, children }: Props = $props();
 
 	function nextTutorial() {
 		accountState.tutorialNext();
@@ -29,10 +34,10 @@
 <div class="content" transition:fly={{duration: 500, y: '100%'}}>
 	<p>
 		<img src={portrait($intro.character?.classIndex || 0)} alt="profile" />
-		<slot></slot>
+		{@render children?.()}
 	</p>
 	<div class="actions">
-		<button disabled={btnDisabled} on:click={nextTutorial}>Continue</button>
+		<button disabled={btnDisabled} onclick={nextTutorial}>Continue</button>
 	</div>
 </div>
 

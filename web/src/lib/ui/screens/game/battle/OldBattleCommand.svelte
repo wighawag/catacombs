@@ -10,13 +10,17 @@
 
 	const offchainState = accountState.offchainState;
 
-	export let gameView: GameView;
-	$: characterClass = $intro.character?.classIndex || 0;
-	$: classPortrait = portrait(characterClass);
-	$: characterClassName = characterClass === 0 ? 'Barbarian' : 'Unknown';
+	interface Props {
+		gameView: GameView;
+	}
 
-	$: xp = $gameView && $gameView.currentCharacter ? $gameView.currentCharacter.xp : 0;
-	$: hp = $gameView && $gameView.currentCharacter ? $gameView.currentCharacter.hp : 0;
+	let { gameView }: Props = $props();
+	let characterClass = $derived($intro.character?.classIndex || 0);
+	let classPortrait = $derived(portrait(characterClass));
+	let characterClassName = $derived(characterClass === 0 ? 'Barbarian' : 'Unknown');
+
+	let xp = $derived($gameView && $gameView.currentCharacter ? $gameView.currentCharacter.xp : 0);
+	let hp = $derived($gameView && $gameView.currentCharacter ? $gameView.currentCharacter.hp : 0);
 
 	async function battleWith(attackCardIndex: number, defenseCardIndex: number) {
 		const currentStateChanges = gameView.$state.currentStateChanges;
@@ -72,17 +76,17 @@
 	</div>
 	{#if $offchainState.inBattle?.cards.attackChosen && $offchainState.inBattle?.cards.defenseChosen}
 		<div class="confirmation">
-			<button on:click={confirm}>Confirm</button>
+			<button onclick={confirm}>Confirm</button>
 		</div>
 	{/if}
 	<div class="actions">
 		<button
-			on:click={() => {
+			onclick={() => {
 				accountState.showChoice('attack');
 			}}>Select Attack</button
 		>
 		<button
-			on:click={() => {
+			onclick={() => {
 				accountState.showChoice('defense');
 			}}>Select Defense</button
 		>

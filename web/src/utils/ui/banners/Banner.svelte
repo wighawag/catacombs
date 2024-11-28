@@ -2,12 +2,17 @@
 	import {fly} from 'svelte/transition';
 	import BannerContainer from './BannerContainer.svelte';
 
-	export let style: string | undefined = undefined;
+	interface Props {
+		style?: string | undefined;
+		children?: import('svelte').Snippet;
+	}
+
+	let { style = undefined, children }: Props = $props();
 </script>
 
 <BannerContainer>
 	<div class="banner" transition:fly={{y: '-100%'}} {style}>
-		<slot />
+		{@render children?.()}
 	</div>
 </BannerContainer>
 

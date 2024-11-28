@@ -3,11 +3,20 @@
 
 	const dispatch = createEventDispatcher();
 
-	export let text: string;
-	export let charTime = 50;
 
-	export let progress: number = 0;
-	export let timeLeft: number = Number.MAX_SAFE_INTEGER;
+	interface Props {
+		text: string;
+		charTime?: number;
+		progress?: number;
+		timeLeft?: number;
+	}
+
+	let {
+		text,
+		charTime = 50,
+		progress = $bindable(0),
+		timeLeft = $bindable(Number.MAX_SAFE_INTEGER)
+	}: Props = $props();
 
 	let advance = 0;
 	export function skip() {
@@ -35,7 +44,7 @@
 
 	let lastText: string;
 	let lastStartTime: number;
-	let currentText: string = emptyCharacters(text, 0, extraCharactersAsRatio);
+	let currentText: string = $state(emptyCharacters(text, 0, extraCharactersAsRatio));
 	let duration: number;
 	let doneEmitted: boolean;
 

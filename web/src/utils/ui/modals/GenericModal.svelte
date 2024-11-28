@@ -3,10 +3,14 @@
 	import {genericModals, type GenericModalData} from './generic-modals.js';
 	import type {Cancellation} from './types';
 
-	export let oncancel: Cancellation | undefined = undefined;
-	export let modal: GenericModalData;
-	$: info = modal.type === 'info' ? modal : undefined;
-	$: confirm = modal.type === 'confirm' ? modal : undefined;
+	interface Props {
+		oncancel?: Cancellation | undefined;
+		modal: GenericModalData;
+	}
+
+	let { oncancel = undefined, modal }: Props = $props();
+	let info = $derived(modal.type === 'info' ? modal : undefined);
+	let confirm = $derived(modal.type === 'confirm' ? modal : undefined);
 </script>
 
 <Modal {oncancel} style="--width:300px;--height:300px;--background-color:purple;">
@@ -17,13 +21,13 @@
 		{/if}
 		<p>{confirm.message}</p>
 		<button
-			on:click={() => {
+			onclick={() => {
 				genericModals.close(modal);
 				m.onResponse(false);
 			}}>cancel</button
 		>
 		<button
-			on:click={() => {
+			onclick={() => {
 				genericModals.close(modal);
 				m.onResponse(true);
 			}}>confirm</button

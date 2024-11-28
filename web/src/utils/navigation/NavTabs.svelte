@@ -1,6 +1,10 @@
 <script lang="ts">
 	import PageLink from './PageLink.svelte';
-	export let pages: {pathname: string; title: string}[];
+	interface Props {
+		pages: {pathname: string; title: string}[];
+	}
+
+	let { pages }: Props = $props();
 </script>
 
 <nav>

@@ -3,14 +3,24 @@
 	import ModalContainer from './ModalContainer.svelte';
 	import {type Cancellation} from './types.js';
 
-	export let oncancel: Cancellation = undefined;
-	export let onclosed: Cancellation = undefined;
-	export let style: string | undefined = undefined;
+	interface Props {
+		oncancel?: Cancellation;
+		onclosed?: Cancellation;
+		style?: string | undefined;
+		children?: import('svelte').Snippet;
+	}
+
+	let {
+		oncancel = undefined,
+		onclosed = undefined,
+		style = undefined,
+		children
+	}: Props = $props();
 </script>
 
 <ModalContainer {oncancel} {onclosed}>
 	<div class="modal" transition:fly={{y: '50vh'}} {style}>
-		<slot />
+		{@render children?.()}
 	</div>
 </ModalContainer>
 

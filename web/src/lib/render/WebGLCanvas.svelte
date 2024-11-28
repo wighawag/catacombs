@@ -4,7 +4,11 @@
 	import {camera} from './camera';
 	import {WebGLRenderer} from './WebGLRenderer';
 	import type {GameView} from '$lib/state/ViewState';
-	export let state: GameView;
+	interface Props {
+		gameView: GameView;
+	}
+
+	let {gameView}: Props = $props();
 
 	let renderer: WebGLRenderer = new WebGLRenderer();
 	function render(time: number) {
@@ -16,7 +20,7 @@
 	let unsubscribeFromCamera: () => void;
 	let unsubscribeFromState: () => void;
 
-	let error: string | undefined;
+	let error: string | undefined = $state();
 	onMount(() => {
 		const canvas = document.querySelector('#world-map') as HTMLCanvasElement;
 
@@ -38,10 +42,10 @@
 		unsubscribeFromCamera = camera.subscribe((v) => renderer.updateView(v));
 
 		const actionHandler = new ActionHandler();
-		actionHandler.start(camera, canvas, state);
+		actionHandler.start(camera, canvas, gameView);
 
-		unsubscribeFromState = state.subscribe(($state) => {
-			renderer.updateState($state);
+		unsubscribeFromState = gameView.subscribe(($gameView) => {
+			renderer.updateState($gameView);
 		});
 
 		animationFrameID = requestAnimationFrame(render);

@@ -1,8 +1,21 @@
 <script lang="ts">
 	import {createEventDispatcher} from 'svelte';
 
-	export let src: string;
-	export let alt: string;
+	interface Props {
+		src: string;
+		alt: string;
+		children?: import('svelte').Snippet;
+		reject?: import('svelte').Snippet;
+		accept?: import('svelte').Snippet;
+	}
+
+	let {
+		src,
+		alt,
+		children,
+		reject,
+		accept
+	}: Props = $props();
 
 	const dispatch = createEventDispatcher();
 </script>
@@ -12,17 +25,17 @@
 		<img class="logo" {src} {alt} />
 	</div>
 	<div class="content">
-		<div class="text"><slot /></div>
+		<div class="text">{@render children?.()}</div>
 		<div class="buttons-container">
-			<button on:click={() => dispatch('reject')} type="button" class="error"
-				><slot name="reject">Reject</slot>
+			<button onclick={() => dispatch('reject')} type="button" class="error"
+				>{#if reject}{@render reject()}{:else}Reject{/if}
 			</button>
-			<button on:click={() => dispatch('accept')} type="button" class="success"
-				><slot name="accept">Accept</slot></button
+			<button onclick={() => dispatch('accept')} type="button" class="success"
+				>{#if accept}{@render accept()}{:else}Accept{/if}</button
 			>
 		</div>
 	</div>
-	<button on:click={() => dispatch('reject')} class="button-close">
+	<button onclick={() => dispatch('reject')} class="button-close">
 		<svg
 			xmlns="http://www.w3.org/2000/svg"
 			width="24"

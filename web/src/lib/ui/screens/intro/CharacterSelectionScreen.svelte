@@ -4,13 +4,19 @@
 	import {characterClassInfo} from '$lib/data/characters';
 	import {intro} from '$lib/state/intro';
 
-	export let next;
+	interface Props {
+		next: () => void;
+	}
 
-	let name: string;
-	let characterClassIndex = 0;
-	$: classInfo = characterClassInfo(characterClassIndex);
+	let {next}: Props = $props();
 
-	$: console.log({classInfo});
+	let name: string = $state('');
+	let characterClassIndex = $state(0);
+	let classInfo = $derived(characterClassInfo(characterClassIndex));
+
+	$effect(() => {
+		console.log({classInfo});
+	});
 </script>
 
 <DefaultScreen

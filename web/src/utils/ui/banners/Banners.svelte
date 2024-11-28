@@ -4,7 +4,7 @@
 	import {genericBanners} from './generic-banners.js';
 	import GenericBanner from './GenericBanner.svelte';
 
-	let bannersContainer: HTMLDivElement;
+	let bannersContainer: HTMLDivElement = $state();
 	onMount(() => {
 		bannerStack.addEventListener('added', (event) => {
 			bannersContainer.appendChild(event.detail.element);

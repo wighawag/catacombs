@@ -2,14 +2,14 @@
 	import {currentFlow} from './';
 	import Modal from '$utils/ui/modals/Modal.svelte';
 
-	$: flowState = $currentFlow?.state;
-	$: currentStepIndex = $currentFlow?.currentStepIndex;
+	let flowState = $derived($currentFlow?.state);
+	let currentStepIndex = $derived($currentFlow?.currentStepIndex);
 
-	$: currentStep =
-		$currentFlow && $currentStepIndex != undefined && $currentStepIndex < $currentFlow.steps.length
+	let currentStep =
+		$derived($currentFlow && $currentStepIndex != undefined && $currentStepIndex < $currentFlow.steps.length
 			? $currentFlow.steps[$currentStepIndex]
-			: undefined;
-	$: action = currentStep ? currentStep.action : 'done';
+			: undefined);
+	let action = $derived(currentStep ? currentStep.action : 'done');
 
 	function cancel() {
 		currentFlow.cancel();
@@ -51,7 +51,7 @@
 					{currentStep.title}
 				</div>
 				{#if currentStep.component}
-					<svelte:component this={currentStep.component} state={flowState} />
+					<currentStep.component state={flowState} />
 				{:else}
 					<p class="description">{currentStep.description}</p>
 				{/if}
@@ -64,10 +64,10 @@
 			{#if !currentStep || currentStep.action}
 				<div class="actions">
 					{#if currentStep}
-						<button on:click={() => cancel()}>Back</button>
+						<button onclick={() => cancel()}>Back</button>
 					{/if}
 					{#if !currentStep || !currentStep.end}
-						<button class="primary" on:click={() => execute()}>{action}</button>
+						<button class="primary" onclick={() => execute()}>{action}</button>
 					{/if}
 				</div>
 			{:else}

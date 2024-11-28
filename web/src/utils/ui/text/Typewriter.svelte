@@ -1,8 +1,13 @@
 <script lang="ts">
 	import {typewrite} from './typewriter';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 </script>
 
-<p use:typewrite><slot /></p>
+<p use:typewrite>{@render children?.()}</p>
 
 <style>
 	p:not(.stopped) {

@@ -3,7 +3,7 @@
 
 	const offchainState = accountState.offchainState;
 
-	$: attackSelection = $offchainState.inBattle?.cards.choicePresented == 'attack';
+	let attackSelection = $derived($offchainState.inBattle?.cards.choicePresented == 'attack');
 
 	function pickCard(index: number) {
 		if (attackSelection) {
@@ -27,11 +27,11 @@
 	<hr />
 	<div class="hero">
 		{#if attackSelection}
-			<button on:click={() => pickCard(0)} class="card">+4 / +2</button>
-			<button on:click={() => pickCard(1)} class="card">+2 / +1</button>
+			<button onclick={() => pickCard(0)} class="card">+4 / +2</button>
+			<button onclick={() => pickCard(1)} class="card">+2 / +1</button>
 		{:else}
-			<button on:click={() => pickCard(0)} class="card">+3 / +3</button>
-			<button on:click={() => pickCard(1)} class="card">+1 / +2</button>
+			<button onclick={() => pickCard(0)} class="card">+3 / +3</button>
+			<button onclick={() => pickCard(1)} class="card">+1 / +2</button>
 		{/if}
 	</div>
 </div>

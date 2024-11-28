@@ -2,7 +2,11 @@
 	import Banner from './Banner.svelte';
 	import {type GenericBannerData} from './generic-banners.js';
 
-	export let banner: GenericBannerData;
+	interface Props {
+		banner: GenericBannerData;
+	}
+
+	let { banner }: Props = $props();
 
 	function dismiss() {
 		banner.ondismiss && banner.ondismiss();
@@ -21,7 +25,7 @@
 		{banner.message}
 
 		{#if banner.ondismiss}
-			<button on:click={() => dismiss()}>{banner.button || 'OK'}</button>
+			<button onclick={() => dismiss()}>{banner.button || 'OK'}</button>
 		{/if}
 	</div>
 </Banner>

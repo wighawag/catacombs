@@ -5,7 +5,11 @@
 	import WelcomeProfile from '../headers/WelcomeProfile.svelte';
 	import IntroOverlay from '../intro/IntroOverlay.svelte';
 	import Overlay from './Overlay.svelte';
-	export let gameView: GameView;
+	interface Props {
+		gameView: GameView;
+	}
+
+	let {gameView}: Props = $props();
 </script>
 
 <header>
@@ -15,7 +19,7 @@
 <main>
 	<div style="width:100%; height: 100%; position: relative;">
 		<div class="canvas">
-			<WebGlCanvas state={gameView} />
+			<WebGlCanvas {gameView} />
 		</div>
 		<div
 			id="game-overlay"
@@ -40,9 +44,9 @@
 	</p> -->
 	<div class="actions">
 		<div class="rewind">
-			<button on:click={() => accountState.endTutorial()}>J</button>
-			<button on:click={() => accountState.resetMoves(gameView.$state.stage)}>&lt;&lt;</button>
-			<button on:click={() => accountState.rewindMoves(gameView.$state.stage)}>&lt;</button>
+			<button onclick={() => accountState.endTutorial()}>J</button>
+			<button onclick={() => accountState.resetMoves(gameView.$state.stage)}>&lt;&lt;</button>
+			<button onclick={() => accountState.rewindMoves(gameView.$state.stage)}>&lt;</button>
 		</div>
 	</div>
 </footer>

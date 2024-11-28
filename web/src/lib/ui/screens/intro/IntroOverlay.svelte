@@ -5,13 +5,20 @@
 	import BattleOverlay from '$lib/ui/screens/game/BattleOverlay.svelte';
 	import PaymentDialogOverlay from '$lib/ui/screens/intro/PaymentDialogOverlay.svelte';
 	import TutorialDialogOverlay from '$lib/ui/screens/intro/TutorialDialogOverlay.svelte';
-	export let gameView: GameView;
+
+	interface Props {
+		gameView: GameView;
+	}
+
+	let {gameView}: Props = $props();
 
 	function move(direction: {dx: number; dy: number}) {
 		performAction(gameView, direction);
 	}
 
-	$: console.log({inBattle: $gameView.inBattle});
+	$effect(() => {
+		console.log({inBattle: $gameView.inBattle});
+	});
 </script>
 
 {#if !$gameView.inBattle && $gameView.currentCharacter && $gameView.currentCharacter.position.x == 0 && $gameView.currentCharacter.position.y == 0}
@@ -39,11 +46,11 @@
 	<BattleOverlay {gameView} />
 {:else}
 	<div class="navigation">
-		<div class="north"><button on:click={() => move({dx: 0, dy: -1})}>N</button></div>
+		<div class="north"><button onclick={() => move({dx: 0, dy: -1})}>N</button></div>
 		<div class="west-south-east">
-			<button on:click={() => move({dx: -1, dy: 0})}>W</button>
-			<button on:click={() => move({dx: 0, dy: +1})}>S</button>
-			<button on:click={() => move({dx: +1, dy: 0})}>E</button>
+			<button onclick={() => move({dx: -1, dy: 0})}>W</button>
+			<button onclick={() => move({dx: 0, dy: +1})}>S</button>
+			<button onclick={() => move({dx: +1, dy: 0})}>E</button>
 		</div>
 	</div>
 {/if}
