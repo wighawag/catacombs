@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type {GameView} from '$lib/state/ViewState';
 	import {accountState} from '$lib/state/AccountState';
-	import BattleChooseYourDefense from './BattleChooseYourDefense.svelte';
+	import BattleCardChoice from './BattleCardChoice.svelte';
 	import {portrait} from '$lib/data/characters';
 	import {intro} from '$lib/state/intro';
 	import BorderedContainer from '$lib/ui/components/BorderedContainer.svelte';
@@ -43,7 +43,7 @@
 	</div>
 	<div class="monster">
 		<div class="monster-cards">
-			<BattleChooseYourDefense cards={monsterCards} selected={2} enemy={true} />
+			<BattleCardChoice cards={monsterCards} selected={2} enemy={true} />
 		</div>
 
 		<div class="monster-image">
@@ -53,7 +53,7 @@
 
 	{#if !$offchainState.inBattle?.cards.defenseChosen}
 		<div class="player-choice">
-			<BattleChooseYourDefense cards={myCards} />
+			<BattleCardChoice cards={myCards} />
 		</div>
 	{/if}
 
