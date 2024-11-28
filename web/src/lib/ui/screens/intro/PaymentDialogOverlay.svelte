@@ -5,7 +5,7 @@
 	import {intro} from '$lib/state/intro';
 	import {fly} from 'svelte/transition';
 
-	export let gameView: GameView;
+	// export let gameView: GameView;
 	export let btnDisabled: boolean = false;
 
 	async function enter(e: Event) {
@@ -30,10 +30,10 @@
 </div>
 
 <style>
-	.final {
+	/* .final {
 		font-size: 1.3rem;
 		text-align: center;
-	}
+	} */
 	.warning {
 		color: var(--color-error-500);
 		background-color: var(--color-surface-500);

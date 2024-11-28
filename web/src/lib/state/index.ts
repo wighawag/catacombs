@@ -173,6 +173,9 @@ const playerStatus = derived(
 	},
 );
 
+// TODO this is needed as no one else listen to it
+playerStatus.subscribe((v) => console.log(v));
+
 export {setContext};
 
 export {context, playerStatus, introductionState, initialStateChanges};

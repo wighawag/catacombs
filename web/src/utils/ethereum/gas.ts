@@ -41,7 +41,10 @@ export async function getGasPriceEstimate(
 
 	const historicalBlocks = optionsResolved.blockCount;
 
-	const rawFeeHistory = await provider.request<EIP1193FeeHistory>({
+	const rawFeeHistory = await provider.request<{
+		params: [`0x${string}`, EIP1193BlockTag, number[]];
+		result: EIP1193FeeHistory;
+	}>({
 		method: 'eth_feeHistory',
 		params: [`0x${historicalBlocks.toString(16)}`, optionsResolved.newestBlock, optionsResolved.rewardPercentiles],
 	});
@@ -96,7 +99,7 @@ export async function getRoughGasPriceEstimate(
 
 	const result = await getGasPriceEstimate(provider, optionsResolved);
 
-	const gasPriceHex = await provider.request<`0x${string}`>({
+	const gasPriceHex = await provider.request<{params: []; result: `0x${string}`}>({
 		method: 'eth_gasPrice',
 		params: [],
 	});

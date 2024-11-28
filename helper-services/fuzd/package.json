@@ -1,14 +1,14 @@
 {
     "name": "fuzd-service",
     "devDependencies": {
-        "fuzd-cf-worker": "^0.6.0",
-        "fuzd-server": "^0.6.0",
-        "ldenv": "^0.3.10",
+        "fuzd-cf-worker": "^0.7.2",
+        "fuzd-server": "^0.7.3",
+        "ldenv": "^0.3.11",
         "node-cron": "^3.0.3",
-        "set-defaults": "^0.0.2",
+        "set-defaults": "^0.0.5",
         "toml": "^3.0.0",
-        "wait-on": "^8.0.0",
-        "wrangler": "^3.72.0"
+        "wait-on": "^8.0.1",
+        "wrangler": "^3.91.0"
     },
     "scripts": {
         "prepare": "set-defaults .",

@@ -2,7 +2,7 @@
 	import {currentFlow} from './';
 	import Modal from '$utils/ui/modals/Modal.svelte';
 
-	$: state = $currentFlow?.state;
+	$: flowState = $currentFlow?.state;
 	$: currentStepIndex = $currentFlow?.currentStepIndex;
 
 	$: currentStep =
@@ -17,8 +17,8 @@
 
 	async function execute() {
 		if ($currentStepIndex != undefined && currentStep) {
-			const {newState, nextStep} = await currentStep.execute($state);
-			$state = newState;
+			const {newState, nextStep} = await currentStep.execute($flowState);
+			$flowState = newState;
 			if (nextStep) {
 				$currentStepIndex = nextStep;
 			} else {
@@ -29,7 +29,7 @@
 				const newStep = $currentFlow.steps[$currentStepIndex];
 				if (newStep && !newStep.action) {
 					const {newState, nextStep} = await newStep.execute($currentFlow.state);
-					$state = newState;
+					$flowState = newState;
 					if (nextStep) {
 						$currentStepIndex = nextStep;
 					} else {
@@ -43,7 +43,7 @@
 	}
 </script>
 
-{#if $currentFlow && $currentStepIndex !== undefined && $state}
+{#if $currentFlow && $currentStepIndex !== undefined && $flowState}
 	<Modal oncancel={() => cancel()}>
 		<div class="wrapper-top">
 			{#if currentStep}
@@ -51,7 +51,7 @@
 					{currentStep.title}
 				</div>
 				{#if currentStep.component}
-					<svelte:component this={currentStep.component} {state} />
+					<svelte:component this={currentStep.component} state={flowState} />
 				{:else}
 					<p class="description">{currentStep.description}</p>
 				{/if}

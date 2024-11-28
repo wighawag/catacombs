@@ -15,13 +15,13 @@ export async function createTransactionRequest<
 ): Promise<EIP1193TransactionDataOfType2> {
 	const data = encodeFunctionData(parameters as any);
 
-	const txForEstimate: EIP1193TransactionDataOfType2 = {
+	const txForEstimate = {
 		type: '0x2',
 		to: parameters.address,
 		data,
 		from: parameters.account,
 		value: '0x0', // parseEther('0.004').toString(),
-	};
+	} as const;
 
 	const gasHex = await provider.request({method: 'eth_estimateGas', params: [txForEstimate]});
 	const gas = `0x${(Number(gasHex) + 10000).toString(16)}` as `0x${string}`;

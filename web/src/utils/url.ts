@@ -145,7 +145,9 @@ export function isPrivateWindow(): Promise<boolean | null> {
 						resolve(true);
 					}
 					// eslint-disable-next-line no-unused-expressions, no-void
-					void !e && ((e = !1), window.localStorage.removeItem('test'));
+					// TODO what was the intended purpose of that line ?
+					//   anything after && is never executed since `void !e` always evaluate to undefined
+					// void !e && ((e = !1), window.localStorage.removeItem('test'));
 				}
 			} else if (navigator.userAgent.includes('Firefox')) {
 				// Firefox

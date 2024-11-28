@@ -60,7 +60,7 @@
 	{error}
 {:else}
 	<div style="width:100%; height: 100%; position: relative;">
-		<canvas id="world-map" style="background-color: #000; width:100%; height: 100%; pointer-events: auto;" />
+		<canvas id="world-map" style="background-color: #000; width:100%; height: 100%; pointer-events: auto;"></canvas>
 		<div
 			id="canvas-overlay"
 			style="position: absolute; top:0; left:0; width:100%; height: 100%; pointer-events: none; overflow: hidden;"

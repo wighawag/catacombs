@@ -1,11 +1,11 @@
 {
     "name": "missiv-service",
     "devDependencies": {
-        "ldenv": "^0.3.10",
+        "ldenv": "^0.3.11",
         "missiv-server": "^0.0.11",
-        "set-defaults": "^0.0.2",
-        "wait-on": "^8.0.0",
-        "wrangler": "^3.72.0"
+        "set-defaults": "^0.0.5",
+        "wait-on": "^8.0.1",
+        "wrangler": "^3.91.0"
     },
     "scripts": {
         "prepare": "set-defaults .",

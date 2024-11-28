@@ -3,16 +3,23 @@
 	import {splash} from './splash';
 	import {onMount} from 'svelte';
 	import {url} from '$utils/path';
+	import type {Action} from 'svelte/action';
 
 	let gameTitle: HTMLImageElement;
 	onMount(() => {
 		splash.start();
 		if ((gameTitle as any)._loaded) {
 			splash.gameLogoReady();
-		} else {
-			gameTitle.onload = () => splash.gameLogoReady();
 		}
 	});
+
+	const onload: Action<HTMLImageElement> = (node) => {
+		(node as any)._loaded = false;
+		node.addEventListener('load', () => {
+			(node as any)._loaded = true;
+			splash.gameLogoReady();
+		});
+	};
 </script>
 
 {#if $splash && $splash.stage === 0}
@@ -21,7 +28,7 @@
 	<div class="overlay game-title" out:fade on:click={() => splash.nextStage()}>
 		<div class="content">
 			<!-- see https://github.com/sveltejs/svelte/issues/11624 -->
-			<img src={url('/title.png')} alt="Game title" onload="this._loaded=true" bind:this={gameTitle} />
+			<img src={url('/title.png')} alt="Game title" use:onload bind:this={gameTitle} />
 			<p class="description">Enter at your own risk</p>
 			<!-- <p class="information">Loading...</p> -->
 			<!-- <progress style="--color: red;" /> -->
