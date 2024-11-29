@@ -40,7 +40,7 @@ export function initInitialStateChanges(connectedState: ConnectedStateStore, acc
 				// TODO fetch context or give it: Context will be taken from indexer
 				context = {
 					// TODO context
-					characterID: BigInt(currentCharacter.id || '1'),
+					characterID: BigInt(currentCharacter.id),
 					actions: [],
 					controller: zeroAddress, // TODO
 					epoch: 0,
@@ -52,12 +52,11 @@ export function initInitialStateChanges(connectedState: ConnectedStateStore, acc
 					priorHP: currentCharacter.hp,
 					accessory1: 0n, // TODO
 					accessory2: 0n, //
-					// TODO : (2 << 98) | (2 << 91) | (2 << 84) | (1 << 77) | (2 << 70)
-					attackGear: 643767809466671935455840174080n, //  (2 << 98) | (4 << 91) | (2 << 84) | (2 << 77) | (1 << 70); // <uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
-					// TODO : (2 << 98) | (2 << 91) | (0 << 84) | (0 << 77) | (1 << 70)
-					defenseGear: 641311122266079177861601689600n, // (2 << 98) | (3 << 91) | (3 << 84) | (1 << 77) | (2 << 70); // <uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>,
+					attackGear: currentCharacter.attackGear,
+					defenseGear: currentCharacter.defenseGear,
 				};
 			} else {
+				// intro
 				context = {
 					// TODO context
 					characterID: 1n,

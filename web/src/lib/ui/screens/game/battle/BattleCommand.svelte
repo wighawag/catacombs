@@ -6,12 +6,13 @@
 	import {intro} from '$lib/state/intro';
 	import BorderedContainer from '$lib/ui/components/BorderedContainer.svelte';
 	import HpBar from '$lib/ui/components/HPBar.svelte';
+	import {battleState} from '$lib/state/BattleState';
 
 	interface Props {
 		gameView: GameView;
 	}
 
-	let { gameView }: Props = $props();
+	let {gameView}: Props = $props();
 	let characterClass = $derived($intro.character?.classIndex || 0);
 	let classPortrait = $derived(portrait(characterClass));
 	let characterClassName = $derived(characterClass === 0 ? 'Barbarian' : 'Unknown');
@@ -21,20 +22,17 @@
 
 	const offchainState = accountState.offchainState;
 
-	let myCards = [
-		{type: 'defense', def: 2, armor: 3, used: false},
-		{type: 'defense', def: 2, armor: 3, used: false},
-		{type: 'defense', def: 2, armor: 3, used: true},
-		{type: 'defense', def: 2, armor: 3, used: false},
-		{type: 'defense', def: 2, armor: 3, used: true},
-		{type: 'defense', def: 2, armor: 3, used: false},
-	] as const;
-	let monsterCards = [
-		{type: 'attack', atk: 2, dmg: 3, used: true},
-		{type: 'attack', atk: 2, dmg: 3, used: false},
-		{type: 'attack', atk: 2, dmg: 3, used: false},
-		{type: 'attack', atk: 2, dmg: 3, used: false},
-	] as const;
+	// let myCards = [
+	// 	{type: 'defense', def: 2, armor: 3, used: false},
+	// 	{type: 'defense', def: 2, armor: 3, used: false},
+	// 	{type: 'defense', def: 2, armor: 3, used: true},
+	// 	{type: 'defense', def: 2, armor: 3, used: false},
+	// 	{type: 'defense', def: 2, armor: 3, used: true},
+	// 	{type: 'defense', def: 2, armor: 3, used: false},
+	// ] as const;
+
+	let myCards = $derived($battleState!.character.defenseCards);
+	let monsterCards = $derived($battleState!.monster.attackCards);
 </script>
 
 <div class="wrapper">

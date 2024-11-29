@@ -50,7 +50,6 @@ function merge(
 	connectedState: ConnectedState,
 	initialState: InitialState,
 	offchainState: OffchainState,
-	// offchainState: OffchainState,
 	onchainActions: OnChainActions<GameTxMetadata>,
 	// epochState: EpochState,
 	// account: AccountState<`0x${string}`>,
@@ -72,21 +71,24 @@ function merge(
 
 	$state.stage = 'game';
 	if ($state.myCharacters.length == 0) {
-		// if (initialState.stateChanges) {
-		$state.myCharacters.push({
-			controllers: {},
-			hp: 50,
-			id: '1',
-			position: {x: 0, y: 19},
-			xp: 0,
-		});
-		// }
+		if (initialState.stateChanges) {
+			$state.myCharacters.push({
+				controllers: {},
+				hp: 50,
+				id: '1',
+				position: {x: 0, y: 19},
+				xp: 0,
+				attackGear: initialState.context.attackGear,
+				defenseGear: initialState.context.defenseGear,
+			});
+		}
 		$state.stage = 'intro';
 	}
 
 	$state.currentStateChanges = initialState.stateChanges;
 
-	const currentCharacter = $state.myCharacters[0] ? {...$state.myCharacters[0]} : undefined; // TODO based on offchainState;
+	// TODO based on offchainState; for now only first character
+	const currentCharacter = $state.myCharacters[0] ? {...$state.myCharacters[0]} : undefined;
 	$state.currentCharacter = currentCharacter;
 	if (offchainState.stage === $state.stage) {
 		if (offchainState.stateChanges.length > 0) {
@@ -130,6 +132,7 @@ function merge(
 				}));
 			}
 
+			// TODO use stateChanges.battle.
 			for (const monster of $state.monsters) {
 				if (monster.hp > 0 && monster.x == currentCharacter.position.x && monster.y == currentCharacter.position.y) {
 					$state.inBattle = {
