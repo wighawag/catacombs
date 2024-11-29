@@ -6,18 +6,20 @@
 		selected?: number | undefined;
 		cards: readonly CurrentCard[];
 		enemy?: boolean;
+		onselected?: (card: CurrentCard, index: number) => void;
 	}
 
-	let { selected = undefined, cards, enemy = false }: Props = $props();
+	let {selected = undefined, cards, enemy = false, onselected}: Props = $props();
 </script>
 
 <div class="actions">
 	{#each cards as card, i}
 		<Card
-			{enemy}
+			onclick={() => onselected?.(card, i)}
+			red={enemy}
 			{card}
 			disabled={(selected != undefined && i != selected) || card.used}
-			hilighted={enemy && selected == i}
+			hilighted={selected == i}
 		/>
 	{/each}
 </div>

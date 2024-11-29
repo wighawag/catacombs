@@ -7,6 +7,7 @@
 	import BorderedContainer from '$lib/ui/components/BorderedContainer.svelte';
 	import HpBar from '$lib/ui/components/HPBar.svelte';
 	import {battleState} from '$lib/state/BattleState';
+	import type {CurrentCard} from 'template-game-common';
 
 	interface Props {
 		gameView: GameView;
@@ -22,17 +23,14 @@
 
 	const offchainState = accountState.offchainState;
 
-	// let myCards = [
-	// 	{type: 'defense', def: 2, armor: 3, used: false},
-	// 	{type: 'defense', def: 2, armor: 3, used: false},
-	// 	{type: 'defense', def: 2, armor: 3, used: true},
-	// 	{type: 'defense', def: 2, armor: 3, used: false},
-	// 	{type: 'defense', def: 2, armor: 3, used: true},
-	// 	{type: 'defense', def: 2, armor: 3, used: false},
-	// ] as const;
-
 	let myCards = $derived($battleState!.character.defenseCards);
 	let monsterCards = $derived($battleState!.monster.attackCards);
+	let monsterSelectedCard = $derived($battleState!.monster.currentAttackCardIndex);
+
+	let mySelection: number | undefined = $state();
+	function cardSelected(card: CurrentCard, index: number) {
+		mySelection = index;
+	}
 </script>
 
 <div class="wrapper">
@@ -45,7 +43,7 @@
 	</div>
 	<div class="monster">
 		<div class="monster-cards">
-			<BattleCardChoice cards={monsterCards} selected={2} enemy={true} />
+			<BattleCardChoice cards={monsterCards} selected={monsterSelectedCard} enemy={true} />
 		</div>
 
 		<div class="monster-image">
@@ -55,7 +53,7 @@
 
 	{#if !$offchainState.inBattle?.cards.defenseChosen}
 		<div class="player-choice">
-			<BattleCardChoice cards={myCards} />
+			<BattleCardChoice onselected={cardSelected} cards={myCards} selected={mySelection} />
 		</div>
 	{/if}
 

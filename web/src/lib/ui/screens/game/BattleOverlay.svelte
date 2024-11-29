@@ -9,7 +9,7 @@
 		gameView: GameView;
 	}
 
-	let { gameView }: Props = $props();
+	let {gameView}: Props = $props();
 </script>
 
 <div class="content" in:fade={{delay: 300}}>

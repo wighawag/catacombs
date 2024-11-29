@@ -1,23 +1,20 @@
 <script lang="ts">
 	import IconSkull from '$data/assets/skull-key-white.png'; // TODO remove ?
+	import type {MouseEventHandler} from 'svelte/elements';
 	import type {CurrentCard} from 'template-game-common';
 
 	interface Props {
 		card: CurrentCard;
 		disabled?: boolean;
-		enemy?: boolean;
+		red?: boolean;
 		hilighted?: boolean;
+		onclick?: MouseEventHandler<HTMLButtonElement>;
 	}
 
-	let {
-		card,
-		disabled = false,
-		enemy = false,
-		hilighted = false
-	}: Props = $props();
+	let {card, disabled = false, red = false, hilighted = false, onclick}: Props = $props();
 </script>
 
-<button class="card" class:disabled class:enemy class:hoverable={!disabled && !enemy} class:hilighted>
+<button class="card" class:disabled class:red class:hoverable={!disabled && !hilighted} class:hilighted {onclick}>
 	<div class="top">
 		<div>{card.type == 'attack' ? 'ATK' : 'DEF'}</div>
 		<div>{card.type == 'attack' ? card.atk : card.def}</div>
@@ -52,16 +49,10 @@
 		transition-duration: 0.1s;
 		z-index: 2;
 	}
-	/* .enemy {
-		color: red;
-	} */
-	.enemy {
+	.red {
 		border: red solid 2px;
 	}
 
-	/* .enemy .armor {
-		color: red;
-	} */
 	.center {
 		width: 100%;
 		display: flex;
