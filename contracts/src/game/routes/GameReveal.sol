@@ -191,7 +191,16 @@ contract GameReveal is Game {
         int32 yDiff = y - monster.y;
 
         if (!(xDiff == 0 && yDiff == 0)) {
-            if (Math.abs(xDiff) > Math.abs(yDiff)) {
+            // TODO randomize like in initialState
+            int32 rand_x = x + 5;
+            int32 rand_y = y + 5;
+            if (
+                (Math.abs(xDiff) > 10 || Math.abs(yDiff) > 10) &&
+                isTakenByOtherMonster(monsters, rand_x, rand_y) == type(uint256).max
+            ) {
+                m_nextX = rand_x;
+                m_nextY = rand_y;
+            } else if (Math.abs(xDiff) > Math.abs(yDiff)) {
                 m_nextX += (xDiff > int32(0) ? int32(1) : int32(-1));
                 if (
                     GameUtils.isValidMove(monster.x, monster.y, m_nextX, m_nextY) != Reason.None ||
