@@ -270,6 +270,8 @@ contract GameReveal is Game {
             return;
         }
 
+        uint256 monsterIndex = stateChanges.battle.monsterIndexPlus1 - 1;
+
         {
             (uint8 attackBonus1, uint8 attackValue1, uint8 newAttackCardsUsed1) = _checkAndGetCardData(
                 stateChanges.battle.attackCardsUsed1,
@@ -293,7 +295,6 @@ contract GameReveal is Game {
             // console.log("defenseBonus2 %i", defenseBonus2);
             // console.log("defenseValue2 %i", defenseValue2);
 
-            uint256 monsterIndex = stateChanges.battle.monsterIndexPlus1 - 1;
             if (attackBonus1 > defenseBonus2) {
                 uint8 damage = defenseValue2 > attackValue1 ? 0 : attackValue1 - defenseValue2;
                 uint8 hp = stateChanges.monsters[monsterIndex].hp;
@@ -304,27 +305,6 @@ contract GameReveal is Game {
                 }
 
                 stateChanges.monsters[monsterIndex].hp = hp;
-                if (hp == 0) {
-                    stateChanges.battle.monsterIndexPlus1 = 0; // battle end // TODO loot
-                    stateChanges.battle.attackCardsUsed1 = 0;
-                    stateChanges.battle.defenseCardsUsed1 = 0;
-                    stateChanges.battle.attackCardsUsed2 = 0;
-                    stateChanges.battle.defenseCardsUsed2 = 0;
-                    stateChanges.newXP += 2;
-
-                    (int32 x, int32 y) = PositionUtils.toXY(stateChanges.newPosition);
-                    // TODO randomize like in initialState
-                    int32 rand_x = x + 5;
-                    int32 rand_y = y + 5;
-                    if (
-                        // TODO find another if there ,  hmm, ?
-                        isTakenByOtherMonster(stateChanges.monsters, rand_x, rand_y) == type(uint256).max
-                    ) {
-                        stateChanges.monsters[monsterIndex].hp = 4; // TODO
-                        stateChanges.monsters[monsterIndex].x = rand_x;
-                        stateChanges.monsters[monsterIndex].y = rand_y;
-                    }
-                }
                 // console.log("you inflict %i damage", damage);
             }
         }
@@ -359,6 +339,29 @@ contract GameReveal is Game {
                 stateChanges.newHP = hp;
 
                 // console.log("monster inflict %i damage", damage);
+            }
+        }
+
+        if (stateChanges.monsters[monsterIndex].hp == 0) {
+            stateChanges.battle.monsterIndexPlus1 = 0; // battle end // TODO loot
+            // we do not reset the player cards
+            // stateChanges.battle.attackCardsUsed1 = 0;
+            // stateChanges.battle.defenseCardsUsed1 = 0;
+            stateChanges.battle.attackCardsUsed2 = 0;
+            stateChanges.battle.defenseCardsUsed2 = 0;
+            stateChanges.newXP += 2;
+
+            (int32 x, int32 y) = PositionUtils.toXY(stateChanges.newPosition);
+            // TODO randomize like in initialState
+            int32 rand_x = x + 5;
+            int32 rand_y = y + 5;
+            if (
+                // TODO find another if there ,  hmm, ?
+                isTakenByOtherMonster(stateChanges.monsters, rand_x, rand_y) == type(uint256).max
+            ) {
+                stateChanges.monsters[monsterIndex].hp = 4; // TODO
+                stateChanges.monsters[monsterIndex].x = rand_x;
+                stateChanges.monsters[monsterIndex].y = rand_y;
             }
         }
     }

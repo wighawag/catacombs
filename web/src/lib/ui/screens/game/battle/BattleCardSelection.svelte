@@ -12,8 +12,13 @@
 </script>
 
 <div class="actions">
-	<Card card={attack} red={enemy} />
-	<Card card={defense} red={enemy} />
+	{#if enemy}
+		<Card card={defense} red={enemy} />
+		<Card card={attack} red={enemy} />
+	{:else}
+		<Card card={attack} red={enemy} />
+		<Card card={defense} red={enemy} />
+	{/if}
 </div>
 
 <style>
