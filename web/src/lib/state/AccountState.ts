@@ -384,6 +384,11 @@ export class AccountState extends BaseAccountHandler<AccountData, GameTxMetadata
 		this.$data.offchainState.timestamp = time.now;
 		this.$data.offchainState.stateChangesTimestamp = performance.now();
 
+		if (this.$data.offchainState.inBattle) {
+			this.$data.offchainState.inBattle.cards.attackChosen = undefined;
+			this.$data.offchainState.inBattle.cards.defenseChosen = undefined;
+		}
+
 		this._save();
 		this._offchainState.set(this.$data.offchainState);
 	}
@@ -547,6 +552,11 @@ export class AccountState extends BaseAccountHandler<AccountData, GameTxMetadata
 		}
 		this.$data.offchainState.timestamp = time.now;
 		this.$data.offchainState.inBattle.cards.choicePresented = choice;
+		if (choice === 'attack') {
+			this.$data.offchainState.inBattle.cards.attackChosen = undefined;
+		} else {
+			this.$data.offchainState.inBattle.cards.defenseChosen = undefined;
+		}
 
 		this._save();
 		this._offchainState.set(this.$data.offchainState);

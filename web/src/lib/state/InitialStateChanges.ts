@@ -55,6 +55,7 @@ export function initInitialStateChanges(connectedState: ConnectedStateStore, acc
 					attackGear: currentCharacter.attackGear,
 					defenseGear: currentCharacter.defenseGear,
 				};
+				console.log(`context from currentCharacter`, context);
 			} else {
 				// intro
 				context = {
@@ -76,6 +77,7 @@ export function initInitialStateChanges(connectedState: ConnectedStateStore, acc
 					// TODO : (2 << 98) | (2 << 91) | (0 << 84) | (0 << 77) | (1 << 70)
 					defenseGear: 641311122266079177861601689600n, // (2 << 98) | (3 << 91) | (3 << 84) | (1 << 77) | (2 << 70); // <uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>,
 				};
+				console.log(`context without character`, context);
 			}
 
 			const stateChanges = await evmGame.initialStateChanges(context);

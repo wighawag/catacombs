@@ -39,7 +39,7 @@ type ContractsABI = MergedAbis<typeof contractsInfo.contracts>;
 const GameIndexerProcessor: JSProcessor<ContractsABI, Data> = {
 	// version is automatically populated via version.cjs to let the browser knows to reindex on changes
 	// only works if the changes ends up in the generated js
-	version: '3', // '__VERSION_HASH__', //
+	version: '4', // '__VERSION_HASH__', //
 	construct(): Data {
 		return {
 			characters: {},

@@ -8,6 +8,10 @@
 	import HpBar from '$lib/ui/components/HPBar.svelte';
 	import {battleState} from '$lib/state/BattleState';
 	import type {CurrentCard} from 'template-game-common';
+	import BattleCardSelection from './BattleCardSelection.svelte';
+	import Card from './Card.svelte';
+	import {fade, fly} from 'svelte/transition';
+	import {evmGame} from '$lib/state/computed';
 
 	interface Props {
 		gameView: GameView;
@@ -23,19 +27,50 @@
 
 	const offchainState = accountState.offchainState;
 
-	let myCards = $derived($battleState!.character.defenseCards);
-	let monsterCards = $derived($battleState!.monster.attackCards);
-	let monsterSelectedCard = $derived($battleState!.monster.currentAttackCardIndex);
+	let myAttackCards = $derived($battleState!.character.attackCards);
+	let myDefenseCards = $derived($battleState!.character.defenseCards);
+	let monsterAttackCards = $derived($battleState!.monster.attackCards);
+	let monsterDefenseCards = $derived($battleState!.monster.defenseCards);
+	let monsterSelectedAttackCard = $derived($battleState!.monster.currentAttackCardIndex);
+	let monsterSelectedDefenseCard = $derived($battleState!.monster.currentDefenseCardIndex);
 
-	let mySelection: number | undefined = $state();
-	function cardSelected(card: CurrentCard, index: number) {
-		mySelection = index;
+	// let chosing: undefined | 'attack' | 'defense' = $state();
+
+	async function confirmBattleChoice(attackCardIndex: number, defenseCardIndex: number) {
+		const currentStateChanges = gameView.$state.currentStateChanges;
+		if (!currentStateChanges) {
+			return;
+		}
+		const context = gameView.$state.context;
+		if (!context) {
+			return;
+		}
+		const action = (1n << 248n) | BigInt(attackCardIndex << 8) | BigInt(defenseCardIndex);
+		console.log(action.toString(16));
+		console.log(`-----------------------------`);
+		console.log(currentStateChanges);
+		const stateChanges = await evmGame.stepChanges(currentStateChanges, context, action);
+		console.log(`=>`);
+		console.log(stateChanges);
+		console.log(`-----------------------------`);
+		accountState.addMove(
+			gameView.$state.stage,
+			{
+				type: 'battle',
+				attackCardIndex,
+				defenseCardIndex,
+			},
+			stateChanges,
+		);
+		if (stateChanges.battle.monsterIndexPlus1 == 0) {
+			accountState.acceptEnd();
+		}
 	}
 </script>
 
 <div class="wrapper">
 	<div class="centered">
-		<BorderedContainer>Choose your defense!</BorderedContainer>
+		<BorderedContainer>Ready to fight! Select both an attack and defense card.</BorderedContainer>
 	</div>
 	<div class="centered">
 		<p>Skeleton</p>
@@ -43,19 +78,92 @@
 	</div>
 	<div class="monster">
 		<div class="monster-cards">
-			<BattleCardChoice cards={monsterCards} selected={monsterSelectedCard} enemy={true} />
+			{#if $offchainState.inBattle?.cards.choicePresented}
+				<div class="selection" transition:fly={{y: -100}}>
+					<div transition:fade>
+						{#if $offchainState.inBattle?.cards.choicePresented === 'attack'}
+							<BattleCardChoice cards={monsterDefenseCards} enemy={true} selected={monsterSelectedDefenseCard} />
+						{:else}
+							<BattleCardChoice cards={monsterAttackCards} enemy={true} selected={monsterSelectedAttackCard} />
+						{/if}
+					</div>
+				</div>
+			{/if}
+			<div>
+				<BattleCardSelection
+					attack={monsterAttackCards[monsterSelectedAttackCard]}
+					defense={monsterDefenseCards[monsterSelectedDefenseCard]}
+					enemy={true}
+				/>
+			</div>
 		</div>
 
 		<div class="monster-image">
 			<img alt="skeleton" src="/images/monsters/skeleton.png" />
 		</div>
+
+		{#if $offchainState.inBattle?.cards.attackChosen && $offchainState.inBattle?.cards.defenseChosen}
+			<button
+				onclick={() =>
+					confirmBattleChoice(
+						$offchainState.inBattle!.cards.attackChosen!.cardIndex,
+						$offchainState.inBattle!.cards.defenseChosen!.cardIndex,
+					)}
+				class="confirm">confirm</button
+			>
+		{/if}
 	</div>
 
-	{#if !$offchainState.inBattle?.cards.defenseChosen}
-		<div class="player-choice">
+	<div class="actions">
+		{#if $offchainState.inBattle?.cards.choicePresented}
+			<div class="selection" transition:fly={{y: 100}}>
+				<div transition:fade>
+					{#if $offchainState.inBattle?.cards.choicePresented === 'attack'}
+						<BattleCardChoice
+							cards={myAttackCards}
+							onselected={(_card, i) => {
+								accountState.selectAttackCard(i);
+							}}
+						/>
+					{:else}
+						<BattleCardChoice
+							cards={myDefenseCards}
+							onselected={(_card, i) => {
+								accountState.selectDefenseCard(i);
+							}}
+						/>
+					{/if}
+				</div>
+			</div>
+		{/if}
+
+		{#if !$offchainState.inBattle?.cards.attackChosen}
+			<button onclick={() => accountState.showChoice('attack')} class="button-action btn-animate-1"
+				>select attack</button
+			>
+			<!-- <div class="player-choice">
 			<BattleCardChoice onselected={cardSelected} cards={myCards} selected={mySelection} />
-		</div>
-	{/if}
+		</div> -->
+		{:else}
+			<Card
+				onclick={() => accountState.showChoice('attack')}
+				card={myAttackCards[$offchainState.inBattle?.cards.attackChosen.cardIndex]}
+			/>
+		{/if}
+		{#if !$offchainState.inBattle?.cards.defenseChosen}
+			<button onclick={() => accountState.showChoice('defense')} class="button-action btn-animate-2"
+				>select defense</button
+			>
+			<!-- <div class="player-choice">
+			<BattleCardChoice onselected={cardSelected} cards={myCards} selected={mySelection} />
+		</div> -->
+		{:else}
+			<Card
+				onclick={() => accountState.showChoice('defense')}
+				card={myDefenseCards[$offchainState.inBattle?.cards.defenseChosen.cardIndex]}
+			/>
+		{/if}
+	</div>
 
 	<div class="hero">
 		<div class="icon">
@@ -78,13 +186,36 @@
 		}
 	}
 
-	.player-choice {
-		border: dashed 2px black;
-		animation: border-pulsate 2s ease-in-out infinite;
-		padding: 32px;
-		margin-block: 8px;
+	.selection {
+		width: 100%;
+		background-color: gray;
+		position: absolute;
+	}
+
+	.monster-cards {
+		width: 100%;
+		position: relative;
+	}
+
+	.button-action {
+		border: solid white 2px;
+		background-color: unset;
+		color: white;
+		width: 100px;
+	}
+
+	.btn-animate-1 {
+		animation: border-pulsate 2s 0.4s ease-in-out infinite;
+	}
+	.btn-animate-2 {
+		animation: border-pulsate 2s 0s ease-in-out infinite;
+	}
+
+	.actions {
 		display: flex;
+		gap: 0.5rem;
 		justify-content: center;
+		flex-wrap: wrap;
 	}
 
 	.wrapper {
@@ -104,10 +235,19 @@
 		flex-direction: column;
 	}
 
-	/* .monster-cards {
-		position: absolute;
-		z-index: 2;
-	} */
+	.monster {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.confirm {
+		width: 100px;
+		margin-top: -24px;
+		z-index: 4;
+	}
 
 	.monster-image {
 		display: flex;
@@ -116,7 +256,7 @@
 	}
 
 	.monster img {
-		width: 15vh;
+		width: 300px;
 		min-width: 128px;
 		aspect-ratio: 1;
 		image-rendering: pixelated;
@@ -125,6 +265,7 @@
 	}
 
 	.hero {
+		margin-top: 10px;
 		display: flex;
 		gap: 1rem;
 		justify-content: center;
