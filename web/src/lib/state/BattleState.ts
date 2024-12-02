@@ -26,7 +26,13 @@ export type BattleState =
 
 function toCards(type: 'attack' | 'defense', gear: bigint, usedBitmap: number): CurrentCard[] {
 	const cards = fromBigIntToCards(type, gear);
-	return cards.map((v) => ({...v, used: false}));
+
+	// Calculate the mask for all cards being used
+	const allUsedMask = (1 << cards.length) - 1;
+	// Reset usedBitmap to 0 if all bits are set
+	usedBitmap = usedBitmap === allUsedMask ? 0 : usedBitmap;
+
+	return cards.map((v, i) => ({...v, used: ((usedBitmap >> i) & 1) === 1}));
 }
 
 export const battleState = derived<GameView, BattleState>(
