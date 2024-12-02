@@ -20,9 +20,9 @@
 	let {gameView}: Props = $props();
 	let characterClass = $derived($intro.character?.classIndex || 0);
 	let classPortrait = $derived(portrait(characterClass));
-	let characterClassName = $derived(characterClass === 0 ? 'Barbarian' : 'Unknown');
+	// let characterClassName = $derived(characterClass === 0 ? 'Barbarian' : 'Unknown');
 
-	let xp = $derived($gameView && $gameView.currentCharacter ? $gameView.currentCharacter.xp : 0);
+	// let xp = $derived($gameView && $gameView.currentCharacter ? $gameView.currentCharacter.xp : 0);
 	let hp = $derived($gameView && $gameView.currentCharacter ? $gameView.currentCharacter.hp : 0);
 
 	const offchainState = accountState.offchainState;
@@ -33,6 +33,7 @@
 	let monsterDefenseCards = $derived($battleState!.monster.defenseCards);
 	let monsterSelectedAttackCard = $derived($battleState!.monster.currentAttackCardIndex);
 	let monsterSelectedDefenseCard = $derived($battleState!.monster.currentDefenseCardIndex);
+	let monsterHP = $derived($battleState!.monster.hp);
 
 	// let chosing: undefined | 'attack' | 'defense' = $state();
 
@@ -53,18 +54,39 @@
 		console.log(`=>`);
 		console.log(stateChanges);
 		console.log(`-----------------------------`);
-		accountState.addMove(
-			gameView.$state.stage,
-			{
-				type: 'battle',
-				attackCardIndex,
-				defenseCardIndex,
-			},
-			stateChanges,
-		);
-		if (stateChanges.battle.monsterIndexPlus1 == 0) {
-			accountState.acceptEnd();
+
+		const heroBefore = {hp: currentStateChanges.newHP};
+		const heroAfter = {hp: stateChanges.newHP};
+		const monsterIndex = currentStateChanges.battle.monsterIndexPlus1 - 1;
+		const monsterBefore = currentStateChanges.monsters[monsterIndex];
+		const monsterAfter = stateChanges.monsters[monsterIndex];
+
+		if (monsterAfter.hp < monsterBefore.hp) {
+			// play animation
 		}
+
+		if (heroAfter.hp < heroBefore.hp) {
+			// play animation
+		}
+
+		setTimeout(() => {
+			accountState.addMove(
+				gameView.$state.stage,
+				{
+					type: 'battle',
+					attackCardIndex,
+					defenseCardIndex,
+				},
+				stateChanges,
+			);
+
+			// TODO animation
+
+			// TODO if dead, show result battle
+			if (stateChanges.battle.monsterIndexPlus1 == 0) {
+				accountState.acceptEnd();
+			}
+		}, 3000);
 	}
 </script>
 
@@ -74,7 +96,7 @@
 	</div>
 	<div class="centered">
 		<p>Skeleton</p>
-		<div class="bar"><HpBar value={4} maxValue={4} /></div>
+		<div class="bar"><HpBar value={monsterHP} maxValue={4} /></div>
 	</div>
 	<div class="monster">
 		<div class="monster-cards">

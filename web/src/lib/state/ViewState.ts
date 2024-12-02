@@ -90,6 +90,8 @@ function merge(
 	// TODO based on offchainState; for now only first character
 	const currentCharacter = $state.myCharacters[0] ? {...$state.myCharacters[0]} : undefined;
 	$state.currentCharacter = currentCharacter;
+
+	// if we the offchain statechanges apply to the current onchain stage (intro vs in-game)
 	if (offchainState.stage === $state.stage) {
 		if (offchainState.stateChanges.length > 0) {
 			$state.currentStateChanges = offchainState.stateChanges[offchainState.stateChanges.length - 1];
@@ -103,6 +105,10 @@ function merge(
 				}
 			}
 			currentCharacter.position = currentPosition;
+			if ($state.currentStateChanges) {
+				currentCharacter.hp = $state.currentStateChanges.newHP;
+				currentCharacter.xp = $state.currentStateChanges.newXP;
+			}
 
 			if (offchainState.stateChanges.length > 0) {
 				if (offchainState.stateChanges.length > 1) {
