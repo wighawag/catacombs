@@ -34,22 +34,21 @@ function toCards(type: 'attack' | 'defense', gear: bigint, usedBitmap: number): 
 
 	return cards.map((v, i) => ({...v, used: ((usedBitmap >> i) & 1) === 1}));
 }
+const fromHexString = (hexString: string) => {
+	const match = hexString.match(/.{1,2}/g);
+	if (!match) {
+		return new Uint8Array();
+	}
+	return Uint8Array.from(match.map((byte) => parseInt(byte, 16)));
+};
 
-const defaultMonster =
-	//<uint8 hp>
-	(4n << 248n) |
-	//<uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
-	(2n << 226n) |
-	(2n << 219n) |
-	(1n << 212n) |
-	(1n << 205n) |
-	(1n << 198n) |
-	//<uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
-	(2n << 98n) |
-	(0n << 91n) |
-	(0n << 84n) |
-	(1n << 77n) |
-	(0n << 70n);
+const toHexString = (bytes: Uint8Array) => {
+	return bytes.reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
+};
+
+const monsterKinds = fromHexString(
+	`04000008101020400000000000000000000000080000200000000000000000000600000810202040000000000000000000000008100020000000000000000000`,
+);
 
 export const battleState = derived<GameView, BattleState>(
 	gameView,
@@ -63,7 +62,12 @@ export const battleState = derived<GameView, BattleState>(
 			$gameView.currentStateChanges.battle.monsterIndexPlus1 > 0
 		) {
 			const kind = $gameView.inBattle.monster.kind;
-			const monsterAttackGear = (defaultMonster >> 128n) & 0x1fffffffffffffffffffffffffn;
+			console.log({kind});
+			const monsterKindAsArray = monsterKinds.slice(kind * 32, kind * 32 + 32);
+			const monsterKindAsHex = toHexString(monsterKindAsArray);
+			const monsterKind = BigInt(`0x${monsterKindAsHex}`);
+			console.log({monsterKind, monsterKindAsArray, monsterKindAsHex});
+			const monsterAttackGear = (monsterKind >> 128n) & 0x1fffffffffffffffffffffffffn;
 			console.log({monsterAttackGear});
 			//10 = 2 cards
 			// 0000010 0000001 // 2 1
@@ -80,7 +84,7 @@ export const battleState = derived<GameView, BattleState>(
 			if (currentAttackCardIndex == -1) {
 				currentAttackCardIndex = 0;
 			}
-			const monsterDefenseGear = defaultMonster & 0x1fffffffffffffffffffffffffn;
+			const monsterDefenseGear = monsterKind & 0x1fffffffffffffffffffffffffn;
 			console.log({monsterDefenseGear});
 			// 10 = 2 cards
 			// 0000000 0000000 // 0 0

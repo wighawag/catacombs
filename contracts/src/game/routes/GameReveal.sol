@@ -4,11 +4,16 @@ pragma solidity ^0.8.0;
 import "../Game.sol";
 import "../GameUtils.sol";
 import "../../utils/PositionUtils.sol";
+import "../../utils/BytesUtils.sol";
 import "../../solidity-kit/solc_0_8/utils/Math.sol";
 import "hardhat/console.sol";
 
 contract GameReveal is Game {
     using GameUtils for Config;
+    using BytesUtils for bytes;
+
+    bytes constant monsterKinds =
+        hex"04000008101020400000000000000000000000080000200000000000000000000600000810202040000000000000000000000008100020000000000000000000";
 
     struct Context {
         uint256 characterID;
@@ -86,11 +91,11 @@ contract GameReveal is Game {
         // position can be represented as delta from player and can be store in few bits this way
         // life is tiny and monster type can do the rest
         // 256bits should be enough
-        monsters[0] = Monster({x: x - 2, y: y + 5, hp: 3, kind: 1});
+        monsters[0] = Monster({x: x - 2, y: y + 5, hp: 3, kind: 0});
         monsters[1] = Monster({x: x - 5, y: y - 3, hp: 3, kind: 1});
-        monsters[2] = Monster({x: x + 5, y: y + 2, hp: 3, kind: 1});
+        monsters[2] = Monster({x: x + 5, y: y + 2, hp: 3, kind: 0});
         monsters[3] = Monster({x: x + 6, y: y - 5, hp: 3, kind: 1});
-        monsters[4] = Monster({x: x + 4, y: y + 8, hp: 3, kind: 1});
+        monsters[4] = Monster({x: x + 4, y: y + 8, hp: 3, kind: 0});
         stateChanges.monsters = monsters;
         stateChanges.newPosition = position;
         stateChanges.newHP = 10; // TODO
@@ -241,22 +246,6 @@ contract GameReveal is Game {
     // TODO : (2 << 98) | (2 << 91) | (0 << 84) | (0 << 77) | (1 << 70)
     uint128 constant defaultDefenseGear = (2 << 98) | (3 << 91) | (3 << 84) | (1 << 77) | (2 << 70); // <uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
 
-    uint256 constant defaultMonster =
-        //<uint8 hp>
-        (4 << 248) |
-            //<uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
-            (2 << 226) |
-            (2 << 219) |
-            (1 << 212) |
-            (1 << 205) |
-            (1 << 198) |
-            //<uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
-            (2 << 98) |
-            (0 << 91) |
-            (0 << 84) |
-            (1 << 77) |
-            (0 << 70);
-
     function _battle(
         StateChanges memory stateChanges,
         Context memory context,
@@ -273,6 +262,7 @@ contract GameReveal is Game {
         uint256 monsterIndex = stateChanges.battle.monsterIndexPlus1 - 1;
 
         {
+            uint256 monsterKind = monsterKinds.sliceAsUint256(stateChanges.monsters[monsterIndex].kind * 32);
             (uint8 attackBonus1, uint8 attackValue1, uint8 newAttackCardsUsed1) = _checkAndGetCardData(
                 stateChanges.battle.attackCardsUsed1,
                 context.attackGear,
@@ -282,10 +272,10 @@ contract GameReveal is Game {
 
             (uint8 defenseBonus2, uint8 defenseValue2, uint8 newDefenseCardsUsed2) = _checkAndGetCardData(
                 stateChanges.battle.defenseCardsUsed2,
-                uint128((defaultMonster) & 0x1FFFFFFFFFFFFFFFFFFFFFFFFF),
+                uint128((monsterKind) & 0x1FFFFFFFFFFFFFFFFFFFFFFFFF),
                 _getAvailableCardIndex(
                     stateChanges.battle.defenseCardsUsed2,
-                    uint128((defaultMonster) & 0x1FFFFFFFFFFFFFFFFFFFFFFFFF)
+                    uint128((monsterKind) & 0x1FFFFFFFFFFFFFFFFFFFFFFFFF)
                 )
             );
             stateChanges.battle.defenseCardsUsed2 = newDefenseCardsUsed2;
@@ -310,6 +300,7 @@ contract GameReveal is Game {
         }
 
         {
+            uint256 monsterKind = monsterKinds.sliceAsUint256(stateChanges.monsters[monsterIndex].kind * 32);
             (uint8 defenseBonus1, uint8 defenseValue1, uint8 newDefenseCardsUsed1) = _checkAndGetCardData(
                 stateChanges.battle.defenseCardsUsed1,
                 context.defenseGear,
@@ -319,10 +310,10 @@ contract GameReveal is Game {
 
             (uint8 attackBonus2, uint8 attackValue2, uint8 newAttackCardsUsed2) = _checkAndGetCardData(
                 stateChanges.battle.attackCardsUsed2,
-                uint128((defaultMonster >> 128) & 0x1FFFFFFFFFFFFFFFFFFFFFFFFF),
+                uint128((monsterKind >> 128) & 0x1FFFFFFFFFFFFFFFFFFFFFFFFF),
                 _getAvailableCardIndex(
                     stateChanges.battle.attackCardsUsed2,
-                    uint128((defaultMonster >> 128) & 0x1FFFFFFFFFFFFFFFFFFFFFFFFF)
+                    uint128((monsterKind >> 128) & 0x1FFFFFFFFFFFFFFFFFFFFFFFFF)
                 )
             );
             stateChanges.battle.attackCardsUsed2 = newAttackCardsUsed2;
