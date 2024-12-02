@@ -116,7 +116,7 @@
 
 	<div class="actions">
 		{#if $offchainState.inBattle?.cards.choicePresented}
-			<div class="selection" transition:fly={{y: 100}}>
+			<div class="selection player-selection" transition:fly={{y: 100}}>
 				<div transition:fade>
 					{#if $offchainState.inBattle?.cards.choicePresented === 'attack'}
 						<BattleCardChoice
@@ -187,9 +187,15 @@
 	}
 
 	.selection {
+		padding: 2rem;
 		width: 100%;
-		background-color: gray;
+		background-color: #191919;
 		position: absolute;
+		z-index: 3;
+	}
+
+	.player-selection {
+		margin-top: -80px;
 	}
 
 	.monster-cards {
