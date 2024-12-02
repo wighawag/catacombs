@@ -35,6 +35,22 @@ function toCards(type: 'attack' | 'defense', gear: bigint, usedBitmap: number): 
 	return cards.map((v, i) => ({...v, used: ((usedBitmap >> i) & 1) === 1}));
 }
 
+const defaultMonster =
+	//<uint8 hp>
+	(4n << 248n) |
+	//<uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
+	(2n << 226n) |
+	(2n << 219n) |
+	(1n << 212n) |
+	(1n << 205n) |
+	(1n << 198n) |
+	//<uint3 numCards><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value><uint7 bonus><uint7 value>
+	(2n << 98n) |
+	(0n << 91n) |
+	(0n << 84n) |
+	(1n << 77n) |
+	(0n << 70n);
+
 export const battleState = derived<GameView, BattleState>(
 	gameView,
 	($gameView: GameViewState) => {
@@ -47,20 +63,33 @@ export const battleState = derived<GameView, BattleState>(
 			$gameView.currentStateChanges.battle.monsterIndexPlus1 > 0
 		) {
 			const kind = $gameView.inBattle.monster.kind;
+			const monsterAttackGear = (defaultMonster >> 128n) & 0x1fffffffffffffffffffffffffn;
+			console.log({monsterAttackGear});
+			//10 = 2 cards
+			// 0000010 0000001 // 2 1
+			// 0000001 0000001
+			// 0000000000000000000000000000000000000000000000000000000000000000000000
 			const monsterAttackCards = toCards(
 				'attack',
 				// TODO kind,
-				643767809466671935455840174080n,
+				monsterAttackGear,
 				$gameView.currentStateChanges.battle.attackCardsUsed2,
 			);
+			console.log({monsterAttackCards});
 			let currentAttackCardIndex = monsterAttackCards.findIndex((v) => !v.used);
 			if (currentAttackCardIndex == -1) {
 				currentAttackCardIndex = 0;
 			}
+			const monsterDefenseGear = defaultMonster & 0x1fffffffffffffffffffffffffn;
+			console.log({monsterDefenseGear});
+			// 10 = 2 cards
+			// 0000000 0000000 // 0 0
+			// 0000001 0000000 // 1 0
+			// 0000000000000000000000000000000000000000000000000000000000000000000000
 			const monsterDefenseCards = toCards(
 				'defense',
 				// TODO kind,
-				641311122266079177861601689600n,
+				monsterDefenseGear,
 				$gameView.currentStateChanges.battle.defenseCardsUsed2,
 			);
 			let currentDefenseCardIndex = monsterDefenseCards.findIndex((v) => !v.used);

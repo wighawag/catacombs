@@ -24,13 +24,13 @@ export function fromBigIntToCards(type: 'attack' | 'defense', gear: bigint): Car
 			type == 'attack'
 				? {
 						type,
-						atk: value,
-						dmg: bonus,
+						atk: bonus,
+						dmg: value,
 					}
 				: {
 						type,
-						def: value,
-						armor: bonus,
+						def: bonus,
+						armor: value,
 					},
 		);
 	}

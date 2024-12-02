@@ -5,6 +5,8 @@
 		"declaration": true,
 		"declarationMap": true,
 		"sourceMap": true,
-		"strict": true
+		"strict": true,
+		"rootDir": "./src",
+		"outDir": "./dist"
 	}
 }

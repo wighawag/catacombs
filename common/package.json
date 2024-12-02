@@ -3,18 +3,13 @@
   "version": "0.0.0",
   "description": "Common lib",
   "type": "module",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "require": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.cjs"
-      },
       "import": {
         "types": "./dist/index.d.ts",
-        "default": "./dist/index.mjs"
+        "default": "./dist/index.js"
       }
     }
   },
@@ -28,15 +23,15 @@
     "viem": "^2.21.51"
   },
   "devDependencies": {
+    "as-soon": "^0.0.9",
     "ldenv": "^0.3.11",
-    "pkgroll": "^2.5.1",
     "prettier": "^3.4.1",
     "typescript": "^5.7.2"
   },
   "scripts": {
-    "build": "pkgroll",
-    "dev": "pkgroll --watch",
+    "build": "tsc --project tsconfig.json",
+    "dev": "as-soon -w src pnpm build",
     "format:check": "prettier --check .",
-    "format": "prettier --write ."
+    "format:write": "prettier --write ."
   }
 }

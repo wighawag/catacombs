@@ -52,12 +52,12 @@ importers:
         specifier: ^2.21.51
         version: 2.21.51(typescript@5.7.2)(zod@3.23.8)
     devDependencies:
+      as-soon:
+        specifier: ^0.0.9
+        version: 0.0.9
       ldenv:
         specifier: ^0.3.11
         version: 0.3.11
-      pkgroll:
-        specifier: ^2.5.1
-        version: 2.5.1(typescript@5.7.2)
       prettier:
         specifier: ^3.4.1
         version: 3.4.1
@@ -263,7 +263,7 @@ importers:
         version: 0.7.2(@cloudflare/workers-types@4.20241127.0)
       fuzd-server:
         specifier: ^0.7.3
-        version: 0.7.3(@types/node@22.10.1)(sass@1.81.0)(typescript@5.7.2)(typia@6.12.2(@samchon/openapi@1.2.4)(typescript@5.7.2))(zod@3.23.8)
+        version: 0.7.3(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)(typia@6.12.2(@samchon/openapi@1.2.4)(typescript@5.7.2))
       ldenv:
         specifier: ^0.3.11
         version: 0.3.11
@@ -8584,7 +8584,7 @@ snapshots:
       chai: 5.1.2
       tinyrainbow: 1.2.0
 
-  '@vitest/mocker@2.1.6(vite@6.0.1(@types/node@22.10.1)(sass@1.81.0))':
+  '@vitest/mocker@2.1.6(vite@6.0.1(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2))':
     dependencies:
       '@vitest/spy': 2.1.6
       estree-walker: 3.0.3
@@ -10359,7 +10359,7 @@ snapshots:
     dependencies:
       named-logs: named-logs-for-servers@0.0.1
 
-  fuzd-executor@0.7.2(@types/node@22.10.1)(sass@1.81.0)(typescript@5.7.2)(zod@3.23.8):
+  fuzd-executor@0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2):
     dependencies:
       fuzd-chain-protocol: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)(zod@3.23.8)
       fuzd-common: 0.7.2
@@ -10417,7 +10417,7 @@ snapshots:
       - yaml
       - zod
 
-  fuzd-server@0.7.3(@types/node@22.10.1)(sass@1.81.0)(typescript@5.7.2)(typia@6.12.2(@samchon/openapi@1.2.4)(typescript@5.7.2))(zod@3.23.8):
+  fuzd-server@0.7.3(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)(typia@6.12.2(@samchon/openapi@1.2.4)(typescript@5.7.2)):
     dependencies:
       '@hono/swagger-ui': 0.4.1(hono@4.6.12)
       '@hono/typia-validator': 0.0.5(hono@4.6.12)(typia@6.12.2(@samchon/openapi@1.2.4)(typescript@5.7.2))
@@ -10428,9 +10428,9 @@ snapshots:
       eip-1193-signer: 0.0.5(typescript@5.7.2)(zod@3.23.8)
       fuzd-chain-protocol: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)(zod@3.23.8)
       fuzd-common: 0.7.2
-      fuzd-executor: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(typescript@5.7.2)(zod@3.23.8)
+      fuzd-executor: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)
       fuzd-scheduler: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)(zod@3.23.8)
-      fuzd-tlock-decrypter: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(typescript@5.7.2)(zod@3.23.8)
+      fuzd-tlock-decrypter: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)
       hono: 4.6.12
       named-logs: named-logs-for-servers@0.0.1
       remote-account: 0.2.1
@@ -10462,7 +10462,7 @@ snapshots:
       - yaml
       - zod
 
-  fuzd-tlock-decrypter@0.7.2(@types/node@22.10.1)(sass@1.81.0)(typescript@5.7.2)(zod@3.23.8):
+  fuzd-tlock-decrypter@0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2):
     dependencies:
       fuzd-scheduler: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)(zod@3.23.8)
       named-logs: named-logs-for-servers@0.0.1
@@ -13442,7 +13442,7 @@ snapshots:
   vitest@2.1.6(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2):
     dependencies:
       '@vitest/expect': 2.1.6
-      '@vitest/mocker': 2.1.6(vite@6.0.1(@types/node@22.10.1)(sass@1.81.0))
+      '@vitest/mocker': 2.1.6(vite@6.0.1(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2))
       '@vitest/pretty-format': 2.1.6
       '@vitest/runner': 2.1.6
       '@vitest/snapshot': 2.1.6
