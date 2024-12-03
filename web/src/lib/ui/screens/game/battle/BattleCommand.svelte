@@ -34,6 +34,7 @@
 	let monsterSelectedAttackCard = $derived($battleState!.monster.currentAttackCardIndex);
 	let monsterSelectedDefenseCard = $derived($battleState!.monster.currentDefenseCardIndex);
 	let monsterHP = $derived($battleState!.monster.hp);
+	let monsterInitialHP = $derived($battleState!.monster.initialHP);
 
 	// let chosing: undefined | 'attack' | 'defense' = $state();
 
@@ -96,7 +97,7 @@
 	</div>
 	<div class="centered">
 		<p>Skeleton</p>
-		<div class="bar"><HpBar value={monsterHP} maxValue={4} /></div>
+		<div class="bar"><HpBar value={monsterHP} maxValue={monsterInitialHP} /></div>
 	</div>
 	<div class="monster">
 		<div class="monster-cards">

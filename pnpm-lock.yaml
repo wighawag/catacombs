@@ -263,7 +263,7 @@ importers:
         version: 0.7.2(@cloudflare/workers-types@4.20241127.0)
       fuzd-server:
         specifier: ^0.7.3
-        version: 0.7.3(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)(typia@6.12.2(@samchon/openapi@1.2.4)(typescript@5.7.2))
+        version: 0.7.3(@types/node@22.10.1)(sass@1.81.0)(typescript@5.7.2)(typia@6.12.2(@samchon/openapi@1.2.4)(typescript@5.7.2))(zod@3.23.8)
       ldenv:
         specifier: ^0.3.11
         version: 0.3.11
@@ -2605,14 +2605,17 @@ packages:
 
   abstract-leveldown@0.12.4:
     resolution: {integrity: sha512-TOod9d5RDExo6STLMGa+04HGkl+TlMfbDnTyN93/ETJ9DpQ0DaYLqcMZlbXvdc4W3vVo1Qrl+WhSp8zvDsJ+jA==}
+    deprecated: Superseded by abstract-level (https://github.com/Level/community#faq)
 
   abstract-leveldown@6.2.3:
     resolution: {integrity: sha512-BsLm5vFMRUrrLeCcRc+G0t2qOaTzpoJQLOubq2XM72eNpjF5UdU5o/5NvlNhx95XHcAvcl8OMXr4mlg/fRgUXQ==}
     engines: {node: '>=6'}
+    deprecated: Superseded by abstract-level (https://github.com/Level/community#faq)
 
   abstract-leveldown@6.3.0:
     resolution: {integrity: sha512-TU5nlYgta8YrBMNpc9FwQzRbiXsj49gsALsXadbGHt9CROPzX5fB0rWDR5mtdpOOKa5XqRFpbj1QroPAoPzVjQ==}
     engines: {node: '>=6'}
+    deprecated: Superseded by abstract-level (https://github.com/Level/community#faq)
 
   accepts@1.3.8:
     resolution: {integrity: sha512-PYAthTa2m2VKxuvSD3DPC/Gy+U+sOA1LAuT8mkmRuvw+NACSaeXEQ+NHcVF7rONl6qcaxV3Uuemwawk+7+SJLw==}
@@ -3359,10 +3362,12 @@ packages:
 
   deferred-leveldown@0.2.0:
     resolution: {integrity: sha512-+WCbb4+ez/SZ77Sdy1iadagFiVzMB89IKOBhglgnUkVxOxRWmmFsz8UDSNWh4Rhq+3wr/vMFlYj+rdEwWUDdng==}
+    deprecated: Superseded by abstract-level (https://github.com/Level/community#faq)
 
   deferred-leveldown@5.3.0:
     resolution: {integrity: sha512-a59VOT+oDy7vtAbLRCZwWgxu2BaCfd5Hk7wxJd48ei7I+nsg8Orlb9CLG0PMZienk9BSUKgeAqkO2+Lw+1+Ukw==}
     engines: {node: '>=6'}
+    deprecated: Superseded by abstract-level (https://github.com/Level/community#faq)
 
   define-data-property@1.1.4:
     resolution: {integrity: sha512-rBMvIzlpA8v6E+SJZoo++HAYqsLrkg7MSfIinMPFhmkorw7X+dOXVJQs+QT69zGkzMyfDnIMN2Wid1+NbL3T+A==}
@@ -4528,9 +4533,11 @@ packages:
 
   level-js@2.2.4:
     resolution: {integrity: sha512-lZtjt4ZwHE00UMC1vAb271p9qzg8vKlnDeXfIesH3zL0KxhHRDjClQLGLWhyR0nK4XARnd4wc/9eD1ffd4PshQ==}
+    deprecated: Superseded by browser-level (https://github.com/Level/community#faq)
 
   level-js@5.0.2:
     resolution: {integrity: sha512-SnBIDo2pdO5VXh02ZmtAyPP6/+6YTJg2ibLtl9C34pWvmtMEmRTWpra+qO/hifkUtBTOtfx6S9vLDjBsBK4gRg==}
+    deprecated: Superseded by browser-level (https://github.com/Level/community#faq)
 
   level-packager@5.1.1:
     resolution: {integrity: sha512-HMwMaQPlTC1IlcwT3+swhqf/NUO+ZhXVz6TY1zZIIZlIR0YSn8GtAAWmIvKjNY16ZkEg/JcpAuQskxsXqC0yOQ==}
@@ -4556,13 +4563,16 @@ packages:
   leveldown@5.6.0:
     resolution: {integrity: sha512-iB8O/7Db9lPaITU1aA2txU/cBEXAt4vWwKQRrrWuS6XDgbP4QZGj9BL2aNbwb002atoQ/lIotJkfyzz+ygQnUQ==}
     engines: {node: '>=8.6.0'}
+    deprecated: Superseded by classic-level (https://github.com/Level/community#faq)
 
   levelup@0.18.6:
     resolution: {integrity: sha512-uB0auyRqIVXx+hrpIUtol4VAPhLRcnxcOsd2i2m6rbFIDarO5dnrupLOStYYpEcu8ZT087Z9HEuYw1wjr6RL6Q==}
+    deprecated: Superseded by abstract-level (https://github.com/Level/community#faq)
 
   levelup@4.4.0:
     resolution: {integrity: sha512-94++VFO3qN95cM/d6eBXvd894oJE0w3cInq9USsyQzzoJxmiYzPAocNcuGCPGGjoXqDVJcr3C1jzt1TSjyaiLQ==}
     engines: {node: '>=6'}
+    deprecated: Superseded by abstract-level (https://github.com/Level/community#faq)
 
   linebreak@1.1.0:
     resolution: {integrity: sha512-MHp03UImeVhB7XZtjd0E4n6+3xr5Dq/9xI/5FptGk5FrbDR3zagPa2DS6U8ks/3HjbKWG9Q1M2ufOzxV2qLYSQ==}
@@ -10359,7 +10369,7 @@ snapshots:
     dependencies:
       named-logs: named-logs-for-servers@0.0.1
 
-  fuzd-executor@0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2):
+  fuzd-executor@0.7.2(@types/node@22.10.1)(sass@1.81.0)(typescript@5.7.2)(zod@3.23.8):
     dependencies:
       fuzd-chain-protocol: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)(zod@3.23.8)
       fuzd-common: 0.7.2
@@ -10417,7 +10427,7 @@ snapshots:
       - yaml
       - zod
 
-  fuzd-server@0.7.3(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)(typia@6.12.2(@samchon/openapi@1.2.4)(typescript@5.7.2)):
+  fuzd-server@0.7.3(@types/node@22.10.1)(sass@1.81.0)(typescript@5.7.2)(typia@6.12.2(@samchon/openapi@1.2.4)(typescript@5.7.2))(zod@3.23.8):
     dependencies:
       '@hono/swagger-ui': 0.4.1(hono@4.6.12)
       '@hono/typia-validator': 0.0.5(hono@4.6.12)(typia@6.12.2(@samchon/openapi@1.2.4)(typescript@5.7.2))
@@ -10428,9 +10438,9 @@ snapshots:
       eip-1193-signer: 0.0.5(typescript@5.7.2)(zod@3.23.8)
       fuzd-chain-protocol: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)(zod@3.23.8)
       fuzd-common: 0.7.2
-      fuzd-executor: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)
+      fuzd-executor: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(typescript@5.7.2)(zod@3.23.8)
       fuzd-scheduler: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)(zod@3.23.8)
-      fuzd-tlock-decrypter: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)
+      fuzd-tlock-decrypter: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(typescript@5.7.2)(zod@3.23.8)
       hono: 4.6.12
       named-logs: named-logs-for-servers@0.0.1
       remote-account: 0.2.1
@@ -10462,7 +10472,7 @@ snapshots:
       - yaml
       - zod
 
-  fuzd-tlock-decrypter@0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2):
+  fuzd-tlock-decrypter@0.7.2(@types/node@22.10.1)(sass@1.81.0)(typescript@5.7.2)(zod@3.23.8):
     dependencies:
       fuzd-scheduler: 0.7.2(@types/node@22.10.1)(sass@1.81.0)(tsx@4.19.2)(typescript@5.7.2)(zod@3.23.8)
       named-logs: named-logs-for-servers@0.0.1

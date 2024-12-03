@@ -3,6 +3,7 @@ import {gameView, type GameView, type GameViewState} from './ViewState';
 import {type CurrentCard, type Card, fromBigIntToCards} from 'template-game-common';
 
 export type MonsterInBattle = {
+	initialHP: number;
 	hp: number;
 	kind: number; // TODO string
 	attackCards: CurrentCard[];
@@ -66,6 +67,7 @@ export const battleState = derived<GameView, BattleState>(
 			const monsterKindAsArray = monsterKinds.slice(kind * 32, kind * 32 + 32);
 			const monsterKindAsHex = toHexString(monsterKindAsArray);
 			const monsterKind = BigInt(`0x${monsterKindAsHex}`);
+			const initialHP = Number(monsterKind >> 248n);
 			console.log({monsterKind, monsterKindAsArray, monsterKindAsHex});
 			const monsterAttackGear = (monsterKind >> 128n) & 0x1fffffffffffffffffffffffffn;
 			console.log({monsterAttackGear});
@@ -102,6 +104,7 @@ export const battleState = derived<GameView, BattleState>(
 			}
 			return {
 				monster: {
+					initialHP,
 					hp: $gameView.inBattle.monster.hp,
 					kind,
 					attackCards: monsterAttackCards,

@@ -91,11 +91,12 @@ contract GameReveal is Game {
         // position can be represented as delta from player and can be store in few bits this way
         // life is tiny and monster type can do the rest
         // 256bits should be enough
-        monsters[0] = Monster({x: x - 2, y: y + 5, hp: 3, kind: 0});
-        monsters[1] = Monster({x: x - 5, y: y - 3, hp: 3, kind: 1});
-        monsters[2] = Monster({x: x + 5, y: y + 2, hp: 3, kind: 0});
-        monsters[3] = Monster({x: x + 6, y: y - 5, hp: 3, kind: 1});
-        monsters[4] = Monster({x: x + 4, y: y + 8, hp: 3, kind: 0});
+
+        monsters[0] = _createMonster(x - 2, y + 5, 0);
+        monsters[1] = _createMonster(x - 5, y - 3, 1);
+        monsters[2] = _createMonster(x + 5, y + 2, 0);
+        monsters[3] = _createMonster(x + 6, y - 5, 1);
+        monsters[4] = _createMonster(x + 4, y + 8, 0);
         stateChanges.monsters = monsters;
         stateChanges.newPosition = position;
         stateChanges.newHP = 10; // TODO
@@ -112,6 +113,11 @@ contract GameReveal is Game {
         _step(stateChanges, context, action, revetOnInvalidMoves);
         // as external function, it will always return a copy
         return stateChanges;
+    }
+
+    function _createMonster(int32 x, int32 y, uint8 kind) internal pure returns (Monster memory) {
+        uint256 monsterKind = monsterKinds.sliceAsUint256(kind * 32);
+        return Monster({x: x, y: y, hp: uint8(monsterKind >> 248), kind: kind});
     }
 
     function _context(
@@ -350,9 +356,7 @@ contract GameReveal is Game {
                 // TODO find another if there ,  hmm, ?
                 isTakenByOtherMonster(stateChanges.monsters, rand_x, rand_y) == type(uint256).max
             ) {
-                stateChanges.monsters[monsterIndex].hp = 4; // TODO
-                stateChanges.monsters[monsterIndex].x = rand_x;
-                stateChanges.monsters[monsterIndex].y = rand_y;
+                stateChanges.monsters[monsterIndex] = _createMonster(rand_x, rand_y, 1);
             }
         }
     }
