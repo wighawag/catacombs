@@ -36,7 +36,15 @@
 	let monsterHP = $derived($battleState!.monster.hp);
 	let monsterInitialHP = $derived($battleState!.monster.initialHP);
 
-	// let chosing: undefined | 'attack' | 'defense' = $state();
+	let result: {monsterHPLoss: number; heroHPLoss: number} | undefined = $state();
+	let hero_attack_success = $derived(result && result.monsterHPLoss > 0);
+	let hero_attack_failure = $derived(result && result.monsterHPLoss == 0);
+	let monster_attack_success = $derived(result && result.heroHPLoss > 0);
+	let monster_attack_failure = $derived(result && result.heroHPLoss == 0);
+	let hero_defense_success = $derived(result && result.heroHPLoss == 0);
+	let hero_defense_failure = $derived(result && result.heroHPLoss > 0);
+	let monster_defense_success = $derived(result && result.monsterHPLoss == 0);
+	let monster_defense_failure = $derived(result && result.monsterHPLoss > 0);
 
 	async function confirmBattleChoice(attackCardIndex: number, defenseCardIndex: number) {
 		const currentStateChanges = gameView.$state.currentStateChanges;
@@ -62,12 +70,18 @@
 		const monsterBefore = currentStateChanges.monsters[monsterIndex];
 		const monsterAfter = stateChanges.monsters[monsterIndex];
 
-		if (monsterAfter.hp < monsterBefore.hp) {
+		result = {
+			monsterHPLoss: 0,
+			heroHPLoss: 0,
+		};
+		if (monsterAfter.hp < monsterBefore.hp || stateChanges.battle.monsterIndexPlus1 == 0) {
 			// play animation
+			result.monsterHPLoss = monsterBefore.hp - monsterAfter.hp;
 		}
 
 		if (heroAfter.hp < heroBefore.hp) {
 			// play animation
+			result.monsterHPLoss = heroBefore.hp - heroAfter.hp;
 		}
 
 		setTimeout(() => {
@@ -81,13 +95,14 @@
 				stateChanges,
 			);
 
-			// TODO animation
-
-			// TODO if dead, show result battle
-			if (stateChanges.battle.monsterIndexPlus1 == 0) {
-				accountState.acceptEnd();
-			}
-		}, 3000);
+			setTimeout(() => {
+				result = undefined;
+				// TODO if dead, show result battle
+				if (stateChanges.battle.monsterIndexPlus1 == 0) {
+					accountState.acceptEnd();
+				}
+			}, 700);
+		}, 250);
 	}
 </script>
 
@@ -112,12 +127,14 @@
 					</div>
 				</div>
 			{/if}
-			<div>
-				<BattleCardSelection
-					attack={monsterAttackCards[monsterSelectedAttackCard]}
-					defense={monsterDefenseCards[monsterSelectedDefenseCard]}
-					enemy={true}
-				/>
+			<div class="enemy-selection">
+				<div class:monster_defense_failure class:monster_defense_success>
+					<Card card={monsterDefenseCards[monsterSelectedDefenseCard]} />
+				</div>
+
+				<div class:monster_attack_failure class:monster_attack_success>
+					<Card card={monsterAttackCards[monsterSelectedAttackCard]} />
+				</div>
 			</div>
 		</div>
 
@@ -125,7 +142,7 @@
 			<img alt="skeleton" src="/images/monsters/skeleton.png" />
 		</div>
 
-		{#if $offchainState.inBattle?.cards.attackChosen && $offchainState.inBattle?.cards.defenseChosen}
+		{#if !result && $offchainState.inBattle?.cards.attackChosen && $offchainState.inBattle?.cards.defenseChosen}
 			<button
 				onclick={() =>
 					confirmBattleChoice(
@@ -168,10 +185,12 @@
 			<BattleCardChoice onselected={cardSelected} cards={myCards} selected={mySelection} />
 		</div> -->
 		{:else}
-			<Card
-				onclick={() => accountState.showChoice('attack')}
-				card={myAttackCards[$offchainState.inBattle?.cards.attackChosen.cardIndex]}
-			/>
+			<div class:hero_attack_success class:hero_attack_failure>
+				<Card
+					onclick={() => accountState.showChoice('attack')}
+					card={myAttackCards[$offchainState.inBattle?.cards.attackChosen.cardIndex]}
+				/>
+			</div>
 		{/if}
 		{#if !$offchainState.inBattle?.cards.defenseChosen}
 			<button onclick={() => accountState.showChoice('defense')} class="button-action btn-animate-2"
@@ -181,10 +200,12 @@
 			<BattleCardChoice onselected={cardSelected} cards={myCards} selected={mySelection} />
 		</div> -->
 		{:else}
-			<Card
-				onclick={() => accountState.showChoice('defense')}
-				card={myDefenseCards[$offchainState.inBattle?.cards.defenseChosen.cardIndex]}
-			/>
+			<div class:hero_defense_success class:hero_defense_failure>
+				<Card
+					onclick={() => accountState.showChoice('defense')}
+					card={myDefenseCards[$offchainState.inBattle?.cards.defenseChosen.cardIndex]}
+				/>
+			</div>
 		{/if}
 	</div>
 
@@ -207,6 +228,69 @@
 		100% {
 			border-color: rgba(100, 100, 100, 1);
 		}
+	}
+
+	.hero_attack_success {
+		transition: transform 250ms;
+		transform: translateY(-100px);
+	}
+
+	.hero_attack_failure {
+		transition: opacity 250ms;
+		opacity: 0.4;
+	}
+
+	.monster_attack_success {
+		transition: transform 250ms;
+		transform: translateY(100px);
+	}
+
+	.monster_attack_failure {
+		transition: opacity 250ms;
+		opacity: 0.4;
+	}
+
+	.hero_defense_failure {
+		transition: opacity 250ms;
+		opacity: 0.4;
+	}
+
+	.monster_defense_failure {
+		transition: opacity 250ms;
+		opacity: 0.4;
+	}
+
+	.enemy-selection {
+		display: flex;
+		gap: 0.5rem;
+		justify-content: center;
+		flex-wrap: wrap;
+	}
+
+	.monster_defense_success :global(button) {
+		border-color: green;
+	}
+	.hero_defense_success :global(button) {
+		border-color: green;
+	}
+	.monster_attack_success :global(button) {
+		border-color: green;
+	}
+	.hero_attack_success :global(button) {
+		border-color: green;
+	}
+
+	.monster_defense_failure :global(button) {
+		border-color: red;
+	}
+	.hero_defense_failure :global(button) {
+		border-color: red;
+	}
+	.monster_attack_failure :global(button) {
+		border-color: red;
+	}
+	.hero_attack_failure :global(button) {
+		border-color: red;
 	}
 
 	.selection {
