@@ -5,20 +5,21 @@
 	interface Props {
 		selected?: number | undefined;
 		cards: readonly CurrentCard[];
-		enemy?: boolean;
 		onselected?: (card: CurrentCard, index: number) => void;
+		position?: 'top' | 'bottom';
 	}
 
-	let {selected = undefined, cards, enemy = false, onselected}: Props = $props();
+	let {selected = undefined, cards, onselected, position}: Props = $props();
 </script>
 
 <div class="actions">
 	{#each cards as card, i}
+		{@const disabled = (selected != undefined && i != selected) || card.used}
 		<Card
+			position={!disabled ? position : undefined}
 			onclick={() => onselected?.(card, i)}
-			red={enemy}
 			{card}
-			disabled={(selected != undefined && i != selected) || card.used}
+			{disabled}
 			hilighted={selected == i}
 		/>
 	{/each}

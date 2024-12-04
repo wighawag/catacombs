@@ -5,20 +5,14 @@
 	interface Props {
 		attack: CurrentCard;
 		defense: CurrentCard;
-		enemy?: boolean;
 	}
 
-	let {attack, defense, enemy = false}: Props = $props();
+	let {attack, defense}: Props = $props();
 </script>
 
 <div class="actions">
-	{#if enemy}
-		<Card card={defense} red={enemy} />
-		<Card card={attack} red={enemy} />
-	{:else}
-		<Card card={attack} red={enemy} />
-		<Card card={defense} red={enemy} />
-	{/if}
+	<Card card={defense} />
+	<Card card={attack} />
 </div>
 
 <style>

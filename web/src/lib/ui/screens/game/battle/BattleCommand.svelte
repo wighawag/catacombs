@@ -120,20 +120,20 @@
 				<div class="selection" transition:fly={{y: -100}}>
 					<div transition:fade>
 						{#if $offchainState.inBattle?.cards.choicePresented === 'attack'}
-							<BattleCardChoice cards={monsterDefenseCards} enemy={true} selected={monsterSelectedDefenseCard} />
+							<BattleCardChoice position="top" cards={monsterDefenseCards} selected={monsterSelectedDefenseCard} />
 						{:else}
-							<BattleCardChoice cards={monsterAttackCards} enemy={true} selected={monsterSelectedAttackCard} />
+							<BattleCardChoice position="top" cards={monsterAttackCards} selected={monsterSelectedAttackCard} />
 						{/if}
 					</div>
 				</div>
 			{/if}
 			<div class="enemy-selection">
 				<div class:monster_defense_failure class:monster_defense_success>
-					<Card card={monsterDefenseCards[monsterSelectedDefenseCard]} />
+					<Card position="top" card={monsterDefenseCards[monsterSelectedDefenseCard]} />
 				</div>
 
 				<div class:monster_attack_failure class:monster_attack_success>
-					<Card card={monsterAttackCards[monsterSelectedAttackCard]} />
+					<Card position="top" card={monsterAttackCards[monsterSelectedAttackCard]} />
 				</div>
 			</div>
 		</div>
@@ -154,12 +154,16 @@
 		{/if}
 	</div>
 
-	<div class="actions">
+	<div
+		class="actions"
+		class:chosen={$offchainState.inBattle?.cards.attackChosen && $offchainState.inBattle?.cards.defenseChosen}
+	>
 		{#if $offchainState.inBattle?.cards.choicePresented}
 			<div class="selection player-selection" transition:fly={{y: 100}}>
 				<div transition:fade>
 					{#if $offchainState.inBattle?.cards.choicePresented === 'attack'}
 						<BattleCardChoice
+							position="bottom"
 							cards={myAttackCards}
 							onselected={(_card, i) => {
 								accountState.selectAttackCard(i);
@@ -167,6 +171,7 @@
 						/>
 					{:else}
 						<BattleCardChoice
+							position="bottom"
 							cards={myDefenseCards}
 							onselected={(_card, i) => {
 								accountState.selectDefenseCard(i);
@@ -187,6 +192,7 @@
 		{:else}
 			<div class:hero_attack_success class:hero_attack_failure>
 				<Card
+					position="bottom"
 					onclick={() => accountState.showChoice('attack')}
 					card={myAttackCards[$offchainState.inBattle?.cards.attackChosen.cardIndex]}
 				/>
@@ -202,6 +208,7 @@
 		{:else}
 			<div class:hero_defense_success class:hero_defense_failure>
 				<Card
+					position="bottom"
 					onclick={() => accountState.showChoice('defense')}
 					card={myDefenseCards[$offchainState.inBattle?.cards.defenseChosen.cardIndex]}
 				/>
@@ -262,7 +269,7 @@
 
 	.enemy-selection {
 		display: flex;
-		gap: 0.5rem;
+		gap: 2.5rem;
 		justify-content: center;
 		flex-wrap: wrap;
 	}
@@ -306,6 +313,7 @@
 	}
 
 	.monster-cards {
+		z-index: 1;
 		width: 100%;
 		position: relative;
 	}
@@ -329,6 +337,10 @@
 		gap: 0.5rem;
 		justify-content: center;
 		flex-wrap: wrap;
+	}
+
+	.actions.chosen {
+		gap: 2.5rem;
 	}
 
 	.wrapper {
@@ -359,6 +371,7 @@
 	.confirm {
 		width: 100px;
 		margin-top: -24px;
+		margin-bottom: 12px;
 		z-index: 4;
 	}
 
