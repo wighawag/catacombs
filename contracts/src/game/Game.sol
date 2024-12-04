@@ -94,6 +94,7 @@ abstract contract Game {
     }
 
     struct Store {
+        uint256 seed; // TODO seed implement randomness mixing from player reveal
         mapping(uint256 => Commitment) commitments;
         mapping(uint256 => CharacterState) characterStates;
     }

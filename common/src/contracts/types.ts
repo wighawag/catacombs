@@ -28,6 +28,7 @@ export type StateChanges = {
 export type Action = bigint;
 
 export type Context = {
+	seed: bigint;
 	characterID: bigint;
 	priorPosition: bigint;
 	controller: `0x${string}`;

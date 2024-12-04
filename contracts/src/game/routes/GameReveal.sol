@@ -16,6 +16,7 @@ contract GameReveal is Game {
         hex"04000008101020400000000000000000000000080000200000000000000000000600000810202040000000000000000000000008100020000000000000000000";
 
     struct Context {
+        uint256 seed;
         uint256 characterID;
         uint64 priorPosition;
         uint24 epoch;
@@ -133,6 +134,7 @@ contract GameReveal is Game {
         (context.epoch, ) = config.getEpoch();
         context.actions = actions;
         context.secret = secret;
+        context.seed = store.seed;
 
         context.priorGold = store.characterStates[characterID].gold;
         context.priorHP = store.characterStates[characterID].hp;
@@ -152,16 +154,17 @@ contract GameReveal is Game {
         uint64 position = stateChanges.newPosition;
         (int32 x, int32 y) = PositionUtils.toXY(position);
         if (stateChanges.battle.monsterIndexPlus1 == 0) {
-            _move(x, y, stateChanges, action, revetOnInvalidMoves);
+            _move(stateChanges, context, action, x, y, revetOnInvalidMoves);
         } else {
             _battle(stateChanges, context, action, revetOnInvalidMoves);
         }
     }
     function _move(
+        StateChanges memory stateChanges,
+        Context memory context,
+        uint256 action,
         int32 x,
         int32 y,
-        StateChanges memory stateChanges,
-        uint256 action,
         bool revetOnInvalidMoves
     ) internal pure {
         uint64 position = stateChanges.newPosition;
@@ -186,7 +189,7 @@ contract GameReveal is Game {
         for (uint256 e = 0; e < 5; e++) {
             Monster memory monster = monsters[e];
             if (monster.hp > 0) {
-                _moveMonster(x, y, monsters, monster);
+                _moveMonster(context, x, y, monsters, monster, e);
                 if (monster.x == x && monster.y == y) {
                     stateChanges.battle.monsterIndexPlus1 = uint8(e + 1); // TODO make e uint8 ?
                 }
@@ -195,7 +198,45 @@ contract GameReveal is Game {
         stateChanges.newPosition = position;
     }
 
-    function _moveMonster(int32 x, int32 y, Monster[5] memory monsters, Monster memory monster) internal pure {
+    function _randInt32(Context memory context, uint256 counter, int32 min, int32 max) internal pure returns (int32) {
+        return
+            int32(
+                int256(uint256(keccak256(abi.encodePacked(context.seed, counter))) % uint256(int256(max - min + 1))) +
+                    int256(min)
+            );
+    }
+
+    function _randUInt32(
+        Context memory context,
+        uint256 counter,
+        uint32 min,
+        uint32 max
+    ) internal pure returns (uint32) {
+        return uint32((uint256(keccak256(abi.encodePacked(context.seed, counter))) % uint256(max - min + 1)) + min);
+    }
+
+    function _randInt32FromUint32(
+        Context memory context,
+        uint256 counter,
+        uint32 min,
+        uint32 max
+    ) internal pure returns (int32) {
+        uint32 v = _randUInt32(context, counter, min, max);
+        uint32 b = _randUInt32(context, counter + 0xffffffff, 0, 1);
+        if (b == 0) {
+            return -int32(v);
+        }
+        return int32(v);
+    }
+
+    function _moveMonster(
+        Context memory context,
+        int32 x,
+        int32 y,
+        Monster[5] memory monsters,
+        Monster memory monster,
+        uint256 monsterIndex
+    ) internal pure {
         int32 m_nextX = monster.x;
         int32 m_nextY = monster.y;
         int32 xDiff = x - monster.x;
@@ -203,8 +244,9 @@ contract GameReveal is Game {
 
         if (!(xDiff == 0 && yDiff == 0)) {
             // TODO randomize like in initialState
-            int32 rand_x = x + 5;
-            int32 rand_y = y + 5;
+            uint256 pos = PositionUtils.toPosition(x, y);
+            int32 rand_x = x + _randInt32FromUint32(context, pos + monsterIndex, 8, 10);
+            int32 rand_y = y + _randInt32FromUint32(context, pos + monsterIndex + 3, 8, 10);
             if (
                 (Math.abs(xDiff) > 10 || Math.abs(yDiff) > 10) &&
                 isTakenByOtherMonster(monsters, rand_x, rand_y) == type(uint256).max
@@ -350,8 +392,10 @@ contract GameReveal is Game {
 
             (int32 x, int32 y) = PositionUtils.toXY(stateChanges.newPosition);
             // TODO randomize like in initialState
-            int32 rand_x = x + 5;
-            int32 rand_y = y + 5;
+            // int32 rand_x = x + 5;
+            // int32 rand_y = y + 5;
+            int32 rand_x = x + _randInt32FromUint32(context, stateChanges.newPosition + monsterIndex, 8, 10);
+            int32 rand_y = y + _randInt32FromUint32(context, stateChanges.newPosition + monsterIndex + 3, 8, 10);
             if (
                 // TODO find another if there ,  hmm, ?
                 isTakenByOtherMonster(stateChanges.monsters, rand_x, rand_y) == type(uint256).max

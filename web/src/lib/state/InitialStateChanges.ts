@@ -40,6 +40,7 @@ export function initInitialStateChanges(connectedState: ConnectedStateStore, acc
 				// TODO fetch context or give it: Context will be taken from indexer
 				context = {
 					// TODO context
+					seed: 0n, // TODO seed
 					characterID: BigInt(currentCharacter.id),
 					actions: [],
 					controller: zeroAddress, // TODO
@@ -60,6 +61,7 @@ export function initInitialStateChanges(connectedState: ConnectedStateStore, acc
 				// intro
 				context = {
 					// TODO context
+					seed: 0n, // TODO seed
 					characterID: 1n,
 					actions: [],
 					controller: zeroAddress,
