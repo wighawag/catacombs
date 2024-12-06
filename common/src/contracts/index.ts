@@ -17,6 +17,10 @@ export function wallAt(walls: readonly boolean[], x: number, y: number): boolean
 	const xx = areaLocalCoord(x);
 	const yy = areaLocalCoord(y);
 	const i = yy * AREA_SIZE + xx;
-	return walls[i];
+	const wall = walls[i];
+	if (wall == undefined) {
+		return false;
+	}
+	return wall;
 	// return ((walls >> (127n - i)) & 1n) == 1n;
 }

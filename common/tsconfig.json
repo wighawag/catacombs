@@ -1,12 +1,22 @@
 {
 	"compilerOptions": {
-		"moduleResolution": "node",
-		"target": "es2020",
-		"declaration": true,
-		"declarationMap": true,
-		"sourceMap": true,
+		"target": "esnext",
+		"lib": ["esnext", "dom"],
+		"module": "nodenext",
 		"strict": true,
-		"rootDir": "./src",
-		"outDir": "./dist"
-	}
+		"incremental": true,
+		"noImplicitAny": true,
+		"allowJs": true,
+		"alwaysStrict": true,
+		"skipLibCheck": true,
+		"noUnusedParameters": false,
+		"noUnusedLocals": false,
+		"strictNullChecks": true,
+		"noUncheckedIndexedAccess": true,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true
+	},
+	"include": ["src/**/*.ts"],
+	"exclude": ["./dist/**/*"]
 }

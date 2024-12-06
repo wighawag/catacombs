@@ -3,13 +3,18 @@
   "version": "0.0.0",
   "description": "Common lib",
   "type": "module",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "main": "./dist/cjs/index.js",
+  "module": "./dist/esm/index.js",
+  "types": "./dist/esm/index.d.ts",
   "exports": {
     ".": {
+      "require": {
+        "types": "./dist/cjs/index.d.ts",
+        "default": "./dist/cjs/index.js"
+      },
       "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
       }
     }
   },
@@ -29,7 +34,9 @@
     "typescript": "^5.7.2"
   },
   "scripts": {
-    "build": "tsc --project tsconfig.json",
+    "build:esm": "tsc -p tsconfig.lib.json --module nodenext --outDir dist/esm && echo '{\"type\": \"module\"}' > dist/esm/package.json",
+    "build:cjs": "tsc -p tsconfig.lib.json --module commonjs --outDir dist/cjs && echo '{\"type\": \"commonjs\"}' > dist/cjs/package.json",
+    "build": "pnpm build:esm && pnpm build:cjs",
     "dev": "as-soon -w src pnpm build",
     "format:check": "prettier --check .",
     "format:write": "prettier --write ."
