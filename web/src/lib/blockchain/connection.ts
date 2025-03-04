@@ -1,4 +1,5 @@
-import {loginPopup} from '@renraku/alchemy-login';
+import type {OriginAccount} from '@etherplay/connect';
+import {createConnection} from '@etherplay/connect';
 import type {EIP1193ProviderWithoutEvents, EIP1193SignerProvider} from 'eip-1193';
 import {createStore} from '$utils/stores/utils';
 import {JSONRPCHTTPProvider} from 'eip-1193-jsonrpc-provider';
@@ -53,6 +54,10 @@ function createSignerProvider(provider: EIP1193ProviderWithoutEvents, key: strin
 
 const MY_KEY = '_my_key';
 
+const etherplayConnection = createConnection({
+	walletHost: 'https://accounts.etherplay.io',
+});
+
 export function initConnection() {
 	let lastBlockNumberFetched: number = 0;
 	const {$state, readable, set} = createStore<Connection>({
@@ -65,31 +70,42 @@ export function initConnection() {
 		email: undefined,
 	});
 
-	async function loginWithEmail() {
-		const result = await loginPopup({
-			walletHost: 'https://accounts.etherplay.io',
+	function loginWithEmail(): Promise<void> {
+		const login = new Promise<OriginAccount>((resolve, reject) => {
+			const unsubscribe = etherplayConnection.subscribe((v) => {
+				if (v.step == 'SignedIn') {
+					unsubscribe();
+					resolve(v.account);
+				} else if (v.error) {
+					unsubscribe();
+					reject(v.error);
+				}
+			});
+			etherplayConnection.connect({type: 'email', email: undefined, mode: 'otp'});
 		});
 
-		const currentProvider = $state.providerWithoutSigner;
-		if (!currentProvider) {
-			throw new Error(`Require a provider to send request to`);
-		}
+		return login.then((result) => {
+			const currentProvider = $state.providerWithoutSigner;
+			if (!currentProvider) {
+				throw new Error(`Require a provider to send request to`);
+			}
 
-		const {signerProvider, address} = createSignerProvider(currentProvider, result.originAccount.mnemonicKey);
+			const {signerProvider, address} = createSignerProvider(currentProvider, result.signer.mnemonicKey);
 
-		localStorage.setItem(
-			MY_KEY,
-			JSON.stringify({
-				email: result.email,
-				key: result.originAccount.mnemonicKey,
-				mainAccount: result.localAccount.address,
-			}),
-		);
-		set({
-			providerWithSigner: signerProvider,
-			address,
-			email: result.email,
-			mainAccount: result.localAccount.address,
+			localStorage.setItem(
+				MY_KEY,
+				JSON.stringify({
+					email: result.metadata.email,
+					key: result.signer.mnemonicKey,
+					mainAccount: result.address,
+				}),
+			);
+			set({
+				providerWithSigner: signerProvider,
+				address,
+				email: result.metadata.email,
+				mainAccount: result.address,
+			});
 		});
 	}
 
