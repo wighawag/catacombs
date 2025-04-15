@@ -6,6 +6,14 @@ interface UsingERC721Errors {
     /// @param tokenID id of the expected token
     error NonExistentToken(uint256 tokenID);
 
+    /// @notice The token already exists
+    /// @param tokenID id of the expected token
+    error TokenAlreadyExists(uint256 tokenID);
+
+    /// @notice The token was minted prior and cannot be reminted
+    /// @param tokenID id of the expected token
+    error TokenCannotBeReminted(uint256 tokenID);
+
     /// @notice The address from which the token is sent is not the current owner
     /// @param provided the address expected to be the current owner
     /// @param currentOwner the current owner
@@ -20,8 +28,4 @@ interface UsingERC721Errors {
 
     /// @notice The Nonce overflowed, make a transfer to self to allow new nonces.
     error NonceOverflow();
-
-    /// @notice The token already exists
-    /// @param tokenID id of the token to create
-    error TokenAlreadyExists(uint256 tokenID);
 }
