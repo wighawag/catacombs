@@ -4,7 +4,6 @@ pragma solidity ^0.8.0;
 import "../Game.sol";
 import "../GameUtils.sol";
 import "../../solidity-kit/solc_0_8/ERC721/interfaces/IERC721Receiver.sol";
-import "hardhat/console.sol";
 
 contract GameEnter is Game, IERC721Receiver {
     using GameUtils for Config;
@@ -49,7 +48,6 @@ contract GameEnter is Game, IERC721Receiver {
         bytes calldata
     ) external override returns (bytes4) {
         Game.Config memory config = getConfig();
-        console.log("onERC721Received");
 
         if (msg.sender == address(config.characters)) {
             _enter(from == address(0) ? operator : from, tokenID);
@@ -64,7 +62,6 @@ contract GameEnter is Game, IERC721Receiver {
         Context memory context = _context(sender, characterID);
         StateChanges memory stateChanges = computeStateChanges(context);
         _apply(store, stateChanges);
-        console.log("EnteredTheGame", context.characterID, stateChanges.controller, stateChanges.position);
         emit EnteredTheGame(context.characterID, stateChanges.controller, stateChanges.position);
     }
 
@@ -74,7 +71,7 @@ contract GameEnter is Game, IERC721Receiver {
     }
 
     function _apply(Game.Store storage store, StateChanges memory stateChanges) internal {
-        store.characterStates[stateChanges.characterID].controllers[stateChanges.controller];
+        store.characterStates[stateChanges.characterID].controllers[stateChanges.controller] = ControllerType.Basic;
         store.characterStates[stateChanges.characterID].position = stateChanges.position;
     }
 }
